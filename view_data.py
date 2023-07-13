@@ -5,6 +5,7 @@ from pprint import pprint
 util = Util(filetype='ArenaGhostNPC')
 #translation = Translation()
 asset_list: list = util.get_asset_list()
+asset_list: list = [-1564704183638881606]
 
 for path in asset_list:
     asset = util.get_asset_by_path(path)

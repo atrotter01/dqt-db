@@ -28,7 +28,7 @@ class Skill:
             if asset.get('processed_document') is not None:
                 continue
 
-            path: int = asset.get('path')
+            print(f'Processing {path}')
 
             document: dict = self.util.parse_asset(path=path)
             assert type(document) is dict, document

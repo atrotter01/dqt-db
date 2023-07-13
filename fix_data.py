@@ -6,7 +6,7 @@ from pprint import pprint
 util = Util(filetype='ArenaGhostNPC')
 #translation = Translation()
 asset_list: list = util.get_asset_list()
-#asset_list = [-2014534983663632832]
+asset_list = [-7166856807420226959]
 for path in asset_list:
     asset = util.get_asset_by_path(path)
     path: int = asset.get('path')
@@ -22,5 +22,5 @@ for path in asset_list:
     if type(document) is str:
         print(path)
         #util.save_document(path=path, document=json.loads(document))
-        util.save_processed_document(path=path, processed_document=json.loads(document), display_name=display_name)
+        #util.save_processed_document(path=path, processed_document=json.loads(document), display_name=display_name)
         #print(document_dict.get('processed_document'))

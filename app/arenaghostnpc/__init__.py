@@ -10,8 +10,7 @@ class ArenaGhostNPC:
     def __init__(self, _util: Util, _translation: Translation):
         self.util = _util
         self.translation = _translation
-        self.assets = [-7166856807420226959]
-        #self.assets.extend(self.util.get_asset_list('ArenaGhostNPC'))
+        self.assets.extend(self.util.get_asset_list('ArenaGhostNPC'))
 
     def process_assets(self):
         for path in self.assets:
@@ -20,7 +19,7 @@ class ArenaGhostNPC:
             if asset.get('processed_document') is not None:
                 continue
 
-            print(path)
+            print(f'Processing {path}')
 
             document: dict = self.util.parse_asset(path=path)
             assert type(document) is dict, document

@@ -102,6 +102,7 @@ class Util:
 
     def process_dict(self, dictionary: dict, parent_path: int, key_stack: str = ''):
         dictionary_copy: dict = deepcopy(dictionary)
+        #print(key_stack)
 
         for key in dictionary.keys():
             item = dictionary.get(key)
@@ -117,7 +118,9 @@ class Util:
             or key == 'shortTimeline'\
             or key == 'prerequisiteStages'\
             or key_stack == 'root.area.areaExpansion.difficultySettings.area'\
-            or key_stack == 'root.area.areaExpansion.stageSettings.stage.area':
+            or key_stack == 'root.area.areaExpansion.stageSettings.stage.area'\
+            or key_stack == 'root.areaExpansion.difficultySettings.area.areaExpansion'\
+            or key_stack == 'root.areaExpansion.stageSettings.stage.area.areaExpansion':
                 #dictionary_copy.update({key: {'Omitted': True}})
                 continue
 
@@ -134,8 +137,8 @@ class Util:
                             dictionary_copy.update({key: recursive_document})
                         except RecursionError as ex:
                             print(f'Recursion Error 1: {path}')
-                            #print(dictionary)
-                            #raise ex
+                            print(key_stack)
+                            raise ex
                     else:
                         continue
                 else:
@@ -158,7 +161,7 @@ class Util:
                                     exploded_list.append(recursive_document)
                                 except RecursionError as ex:
                                     print(f'Recursion Error 2: {path}')
-                                    #raise ex
+                                    raise ex
                             else:
                                 exploded_list.append(element)
                         else:
@@ -169,7 +172,7 @@ class Util:
                                 exploded_list.append(processed_dict)
                             except RecursionError as ex:
                                 print(f'Recursion Error 3: {path}')
-                                #raise ex
+                                raise ex
                     else:
                         exploded_list.append(element)
 
@@ -190,8 +193,7 @@ class Util:
         assert type(document) is dict, document
 
         if asset.get('processed_document') is not None:
-            print(type(asset.get('processed_document')))
-            return json.loads(asset.get('processed_document'))
+            return asset.get('processed_document')
 
         processed_dict: dict = self.process_dict(dictionary=document, parent_path=path, key_stack=key_stack)
         assert type(processed_dict) is dict, path

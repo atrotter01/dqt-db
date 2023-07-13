@@ -11,8 +11,7 @@ class Stage:
         self.util = _util
         self.translation = _translation
         self.assets = []
-        self.assets.extend(self.util.get_asset_list('Area'))
-        #self.assets.extend(self.util.get_asset_list('Stage'))
+        self.assets.extend(self.util.get_asset_list('Stage'))
 
     def process_assets(self):
         for path in self.assets:
@@ -21,7 +20,7 @@ class Stage:
             if asset.get('processed_document') is not None:
                 continue
 
-            path: int = asset.get('path')
+            print(f'Processing {path}')
 
             document: dict = self.util.parse_asset(path=path)
             assert type(document) is dict, document
