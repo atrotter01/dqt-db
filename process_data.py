@@ -1,5 +1,3 @@
-import cProfile
-
 from app.util import Util
 from app.translation import Translation
 
