@@ -1,8 +1,11 @@
 import os
 import json
 import xmltodict
+import concurrent
 from pathlib import Path
 from app.util import Util
+
+asset_importer_instance = None
 
 class AssetImport:
 
@@ -14,6 +17,7 @@ class AssetImport:
         self.util = util
         self.root_path = root_path
         self.asset_map = self.build_asset_map_from_file()
+        globals()['asset_importer_instance'] = self
 
     def build_asset_map_from_file(self):
         path = os.path.join(self.root_path, 'assets.xml')
@@ -30,8 +34,8 @@ class AssetImport:
 
             return asset_map
 
-    def map_path_to_file(self, path: int, asset_map: dict):
-        asset: dict = asset_map.get(path)
+    def map_path_to_file(self, path: int):
+        asset: dict = self.asset_map.get(path)
 
         assert asset is not None, path
 
@@ -46,25 +50,34 @@ class AssetImport:
 
         return filepath
 
-    def save_assets_to_db(self, file_type_to_process = None):
-        for path in self.asset_map:
-            filepath = self.map_path_to_file(path=path, asset_map=self.asset_map)
+    def save_assets_to_db(self):
+        executor = concurrent.futures.ProcessPoolExecutor(16)
+        futures = [executor.submit(process_and_save_asset, path) for path in self.asset_map]
+        concurrent.futures.wait(futures)
 
-            if not filepath:
-                print(f'Failed to map {self.asset_map.get(path)} to a file.')
-                continue
+def process_and_save_asset(path):
+    try:
+        filepath = asset_importer_instance.map_path_to_file(path=path)
 
-            filetype = Path(filepath).name.split('_')[0]
+        if not filepath:
+            print(f'Failed to map {asset_importer_instance.asset_map.get(path)} to a file.')
+            return False
 
-            if file_type_to_process is not None and not filetype.lower() == str(file_type_to_process).lower():
-                continue
+        filetype = Path(filepath).name.split('_')[0].replace('.json', '')
+        container = str(Path(filepath).parent).replace(asset_importer_instance.root_path + '/', '')
 
-            container = str(Path(filepath).parent).replace(self.root_path + '/', '')
-
-            if os.path.exists(filepath):
-                with open(filepath) as fh:
-                    document = json.load(fh)
-                    
-                    if self.util.save_asset(path=path, filepath=filepath, container=container, filetype=filetype, document=document):
-                        print(f'Saved {path}')
-                        os.unlink(filepath)
+        if os.path.exists(filepath):
+            with open(filepath) as fh:
+                document = json.load(fh)
+            
+                if asset_importer_instance.util.save_asset(path=path, filepath=filepath, container=container, filetype=filetype, document=document):
+                    print(f'Saved {path}')
+                    os.unlink(filepath)
+                    return True
+                else:
+                    return False
+        else:
+            return False
+    except Exception as ex:
+        print(ex)
+        return False
