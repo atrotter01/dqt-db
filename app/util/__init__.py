@@ -68,10 +68,9 @@ class Util:
                 return self.inflate_asset(self.redis_client.get('unprocessed_asset_counts'))
 
         unprocessed_asset_counts: dict = {}
-        asset_list: list = self.get_asset_list()
+        asset_list: list = self.get_asset_by_path('metadata_cache')
 
-        for path in asset_list:
-            asset = self.get_asset_by_path(path)
+        for asset in asset_list:
             type = asset.get('filetype')
 
             if unprocessed_asset_counts.get(type) is None:
