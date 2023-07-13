@@ -66,26 +66,6 @@ class Util:
     def get_asset_by_path(self, path: int):
         return self.inflate_asset(self.redis_client.get(path))
 
-#    def get_processed_keys(self, asset_type: str = None):
-#        connection_string = self.get_database_connection_string()
-#        path_list: list = []
-
-#        with psycopg.connect(conninfo=connection_string, row_factory=dict_row) as conn:
-#            query: str = None
-#            cursor: object = conn.cursor()
-            
-#            if asset_type is None:
-#                query = 'select path from public.assets'
-#                cursor.execute(query)
-#            else:
-#                query = 'select path from public.assets where filetype = %s'
-#                cursor.execute(query, (asset_type,))
-
-#            for row in cursor.fetchall():
-#                path_list.append(row.get('path'))
-
-#        return path_list
-
     def process_dict(self, dictionary: dict, parent_path: int, key_stack: str = ''):
         dictionary_copy: dict = deepcopy(dictionary)
         #print(key_stack)
@@ -103,10 +83,14 @@ class Util:
             or key == 'removeTimeline'\
             or key == 'shortTimeline'\
             or key == 'prerequisiteStages'\
-            or key_stack == 'root.area.areaExpansion.difficultySettings.area'\
-            or key_stack == 'root.area.areaExpansion.stageSettings.stage.area'\
-            or key_stack == 'root.areaExpansion.difficultySettings.area.areaExpansion'\
-            or key_stack == 'root.areaExpansion.stageSettings.stage.area.areaExpansion':
+            or key_stack.startswith('root.area.areaExpansion.difficultySettings.area')\
+            or key_stack.startswith('root.area.areaExpansion.stageSettings.stage.area')\
+            or key_stack.startswith('root.areaExpansion.difficultySettings.area.areaExpansion')\
+            or key_stack.startswith('root.areaExpansion.stageSettings.stage.area.areaExpansion')\
+            or key_stack.startswith('root.difficultySettings.area.areaExpansion.difficultySettings')\
+            or key_stack.startswith('root.difficultySettings.area.areaExpansion.stageSettings')\
+            or key_stack.startswith('root.stageSettings.stage.area.areaExpansion.difficultySettings')\
+            or key_stack.startswith('root.stageSettings.stage.area.areaExpansion.stageSettings'):
                 #dictionary_copy.update({key: {'Omitted': True}})
                 continue
 
@@ -241,10 +225,68 @@ class Util:
 
         return self.redis_client.set(path, self.deflate_asset(asset))
 
-#    def save_document(self, asset_id: int, document: dict):
-#        connection_string = self.get_database_connection_string()
+    def get_unprocessed_assets(self, skip_cache = False):
+        if skip_cache is False:
+            if self.redis_client.get('unprocessed_asset_counts') is not None:
+                return self.inflate_asset(self.redis_client.get('unprocessed_asset_counts'))
 
-#        with psycopg.connect(conninfo=connection_string) as conn:
-#            query: str = 'update public.assets set document=%s where id=%s'
-#            cursor: object = conn.cursor()
-#            cursor.execute(query, (json.dumps(document), asset_id))
+        unprocessed_asset_counts: dict = {}
+        asset_list: list = self.get_asset_list()
+
+        for path in asset_list:
+            asset = self.get_asset_by_path(path)
+            type = asset.get('filetype')
+
+            if unprocessed_asset_counts.get(type) is None:
+                unprocessed_asset_counts.update({type: 0})
+
+            count = unprocessed_asset_counts.get(type)
+
+            if asset.get('processed') is False:
+                unprocessed_asset_counts.update({type: count+1})
+
+        deflated_asset = self.deflate_asset(unprocessed_asset_counts)
+        self.redis_client.set('unprocessed_asset_counts', deflated_asset)
+
+        return unprocessed_asset_counts
+
+    def cache_api_tables(self):
+        self.cache_asset_lookup_data()
+
+    def cache_asset_lookup_data(self):
+        asset_list: list = self.get_asset_list()
+        asset_types: list = []
+        asset_path_map: dict = {}
+
+        if self.redis_client.get('asset_types') is None\
+        or self.redis_client.get('asset_path_map') is None:
+            for path in asset_list:
+                asset = self.get_asset_by_path(path)
+                type = asset.get('filetype')
+                display_name = asset.get('display_name')
+                print(display_name)
+
+                if type not in asset_types:
+                    asset_types.append(type)
+
+                if asset_path_map.get(type) is None:
+                    asset_path_map.update(
+                        {
+                            type: {
+                                'assets': []
+                            }
+                        }
+                    )
+
+                asset_path_map.get(type).get('assets').append(
+                    {
+                        'display_name': display_name,
+                        'path': path
+                    }
+                )
+
+            deflated_asset_types = self.deflate_asset(asset_types)
+            self.redis_client.set('asset_types', deflated_asset_types)
+
+            deflated_asset_path_map = self.deflate_asset(asset_path_map)
+            self.redis_client.set('asset_path_map', deflated_asset_path_map)

@@ -5,7 +5,7 @@ from pprint import pprint
 util = Util()
 #translation = Translation()
 asset_list: list = util.get_asset_list(asset_type='MonsterProfile')
-#asset_list = [-8169602172348774901]
+asset_list = [-9107347807452277588]
 
 for path in asset_list:
     asset = util.get_asset_by_path(path)

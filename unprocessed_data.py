@@ -3,19 +3,10 @@ from pprint import pprint
 
 util = Util()
 
-asset_list: list = util.get_asset_list()
-counts: dict = {}
+unprocessed_asset_counts: dict = util.get_unprocessed_assets(skip_cache=True)
 
-for path in asset_list:
-    asset = util.get_asset_by_path(path)
-    type = asset.get('filetype')
+for asset_type in sorted(unprocessed_asset_counts):
+    unprocessed_count = unprocessed_asset_counts.get(asset_type)
 
-    if counts.get(type) is None:
-        counts.update({type: 0})
-
-    count = counts.get(type)
-
-    if asset.get('processed') is False:
-        counts.update({type: count+1})
-
-pprint(counts)
+    if unprocessed_count > 0:
+        print(f'{asset_type}: {unprocessed_count}')
