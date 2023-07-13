@@ -15,7 +15,7 @@ class Util:
         self.data_processor = DataProcessor
         self.redis_client = redis.Redis(host='localhost', port=6379, decode_responses=False)
         self.asset_list = self.build_asset_list()
-        self.lookup_cache = self.build_lookup_cache()
+        self.lookup_cache = self.cache_lookup_table()
 
     def build_asset_list(self):
         return [key.decode() for key in self.redis_client.keys()]
@@ -32,36 +32,14 @@ class Util:
         else:
             return self.lookup_cache.get(asset_type)
 
-    def build_lookup_cache(self):
-        if self.redis_client.get('lookup_cache'):
-            return self.get_asset_by_path('lookup_cache')
-
-        lookup_cache: dict = {}
-
-        for path in self.asset_list:
-            asset: dict = self.get_asset_by_path(path)
-            assert type(asset) is dict, asset
-
-            filetype: str = asset.get('filetype')
-
-            if lookup_cache.get(filetype) is None:
-                lookup_cache.update({filetype: []})
-
-            lookup_cache[filetype].append(path)
-
-        deflated_asset = self.deflate_asset(lookup_cache)
-        self.redis_client.set('lookup_cache', deflated_asset)
-
-        return lookup_cache
+    def get_asset_by_path(self, path: int):
+        return self.inflate_asset(self.redis_client.get(path))
 
     def inflate_asset(self, asset):
         return json.loads(zlib.decompress(asset).decode())
 
     def deflate_asset(self, asset):
         return zlib.compress(json.dumps(asset).encode())
-
-    def get_asset_by_path(self, path: int):
-        return self.inflate_asset(self.redis_client.get(path))
 
     def parse_asset(self, path: int):
         return self.data_processor.parse_asset(path)
@@ -185,3 +163,25 @@ class Util:
 
             deflated_asset_path_map = self.deflate_asset(asset_path_map)
             self.redis_client.set('asset_path_map', deflated_asset_path_map)
+
+    def cache_lookup_table(self):
+        if self.redis_client.get('lookup_cache'):
+            return self.get_asset_by_path('lookup_cache')
+
+        lookup_cache: dict = {}
+
+        for path in self.asset_list:
+            asset: dict = self.get_asset_by_path(path)
+            assert type(asset) is dict, asset
+
+            filetype: str = asset.get('filetype')
+
+            if lookup_cache.get(filetype) is None:
+                lookup_cache.update({filetype: []})
+
+            lookup_cache[filetype].append(path)
+
+        deflated_asset = self.deflate_asset(lookup_cache)
+        self.redis_client.set('lookup_cache', deflated_asset)
+
+        return lookup_cache
