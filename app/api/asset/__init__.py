@@ -1,7 +1,7 @@
 from flask_restx import Namespace, Resource, fields
 from app.util import Util
 
-api = Namespace("Asset", description="")
+api = Namespace("asset", description="")
 
 asset_model = api.model('asset', {
     'display_name': fields.String(),
