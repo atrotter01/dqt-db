@@ -1,7 +1,7 @@
 import cProfile
 
 from app.util import Util
-from app.data.translation import Translation
+from app.translation import Translation
 
 from app.data.allymonster import AllyMonster
 from app.data.arenaghostnpc import ArenaGhostNPC
