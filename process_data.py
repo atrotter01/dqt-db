@@ -1,17 +1,17 @@
 import cProfile
 
 from app.util import Util
-from app.translation import Translation
+from app.data.translation import Translation
 
-from app.allymonster import AllyMonster
-from app.arenaghostnpc import ArenaGhostNPC
-from app.area import Area
-from app.enemymonster import EnemyMonster
-from app.genericasset import GenericAsset
-from app.item import Item
-from app.loot import Loot
-from app.skill import Skill
-from app.stage import Stage
+from app.data.allymonster import AllyMonster
+from app.data.arenaghostnpc import ArenaGhostNPC
+from app.data.area import Area
+from app.data.enemymonster import EnemyMonster
+from app.data.genericasset import GenericAsset
+from app.data.item import Item
+from app.data.loot import Loot
+from app.data.skill import Skill
+from app.data.stage import Stage
 
 util = Util()
 translation = Translation(util)

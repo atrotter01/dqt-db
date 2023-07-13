@@ -1,4 +1,4 @@
-from app.assetimport import AssetImport
+from app.data.assetimport import AssetImport
 from app.util import Util
 
 root_path: str = '/mnt/d/DQT'
