@@ -15,7 +15,7 @@ class Translation():
     def build_translation(self):
         translation_data: dict = {}
 
-        asset: dict = self.util.get_asset_by_path(self.util.get_asset_list('Translation.json')[0])
+        asset: dict = self.util.get_asset_by_path(self.util.get_asset_list('Translation')[0])
         document: dict = asset.get('document')
         assert type(document) is dict, document
 
@@ -32,7 +32,7 @@ class Translation():
     def build_translation_noun(self):
         translation_noun_data: dict = {}
 
-        asset: dict = self.util.get_asset_by_path(self.util.get_asset_list('TranslationNoun.json')[0])
+        asset: dict = self.util.get_asset_by_path(self.util.get_asset_list('TranslationNoun')[0])
         document: dict = asset.get('document')
         assert type(document) is dict, document
 

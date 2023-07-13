@@ -22,7 +22,7 @@ class GenericAsset:
         self.asset_types_to_process.append('AccuracyIncrease')
         self.asset_types_to_process.append('AchievementGroup')
         self.asset_types_to_process.append('Armor')
-        self.asset_types_to_process.append('ArenaGhostPartyMember')
+        #self.asset_types_to_process.append('ArenaGhostPartyMember')
         self.asset_types_to_process.append('ASO')
         self.asset_types_to_process.append('AST')
         self.asset_types_to_process.append('Board')
