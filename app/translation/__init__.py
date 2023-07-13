@@ -7,8 +7,8 @@ class Translation():
     util: Util
     translation_cache: dict = {}
 
-    def __init__(self, util: Util):
-        self.util = util
+    def __init__(self, _util: Util):
+        self.util = _util
         self.translation = self.build_translation()
         self.translation_noun = self.build_translation_noun()
 

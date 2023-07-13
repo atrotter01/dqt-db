@@ -62,11 +62,7 @@ class Util:
 
         return self.redis_client.set(path, self.deflate_asset(asset))
 
-    def get_unprocessed_assets(self, skip_cache = False):
-        if skip_cache is False:
-            if self.redis_client.get('unprocessed_asset_counts') is not None:
-                return self.inflate_asset(self.redis_client.get('unprocessed_asset_counts'))
-
+    def get_unprocessed_assets(self):
         unprocessed_asset_counts: dict = {}
         asset_list: list = self.get_asset_by_path('metadata_cache')
 

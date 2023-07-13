@@ -9,10 +9,10 @@ class Skill:
     translation: Translation
     data_processor: DataProcessor
 
-    def __init__(self, _util: Util, _translation: Translation):
+    def __init__(self, _util: Util, _translation: Translation, _data_processor: DataProcessor):
         self.util = _util
         self.translation = _translation
-        self.data_processor = DataProcessor()
+        self.data_processor = _data_processor
 
         self.assets = []
         self.assets.extend(self.util.get_asset_list('ActiveSkill'))

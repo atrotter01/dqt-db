@@ -1,14 +1,15 @@
 from copy import deepcopy
 import networkx as nx
+from app.util import Util
 
 class DataProcessor:
 
     graph: nx.Graph
     util: Util
 
-    def __init__(self, util):
+    def __init__(self, _util: Util):
         self.graph = nx.Graph()
-        self.util = util
+        self.util = _util
 
     def process_dict(self, dictionary: dict, parent_path: int, key_stack: str = ''):
         dictionary_copy: dict = deepcopy(dictionary)

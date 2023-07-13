@@ -6,7 +6,6 @@ api = Namespace("asset", description="")
 asset_model = api.model('asset', {
     'display_name': fields.String(),
     'data': fields.Raw(),
-    'expanded_data': fields.Raw()
 })
 
 util = Util()
@@ -22,8 +21,7 @@ class Asset(Resource):
         asset = util.get_asset_by_path(id)
         asset_list.append({
             'display_name': asset.get('display_name'),
-            'data': asset.get('document'),
-            'expanded_data': asset.get('processed_document')
+            'data': asset.get('processed_document'),
         })
         
         return sorted(asset_list, key=lambda d: d['display_name']) 
