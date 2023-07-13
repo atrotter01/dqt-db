@@ -14,25 +14,11 @@ class Util:
     lookup_cache: dict = {}
     possible_circular_references: list = []
 
-    def __init__(self, filetype=None):
+    def __init__(self):
         self.graph = nx.Graph()
         self.redis_client = redis.Redis(host='localhost', port=6379, decode_responses=False)
         self.asset_list = self.build_asset_list()
         self.lookup_cache = self.build_lookup_cache()
-
-    def map_path_to_file(self, path: int, root_path: int, asset_map: dict):
-        asset: dict = asset_map.get(path)
-
-        if asset is None:
-            raise KeyError(path)
-
-        asset_name: str = asset.get('Name')
-        asset_container: str = asset.get('Container')
-
-        container_path: object = Path(asset_container).parent
-        filepath: str = os.path.join(root_path, container_path, asset_name) + '.json'
-
-        return filepath
 
     def build_asset_list(self):
         return [key.decode() for key in self.redis_client.keys()]
@@ -233,13 +219,27 @@ class Util:
 
     def save_processed_document(self, path: int, processed_document: dict, display_name: str):
         asset: dict = self.get_asset_by_path(path)
-        asset.update({'processed_document': processed_document, 'display_name': display_name})
+        asset.update({'processed_document': processed_document, 'display_name': display_name, 'processed': True})
         self.redis_client.set(path, self.deflate_asset(asset))
 
     def save_document(self, path: int, document: dict):
         asset: dict = self.get_asset_by_path(path)
         asset.update({'document': document, 'updated': True})
         self.redis_client.set(path, self.deflate_asset(asset))
+
+    def save_asset(self, path: int, filepath: str, container: str, filetype: str, document: dict):
+        asset: dict = {
+            'path': path,
+            'filepath': filepath,
+            'container': container,
+            'filetype': filetype,
+            'document': document,
+            'display_name': None,
+            'processed_document': None,
+            'processed': False
+        }
+
+        return self.redis_client.set(path, self.deflate_asset(asset))
 
 #    def save_document(self, asset_id: int, document: dict):
 #        connection_string = self.get_database_connection_string()

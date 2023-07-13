@@ -14,6 +14,8 @@ class GenericAsset:
 
         self.assets = []
         self.asset_types_to_process = []
+        self.asset_types_to_process.append('MonsterProfile')
+
         self.asset_types_to_process.append('ActiveSkillRange')
         self.asset_types_to_process.append('ActiveSkillEnhance')
         self.asset_types_to_process.append('ActiveSkillReach')
