@@ -1,6 +1,5 @@
 from copy import deepcopy
 import networkx as nx
-from app.util import Util
 
 class DataProcessor:
 

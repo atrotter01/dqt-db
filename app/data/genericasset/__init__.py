@@ -1,5 +1,6 @@
 from app.translation import Translation
 from app.util import Util
+from app.data import DataProcessor
 
 class GenericAsset:
 
@@ -7,10 +8,12 @@ class GenericAsset:
     asset_types_to_process: list
     util: Util
     translation: Translation
+    data_processor: DataProcessor
 
     def __init__(self, _util: Util, _translation: Translation):
         self.util = _util
         self.translation = _translation
+        self.data_processor = DataProcessor()
 
         self.assets = []
         self.asset_types_to_process = []
@@ -80,7 +83,7 @@ class GenericAsset:
                     if asset_type_to_process.strip().endswith('CanvasView'):
                         document = asset.get('document')
                     else:
-                        document = self.util.parse_asset(path=path)
+                        document = self.data_processor.parse_asset(path=path)
 
                     assert type(document) is dict, document
 

@@ -1,15 +1,18 @@
 from app.translation import Translation
 from app.util import Util
+from app.data import DataProcessor
 
 class ArenaGhostNPC:
 
     assets: list
     util: Util
     translation: Translation
+    data_processor: DataProcessor
 
     def __init__(self, _util: Util, _translation: Translation):
         self.util = _util
         self.translation = _translation
+        self.data_processor = DataProcessor()
         self.assets = []
         self.assets.extend(self.util.get_asset_list('ArenaGhostNPC'))
 
@@ -22,7 +25,7 @@ class ArenaGhostNPC:
 
             print(f'Processing {path}')
 
-            document: dict = self.util.parse_asset(path=path)
+            document: dict = self.data_processor.parse_asset(path=path)
             assert type(document) is dict, document
 
             translated_document: dict = self.translation.translate_dict(document)

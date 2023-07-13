@@ -1,7 +1,6 @@
 import json
 import redis
 import zlib
-from app.data import DataProcessor
 
 class Util:
     asset_list: list = []
@@ -9,10 +8,8 @@ class Util:
     redis_client: redis
     lookup_cache: dict = {}
     possible_circular_references: list = []
-    data_processor: DataProcessor
 
     def __init__(self):
-        self.data_processor = DataProcessor
         self.redis_client = redis.Redis(host='localhost', port=6379, decode_responses=False)
         self.asset_list = self.build_asset_list()
         self.lookup_cache = self.cache_lookup_table()
@@ -40,9 +37,6 @@ class Util:
 
     def deflate_asset(self, asset):
         return zlib.compress(json.dumps(asset).encode())
-
-    def parse_asset(self, path: int):
-        return self.data_processor.parse_asset(path)
 
     def save_processed_document(self, path: int, processed_document: dict, display_name: str):
         asset: dict = self.get_asset_by_path(path)
