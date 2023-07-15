@@ -17,11 +17,17 @@ class Asset(Resource):
     def get(self, id):
         '''Fetch a given Asset'''
         asset_list = []
-
         asset = util.get_asset_by_path(id)
+
+        display_name: str = asset.get('display_name')
+        document: dict = asset.get('processed_document')
+
+        if document is None:
+            document = asset.get('document')
+
         asset_list.append({
-            'display_name': asset.get('display_name'),
-            'data': asset.get('processed_document'),
+            'display_name': display_name,
+            'data': document,
         })
         
         return sorted(asset_list, key=lambda d: d['display_name']) 

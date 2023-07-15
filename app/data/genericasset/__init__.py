@@ -1,4 +1,3 @@
-from app.translation import Translation
 from app.util import Util
 from app.data import DataProcessor
 
@@ -7,12 +6,10 @@ class GenericAsset:
     assets: list
     asset_types_to_process: list
     util: Util
-    translation: Translation
     data_processor: DataProcessor
 
-    def __init__(self, _util: Util, _translation: Translation, _data_processor: DataProcessor):
+    def __init__(self, _util: Util, _data_processor: DataProcessor):
         self.util = _util
-        self.translation = _translation
         self.data_processor = _data_processor
 
         self.assets = []
@@ -25,11 +22,10 @@ class GenericAsset:
         self.asset_types_to_process.append('AccuracyIncrease')
         self.asset_types_to_process.append('AchievementGroup')
         self.asset_types_to_process.append('Armor')
-        self.asset_types_to_process.append('ArenaGhostPartyMember')
         self.asset_types_to_process.append('ASO')
         self.asset_types_to_process.append('AST')
         self.asset_types_to_process.append('Board')
-        self.asset_types_to_process.append('Campaign')
+        #self.asset_types_to_process.append('Campaign')
         self.asset_types_to_process.append('eq')
         self.asset_types_to_process.append('HonoraryTitle')
         self.asset_types_to_process.append('ItemGroup')
@@ -53,7 +49,9 @@ class GenericAsset:
         self.asset_types_to_process.append('SkillPanel')
         self.asset_types_to_process.append('StageEffect')
 
-        self.find_small_asset_groups()
+        #self.find_small_asset_groups()
+
+        #self.asset_types_to_process.append('ArenaGhostPartyMember')
 
     def find_small_asset_groups(self):
         unprocessed_assets: dict = self.util.get_unprocessed_assets()
@@ -87,22 +85,19 @@ class GenericAsset:
 
                     assert type(document) is dict, document
 
-                    translated_document: dict = self.translation.translate_dict(document)
-                    assert type(translated_document) is dict, translated_document
-
-                    display_name: str = translated_document.get('displayName')
+                    display_name: str = document.get('displayName')
 
                     if display_name is None or display_name == '':
-                        display_name = translated_document.get('m_Name')
+                        display_name = document.get('m_Name')
 
                     if display_name is None or display_name == '':
                         display_name = f'{asset_type_to_process}: {path}'
 
-                    assert type(display_name) is str, translated_document
-                    assert display_name != '', translated_document
+                    assert type(display_name) is str, document
+                    assert display_name != '', document
 
                     print(f'Saving {display_name}')
-                    self.util.save_processed_document(path=path, processed_document=translated_document, display_name=display_name)
+                    self.util.save_processed_document(path=path, processed_document=document, display_name=display_name)
                 except TypeError as ex:
                     print(f'Failed to process with type error {path} {ex}')
                     continue

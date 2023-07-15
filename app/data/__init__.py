@@ -1,15 +1,73 @@
 from copy import deepcopy
 import networkx as nx
 from app.util import Util
+from pathlib import Path
 
 class DataProcessor:
 
     graph: nx.Graph
+    translation: dict
+    translation_noun: dict
     util: Util
 
     def __init__(self, _util: Util):
         self.graph = nx.Graph()
         self.util = _util
+        self.translation = self.build_translation()
+        self.translation_noun = self.build_translation_noun()
+
+    def build_translation(self):
+        translation_data: dict = {}
+
+        asset: dict = self.util.get_asset_by_path(self.util.get_asset_list('Translation')[0])
+        document: dict = asset.get('document')
+        assert type(document) is dict, document
+
+        for record in document.get('rawData'):
+            key: str = record.get('key')
+            value: str = record.get('value')
+            assert type(key) is str, key
+            assert type(value) is str, value
+
+            translation_data.update({key: value})
+
+        return translation_data
+
+    def build_translation_noun(self):
+        translation_noun_data: dict = {}
+
+        asset: dict = self.util.get_asset_by_path(self.util.get_asset_list('TranslationNoun')[0])
+        document: dict = asset.get('document')
+        assert type(document) is dict, document
+
+        for record in document.get('nouns'):
+            key: str = record.get('key')
+            assert type(key) is str, key
+            assert type(record) is dict, record
+
+            translation_noun_data.update({key: record})
+
+        return translation_noun_data
+
+    def get_translation(self, key: str):
+        translated_string: str = self.translation.get(key)
+        return translated_string
+
+    def get_translation_noun(self, key: str):
+        translated_noun: str = self.translation_noun.get(key)
+        return translated_noun
+
+    def get_translated_string(self, key: str):
+        translated_string: str = None
+
+        if self.get_translation(key) is not None:
+            translated_string = self.get_translation(key)
+        elif self.get_translation_noun(key) is not None:
+            translated_string = self.translation_noun(key)
+        else:
+            translated_string = key
+
+        return translated_string
 
     def process_dict(self, dictionary: dict, parent_path: int, key_stack: str = ''):
         dictionary_copy: dict = deepcopy(dictionary)
@@ -35,7 +93,9 @@ class DataProcessor:
             or key_stack.startswith('root.difficultySettings.area.areaExpansion.difficultySettings')\
             or key_stack.startswith('root.difficultySettings.area.areaExpansion.stageSettings')\
             or key_stack.startswith('root.stageSettings.stage.area.areaExpansion.difficultySettings')\
-            or key_stack.startswith('root.stageSettings.stage.area.areaExpansion.stageSettings'):
+            or key_stack.startswith('root.stageSettings.stage.area.areaExpansion.stageSettings')\
+            or key_stack.startswith('root.enemies.monster.operation.instructionSet.action.operationData.instructionSet')\
+            or key_stack.startswith('root.instructionSet.action.operationData.instructionSet'):
                 #dictionary_copy.update({key: {'Omitted': True}})
                 continue
 
@@ -57,7 +117,10 @@ class DataProcessor:
                     else:
                         continue
                 else:
-                    continue
+                    processed_dict: dict = self.process_dict(dictionary=item, parent_path=parent_path, key_stack=f'{key_stack}.{key}')
+                    assert type(processed_dict) is dict, type(processed_dict)
+
+                    dictionary_copy.update({key: processed_dict})
 
             elif type(item) is list:
                 exploded_list: list = []
@@ -75,7 +138,7 @@ class DataProcessor:
 
                                     exploded_list.append(recursive_document)
                                 except RecursionError as ex:
-                                    print(f'Recursion Error 2: {path}')
+                                    print(f'Recursion Error 2: {element_path}')
                                     raise ex
                             else:
                                 exploded_list.append(element)
@@ -93,6 +156,20 @@ class DataProcessor:
 
                 dictionary_copy.update({key: exploded_list})
 
+            elif type(item) is str:
+                translated_string: str = self.get_translated_string(item)
+
+                if item != translated_string and item is not None:
+                    dictionary_copy.update({key: translated_string})
+                elif item.lower().endswith('.asset'):
+                    asset_path_object = Path(item)
+                    asset_filename: str = asset_path_object.name.replace('.asset', '')
+
+                    asset_path = self.util.map_asset_file_to_path(asset_filename)
+                    recursive_document: dict = self.get_document(path=asset_path, parent_path=parent_path, key_stack=f'{key_stack}.{key}')
+
+                    dictionary_copy.update({key: recursive_document})
+
         return dictionary_copy
 
     def get_document(self, path: int, parent_path: int = None, key_stack: str = None):
@@ -102,7 +179,7 @@ class DataProcessor:
             return circular_reference_check
 
         asset: dict = self.util.get_asset_by_path(path)
-        assert type(asset) is dict, path
+        assert type(asset) is dict, f'Path: {path}, Parent Path: {parent_path}'
 
         document: dict = asset.get('document')
         assert type(document) is dict, document

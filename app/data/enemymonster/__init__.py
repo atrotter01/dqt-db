@@ -1,4 +1,3 @@
-from app.translation import Translation
 from app.util import Util
 from app.data import DataProcessor
 
@@ -6,12 +5,10 @@ class EnemyMonster:
 
     assets: list
     util: Util
-    translation: Translation
     data_processor: DataProcessor
 
-    def __init__(self, _util: Util, _translation: Translation, _data_processor: DataProcessor):
+    def __init__(self, _util: Util, _data_processor: DataProcessor):
         self.util = _util
-        self.translation = _translation
         self.data_processor = _data_processor
 
         self.assets = []
@@ -30,16 +27,13 @@ class EnemyMonster:
                 document: dict = self.data_processor.parse_asset(path=path)
                 assert type(document) is dict, document
 
-                translated_document: dict = self.translation.translate_dict(document)
-                assert type(translated_document) is dict, translated_document
+                display_name: str = document.get('profile').get('displayName')
 
-                display_name: str = translated_document.get('profile').get('displayName')
-
-                assert type(display_name) is str, translated_document
-                assert display_name != '', translated_document
+                assert type(display_name) is str, document
+                assert display_name != '', document
 
                 print(f'Saving {display_name}')
-                self.util.save_processed_document(path=path, processed_document=translated_document, display_name=display_name)
+                self.util.save_processed_document(path=path, processed_document=document, display_name=display_name)
             except TypeError as ex:
                 print(f'Failed to process with type error {path} {ex}')
                 continue

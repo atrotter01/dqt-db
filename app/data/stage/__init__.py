@@ -1,4 +1,3 @@
-from app.translation import Translation
 from app.util import Util
 from app.data import DataProcessor
 
@@ -6,12 +5,10 @@ class Stage:
 
     assets: list
     util: Util
-    translation: Translation
     data_processor: DataProcessor
 
-    def __init__(self, _util: Util, _translation: Translation, _data_processor: DataProcessor):
+    def __init__(self, _util: Util, _data_processor: DataProcessor):
         self.util = _util
-        self.translation = _translation
         self.data_processor = _data_processor
         self.assets = []
         self.assets.extend(self.util.get_asset_list('Stage'))
@@ -29,13 +26,10 @@ class Stage:
                 document: dict = self.data_processor.parse_asset(path=path)
                 assert type(document) is dict, document
 
-                translated_document: dict = self.translation.translate_dict(document)
-                assert type(translated_document) is dict, translated_document
-
-                achievement_target_name: str = translated_document.get('area').get('achievementTarget').get('displayName')
-                area_group_name: str = translated_document.get('area').get('areaGroup').get('displayName')
-                area_name: str = translated_document.get('area').get('displayName')
-                stage_name: str = translated_document.get('displayName')
+                achievement_target_name: str = document.get('area').get('achievementTarget').get('displayName')
+                area_group_name: str = document.get('area').get('areaGroup').get('displayName')
+                area_name: str = document.get('area').get('displayName')
+                stage_name: str = document.get('displayName')
 
                 display_name: str = None
 
@@ -48,11 +42,11 @@ class Stage:
                 else:
                     display_name = f'{area_name} - {stage_name}'
 
-                assert type(display_name) is str, translated_document
-                assert display_name != '', translated_document
+                assert type(display_name) is str, document
+                assert display_name != '', document
 
                 print(f'Saving {display_name}')
-                self.util.save_processed_document(path=path, processed_document=translated_document, display_name=display_name)
+                self.util.save_processed_document(path=path, processed_document=document, display_name=display_name)
             except TypeError as ex:
                 print(f'Failed to process with type error {path} {ex}')
                 continue

@@ -1,10 +1,11 @@
 import json
 import redis
 import zlib
+from pathlib import Path
 
 class Util:
     asset_list: list = []
-    translation: object
+    cache_keys: list = ['asset_path_map', 'asset_types', 'lookup_cache', 'metadata_cache']
     redis_client: redis
     lookup_cache: dict = {}
     possible_circular_references: list = []
@@ -77,9 +78,6 @@ class Util:
             if asset.get('processed') is False:
                 unprocessed_asset_counts.update({type: count+1})
 
-        deflated_asset = self.deflate_asset(unprocessed_asset_counts)
-        self.redis_client.set('unprocessed_asset_counts', deflated_asset)
-
         return unprocessed_asset_counts
 
     def cache_api_tables(self):
@@ -98,8 +96,6 @@ class Util:
                 filetype = asset.get('filetype')
                 display_name = asset.get('display_name')
                 processed = asset.get('processed')
-
-                print(display_name)
 
                 asset_cache.append(
                     {
@@ -126,7 +122,6 @@ class Util:
                 asset = self.get_asset_by_path(path)
                 type = asset.get('filetype')
                 display_name = asset.get('display_name')
-                print(display_name)
 
                 if type not in asset_types:
                     asset_types.append(type)
@@ -160,6 +155,9 @@ class Util:
         lookup_cache: dict = {}
 
         for path in self.asset_list:
+            if path in self.cache_keys:
+                continue
+
             asset: dict = self.get_asset_by_path(path)
             assert type(asset) is dict, asset
 
@@ -174,3 +172,31 @@ class Util:
         self.redis_client.set('lookup_cache', deflated_asset)
 
         return lookup_cache
+
+    def map_asset_file_to_path(self, asset_file):
+        asset_cache: dict = self.get_asset_by_path('metadata_cache')
+        
+        for asset in asset_cache:
+            filepath: str = asset.get('filepath')
+            path_object: Path = Path(filepath)
+            filename = path_object.stem
+
+            if filename == asset_file:
+                return asset.get('path')
+
+    def reset_processed_document(self, path: int):
+        asset: dict = self.get_asset_by_path(path)
+        asset.update({'processed_document': None, 'display_name': None, 'processed': False})
+        self.redis_client.set(path, self.deflate_asset(asset))
+
+    def reset_processed_data(self):
+        metadata_cache: dict = self.get_asset_by_path('metadata_cache')
+
+        for asset in metadata_cache:
+            if asset.get('processed') is True:
+                self.reset_processed_document(path=asset.get('path'))
+
+    def clear_caches(self):
+
+        for key in self.cache_keys:
+            self.redis_client.delete(key)
