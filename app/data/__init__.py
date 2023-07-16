@@ -178,19 +178,29 @@ class DataProcessor:
         if circular_reference_check is not None:
             return circular_reference_check
 
-        asset: dict = self.util.get_asset_by_path(path)
-        assert type(asset) is dict, f'Path: {path}, Parent Path: {parent_path}'
+        try:
+            asset: dict = self.util.get_asset_by_path(path)
 
-        document: dict = asset.get('document')
-        assert type(document) is dict, document
+            if asset is None:
+                return {
+                    'missingDataDueToExtractionError': True
+                }
 
-        if asset.get('processed_document') is not None:
-            return asset.get('processed_document')
+            assert type(asset) is dict, f'Path: {path}, Parent Path: {parent_path}'
 
-        processed_dict: dict = self.process_dict(dictionary=document, parent_path=path, key_stack=key_stack)
-        assert type(processed_dict) is dict, path
+            document: dict = asset.get('document')
+            assert type(document) is dict, f'Document Error: {document}'
 
-        return processed_dict
+            if asset.get('processed_document') is not None:
+                return asset.get('processed_document')
+
+            processed_dict: dict = self.process_dict(dictionary=document, parent_path=path, key_stack=key_stack)
+            assert type(processed_dict) is dict, f'Processed Dict Error: {path}'
+
+            return processed_dict
+        except TypeError as ex:
+            print(f'Failed to fetch a document for path {path} via {parent_path}')
+            raise ex
 
     def parse_asset(self, path: int):
         self.graph.clear()

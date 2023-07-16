@@ -35,7 +35,7 @@ class EnemyMonster:
                 print(f'Saving {display_name}')
                 self.util.save_processed_document(path=path, processed_document=document, display_name=display_name)
             except TypeError as ex:
-                print(f'Failed to process with type error {path} {ex}')
+                print(f'Failed to process with type error {path} {ex} {ex.__traceback__}')
                 continue
             except AssertionError as ex:
                 print(f'Failed to process with assertion error {path} {ex}')

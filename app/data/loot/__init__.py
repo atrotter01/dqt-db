@@ -12,6 +12,8 @@ class Loot:
         self.data_processor = _data_processor
 
         self.assets = []
+        self.assets.extend(self.util.get_asset_list('LootItemGroup'))
+        self.assets.extend(self.util.get_asset_list('LootitemGroup'))
         self.assets.extend(self.util.get_asset_list('LootLottery'))
 
     def process_assets(self):

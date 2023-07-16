@@ -36,7 +36,7 @@ class Skill:
 
                 display_name: str = document.get('displayName')
 
-                if display_name == '':
+                if display_name == '' or display_name is None:
                     display_name = document.get('m_Name')
 
                 assert type(display_name) is str, document
@@ -48,5 +48,5 @@ class Skill:
                 print(f'Failed to process with type error {path} {ex}')
                 continue
             except AssertionError as ex:
-                print(f'Failed to process with assertion error {path} {ex}')
+                print(f'Failed to process with assertion error {display_name} {path} {ex}')
                 continue

@@ -31,7 +31,12 @@ class Util:
             return self.lookup_cache.get(asset_type)
 
     def get_asset_by_path(self, path: int):
-        return self.inflate_asset(self.redis_client.get(path))
+        asset = self.redis_client.get(path)
+        
+        if asset is None:
+            return None
+        
+        return self.inflate_asset(asset)
 
     def inflate_asset(self, asset):
         return json.loads(zlib.decompress(asset).decode())
@@ -189,12 +194,18 @@ class Util:
         asset.update({'processed_document': None, 'display_name': None, 'processed': False})
         self.redis_client.set(path, self.deflate_asset(asset))
 
-    def reset_processed_data(self):
+    def reset_processed_data(self, asset_type_to_reset = None):
         metadata_cache: dict = self.get_asset_by_path('metadata_cache')
 
         for asset in metadata_cache:
+            path: int = asset.get('path')
+
             if asset.get('processed') is True:
-                self.reset_processed_document(path=asset.get('path'))
+                if asset_type_to_reset is not None and asset_type_to_reset != asset.get('filetype'):
+                    continue
+                
+                print(f'Resetting {path}')
+                self.reset_processed_document(path=path)
 
     def clear_caches(self):
 
