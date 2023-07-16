@@ -3,6 +3,8 @@ async-timeout==4.0.2
 attrs==23.1.0
 blinker==1.6.2
 Brotli==1.0.9
+certifi==2023.5.7
+charset-normalizer==3.2.0
 click==8.1.4
 Flask==2.3.2
 Flask-AutoIndex==0.6.6
@@ -10,6 +12,7 @@ flask-restx==1.1.0
 Flask-Silk==0.2
 future==0.18.3
 gunicorn==20.1.0
+idna==3.4
 itsdangerous==2.1.2
 Jinja2==3.1.2
 jsonschema==4.18.2
@@ -23,9 +26,11 @@ python-dateutil==2.8.2
 pytz==2023.3
 redis==4.6.0
 referencing==0.29.1
+requests==2.31.0
 rpds-py==0.8.10
 six==1.16.0
 typing_extensions==4.7.1
 tzdata==2023.3
+urllib3==2.0.3
 Werkzeug==2.3.6
 xmltodict==0.13.0

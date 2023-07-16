@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>DQT Database</title>
+    </head>
+    <body>
+        <table>
+            <thead>
+                  <tr>
+                    <td>Asset Name</td>
+                  </tr>
+            </thead>
+            <tbody>
+                {% for asset in assets %}
+                  <tr>
+                    <td>
+                        <a href='/asset/{{ asset['id'] }}'>{{ asset['display_name'] }}</a>
+                    </td>
+                  </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>
