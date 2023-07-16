@@ -1,6 +1,6 @@
 import json
 import redis
-import zlib
+import brotli
 from pathlib import Path
 
 class Util:
@@ -39,10 +39,10 @@ class Util:
         return self.inflate_asset(asset)
 
     def inflate_asset(self, asset):
-        return json.loads(zlib.decompress(asset).decode())
+        return json.loads(brotli.decompress(asset).decode())
 
     def deflate_asset(self, asset):
-        return zlib.compress(json.dumps(asset).encode())
+        return brotli.compress(json.dumps(asset).encode())
 
     def save_processed_document(self, path: int, processed_document: dict, display_name: str):
         asset: dict = self.get_asset_by_path(path)

@@ -2,6 +2,7 @@ aniso8601==9.0.1
 async-timeout==4.0.2
 attrs==23.1.0
 blinker==1.6.2
+Brotli==1.0.9
 click==8.1.4
 Flask==2.3.2
 flask-restx==1.1.0
