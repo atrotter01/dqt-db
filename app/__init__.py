@@ -39,12 +39,17 @@ def index():
 @app.route('/asset_list/<asset_type>')
 def asset_list(asset_type):
     api_response = requests.get(url=f'http://localhost:5000/api/asset_list/{asset_type}')
-    assets = {}
+    assets = []
 
     if api_response.status_code == 200:
         assets = api_response.json()
 
-    sorted_assets = sorted(assets, key=lambda d: d['display_name'])
+    sorted_assets = list = []
+    
+    try:
+        sorted_assets = sorted(assets, key=lambda d: d['display_name'])
+    except TypeError:
+        sorted_assets = assets
 
     return render_template('asset_list.html', assets=sorted_assets)
 
