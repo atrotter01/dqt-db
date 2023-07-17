@@ -49,11 +49,6 @@ class Util:
         asset.update({'processed_document': processed_document, 'display_name': display_name, 'processed': True})
         self.redis_client.set(path, self.deflate_asset(asset))
 
-    def save_document(self, path: int, document: dict):
-        asset: dict = self.get_asset_by_path(path)
-        asset.update({'document': document, 'updated': True})
-        self.redis_client.set(path, self.deflate_asset(asset))
-
     def save_asset(self, path: int, filepath: str, container: str, filetype: str, document: dict):
         asset: dict = {
             'path': path,
@@ -86,15 +81,25 @@ class Util:
         return unprocessed_asset_counts
 
     def cache_api_tables(self):
-        self.cache_asset_lookup_data()
         self.cache_metadata()
 
     def cache_metadata(self):
-        asset_list: list = self.get_asset_list()
-        asset_cache: list = []
+        asset_list: list = self.asset_list
+        metadata_cache: list = []
+        asset_types: list = []
+        asset_path_map: dict = {}
+        lookup_cache: dict = {}
+        total_assets: int = len(self.asset_list)
+        processed_assets: int = 0
 
-        if self.redis_client.get('metadata_cache') is None:
+        if self.redis_client.get('metadata_cache') is None\
+        or self.redis_client.get('asset_types') is None\
+        or self.redis_client.get('asset_path_map') is None\
+        or self.redis_client.get('lookup_cache') is None:
             for path in asset_list:
+                if path in self.cache_keys:
+                    continue
+
                 asset = self.get_asset_by_path(path)
                 filepath = asset.get('filepath')
                 container = asset.get('container')
@@ -102,7 +107,26 @@ class Util:
                 display_name = asset.get('display_name')
                 processed = asset.get('processed')
 
-                asset_cache.append(
+                if filetype not in asset_types:
+                    asset_types.append(filetype)
+
+                if asset_path_map.get(filetype) is None:
+                    asset_path_map.update(
+                        {
+                            filetype: {
+                                'assets': []
+                            }
+                        }
+                    )
+
+                asset_path_map.get(filetype).get('assets').append(
+                    {
+                        'display_name': display_name,
+                        'path': path
+                    }
+                )
+
+                metadata_cache.append(
                     {
                         'path': path,
                         'filepath': filepath,
@@ -113,70 +137,35 @@ class Util:
                     }
                 )
 
-            deflated_asset = self.deflate_asset(asset_cache)
-            self.redis_client.set('metadata_cache', deflated_asset)
+                if lookup_cache.get(filetype) is None:
+                    lookup_cache.update({filetype: []})
 
-    def cache_asset_lookup_data(self):
-        asset_list: list = self.get_asset_list()
-        asset_types: list = []
-        asset_path_map: dict = {}
+                lookup_cache[filetype].append(path)
 
-        if self.redis_client.get('asset_types') is None\
-        or self.redis_client.get('asset_path_map') is None:
-            for path in asset_list:
-                asset = self.get_asset_by_path(path)
-                type = asset.get('filetype')
-                display_name = asset.get('display_name')
+                processed_assets = processed_assets + 1
+                print(f'Added {path} to metadata caches. ({processed_assets} of {total_assets})')
 
-                if type not in asset_types:
-                    asset_types.append(type)
+            print('Saving metadata cache.')
+            deflated_metadata_cache = self.deflate_asset(metadata_cache)
+            self.redis_client.set('metadata_cache', deflated_metadata_cache)
 
-                if asset_path_map.get(type) is None:
-                    asset_path_map.update(
-                        {
-                            type: {
-                                'assets': []
-                            }
-                        }
-                    )
-
-                asset_path_map.get(type).get('assets').append(
-                    {
-                        'display_name': display_name,
-                        'path': path
-                    }
-                )
-
+            print('Saving asset type cache.')
             deflated_asset_types = self.deflate_asset(asset_types)
             self.redis_client.set('asset_types', deflated_asset_types)
 
+            print('Saving asset path map cache.')
             deflated_asset_path_map = self.deflate_asset(asset_path_map)
             self.redis_client.set('asset_path_map', deflated_asset_path_map)
 
+            print('Saving lookup cache.')
+            deflated_lookup_cache = self.deflate_asset(lookup_cache)
+            self.redis_client.set('lookup_cache', deflated_lookup_cache)
+
     def cache_lookup_table(self):
-        if self.redis_client.get('lookup_cache'):
-            return self.get_asset_by_path('lookup_cache')
+        if self.redis_client.get('lookup_cache') is None:
+            self.cache_metadata()
 
-        lookup_cache: dict = {}
-
-        for path in self.asset_list:
-            if path in self.cache_keys:
-                continue
-
-            asset: dict = self.get_asset_by_path(path)
-            assert type(asset) is dict, asset
-
-            filetype: str = asset.get('filetype')
-
-            if lookup_cache.get(filetype) is None:
-                lookup_cache.update({filetype: []})
-
-            lookup_cache[filetype].append(path)
-
-        deflated_asset = self.deflate_asset(lookup_cache)
-        self.redis_client.set('lookup_cache', deflated_asset)
-
-        return lookup_cache
+        return self.get_asset_by_path('lookup_cache')
 
     def map_asset_file_to_path(self, asset_file):
         asset_cache: dict = self.get_asset_by_path('metadata_cache')
@@ -196,16 +185,19 @@ class Util:
 
     def reset_processed_data(self, asset_type_to_reset = None):
         metadata_cache: dict = self.get_asset_by_path('metadata_cache')
+        total_assets: int = len(metadata_cache)
+        processed_assets: int = 0
 
         for asset in metadata_cache:
             path: int = asset.get('path')
+            processed_assets = processed_assets + 1
 
             if asset.get('processed') is True:
                 if asset_type_to_reset is not None and asset_type_to_reset != asset.get('filetype'):
                     continue
                 
-                print(f'Resetting {path}')
                 self.reset_processed_document(path=path)
+                print(f'Reset {path} ({processed_assets} of {total_assets})')
 
     def clear_caches(self):
 

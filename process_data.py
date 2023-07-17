@@ -24,6 +24,7 @@ stage = Stage(_util=util, _data_processor=data_processor)
 
 generic_asset.process_assets()
 
+'''
 allymonster.process_assets()
 area.process_assets()
 enemy_monster.process_assets()
@@ -31,3 +32,4 @@ item.process_assets()
 loot.process_assets()
 skill.process_assets()
 stage.process_assets()
+'''

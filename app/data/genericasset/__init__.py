@@ -14,10 +14,12 @@ class GenericAsset:
 
         self.assets = []
         self.asset_types_to_process = []
+
+        '''
         self.asset_types_to_process.append('MonsterProfile')
         self.asset_types_to_process.append('Monsterprofile')
-
         self.asset_types_to_process.append('AbnormityResistance')
+        self.asset_types_to_process.append('Achievement')
         self.asset_types_to_process.append('AchievementTarget')
         self.asset_types_to_process.append('ActiveSkillRange')
         self.asset_types_to_process.append('ActiveSkillEnhance')
@@ -78,6 +80,7 @@ class GenericAsset:
         self.asset_types_to_process.append('ReactionPassiveSkillParameterCondition')
         self.asset_types_to_process.append('ReactionPassiveTree')
         self.asset_types_to_process.append('ScoutStamp')
+        self.asset_types_to_process.append('SCE')
         self.asset_types_to_process.append('SkillEnhancement')
         self.asset_types_to_process.append('SkillPanel')
         self.asset_types_to_process.append('SkillPanelBackground')
@@ -101,18 +104,23 @@ class GenericAsset:
         self.asset_types_to_process.append('WorldMapAreaSetting')
         self.asset_types_to_process.append('WorldMapStageSetting')
 
-        #self.find_small_asset_groups()
+        self.find_small_asset_groups()
+        '''
 
     def find_small_asset_groups(self):
         unprocessed_assets: dict = self.util.get_unprocessed_assets()
 
         for asset_type in unprocessed_assets.keys():
-            if asset_type.endswith('MasterDataStoreSource'):
+            if asset_type.endswith('MasterDataStoreSource')\
+            or asset_type.startswith('AreaExtraReward')\
+            or asset_type.startswith('GuildArenaGhost')\
+            or asset_type.startswith('LargeBattleAreaSetting')\
+            or asset_type.startswith('Track Group'):
                 continue
 
             unprocessed_count: int = unprocessed_assets.get(asset_type)
 
-            if unprocessed_count > 0 and unprocessed_count < 20:
+            if unprocessed_count > 0 and unprocessed_count < 600:
                 self.asset_types_to_process.append(asset_type)
 
     def process_assets(self):

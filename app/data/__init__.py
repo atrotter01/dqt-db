@@ -71,13 +71,12 @@ class DataProcessor:
 
     def process_dict(self, dictionary: dict, parent_path: int, key_stack: str = ''):
         dictionary_copy: dict = deepcopy(dictionary)
-        #print(key_stack)
+        print(key_stack)
 
         for key in dictionary.keys():
             item = dictionary.get(key)
 
-            if key == 'timelineOverrideMasterData'\
-            or key == 'timeline'\
+            if key == 'timeline'\
             or key == 'affectionTimeline'\
             or key == 'curseUnbindingTimeline'\
             or key == 'givingTimeline'\
@@ -86,17 +85,22 @@ class DataProcessor:
             or key == 'removeTimeline'\
             or key == 'shortTimeline'\
             or key == 'prerequisiteStages'\
-            or key_stack.startswith('root.area.areaExpansion.difficultySettings.area')\
-            or key_stack.startswith('root.area.areaExpansion.stageSettings.stage.area')\
-            or key_stack.startswith('root.areaExpansion.difficultySettings.area.areaExpansion')\
-            or key_stack.startswith('root.areaExpansion.stageSettings.stage.area.areaExpansion')\
-            or key_stack.startswith('root.difficultySettings.area.areaExpansion.difficultySettings')\
-            or key_stack.startswith('root.difficultySettings.area.areaExpansion.stageSettings')\
-            or key_stack.startswith('root.stageSettings.stage.area.areaExpansion.difficultySettings')\
-            or key_stack.startswith('root.stageSettings.stage.area.areaExpansion.stageSettings')\
-            or key_stack.startswith('root.enemies.monster.operation.instructionSet.action.operationData.instructionSet')\
-            or key_stack.startswith('root.instructionSet.action.operationData.instructionSet'):
+            or key == 'ghostNpcList'\
+            or 'MasterData' in key\
+            or 'root.m_Parent' in key_stack\
+            or 'MasterData' in key_stack\
+            or ('areaExpansion.difficultySettings' in key_stack and key == 'area')\
+            or ('areaExpansion.stageSettings' in key_stack and key == 'area')\
+            or ('root.difficultySettings' in key_stack and key == 'area')\
+            or ('root.stageSettings' in key_stack and key == 'area')\
+            or ('instructionSet.action.operationData' in key_stack and key == 'instructionSet')\
+            or ('m_Children' in key_stack and key == 'm_Parent')\
+            or ('m_Children.m_Clips' in key_stack and key == 'm_ParentTrack')\
+            or ('root.m_Clips' in key_stack and key == 'm_ParentTrack')\
+            or True == False:
+
                 #dictionary_copy.update({key: {'Omitted': True}})
+                print(f'Skipping {key} in stack {key_stack}')
                 continue
 
             if type(item) is dict:
