@@ -6,7 +6,7 @@ from pprint import pprint
 
 util = Util()
 #asset_list: list = util.get_asset_list('Stage')
-asset: dict = util.get_asset_by_path('627441510579399650', deflate_data=True)
+asset: dict = util.get_asset_by_path(util.get_asset_list('TranslationGbl')[0], deflate_data=True)
 #print(asset.keys())
 print(asset.get('document'))
 #print(asset.get('processed_document'))

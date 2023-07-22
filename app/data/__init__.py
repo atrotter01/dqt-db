@@ -6,20 +6,24 @@ from pathlib import Path
 class DataProcessor:
 
     graph: nx.Graph
-    translation: dict
-    translation_noun: dict
+    translation_jp: dict
+    translation_noun_jp: dict
+    translation_gbl: dict
+    translation_noun_gbl: dict
     util: Util
 
     def __init__(self, _util: Util):
         self.graph = nx.Graph()
         self.util = _util
-        self.translation = self.build_translation()
-        self.translation_noun = self.build_translation_noun()
+        self.translation_jp = self.build_translation('Translation')
+        self.translation_noun_jp = self.build_translation_noun('TranslationNoun')
+        self.translation_gbl = self.build_translation('TranslationGbl')
+        self.translation_noun_gbl = self.build_translation_noun('TranslationNounGbl')
 
-    def build_translation(self):
+    def build_translation(self, key):
         translation_data: dict = {}
 
-        asset: dict = self.util.get_asset_by_path(path=self.util.get_asset_list('Translation')[0], deflate_data=False)
+        asset: dict = self.util.get_asset_by_path(path=self.util.get_asset_list(key)[0], deflate_data=False)
         document: dict = asset.get('document')
         assert type(document) is dict, document
 
@@ -33,10 +37,10 @@ class DataProcessor:
 
         return translation_data
 
-    def build_translation_noun(self):
+    def build_translation_noun(self, key):
         translation_noun_data: dict = {}
 
-        asset: dict = self.util.get_asset_by_path(self.util.get_asset_list('TranslationNoun')[0], deflate_data=False)
+        asset: dict = self.util.get_asset_by_path(self.util.get_asset_list(key)[0], deflate_data=False)
         document: dict = asset.get('document')
         assert type(document) is dict, document
 
@@ -50,12 +54,16 @@ class DataProcessor:
         return translation_noun_data
 
     def get_translation(self, key: str):
-        translated_string: str = self.translation.get(key)
-        return translated_string
+        if self.translation_gbl.get(key) is not None:
+            return self.translation_gbl.get(key)
+
+        return self.translation_jp.get(key)
 
     def get_translation_noun(self, key: str):
-        translated_noun: str = self.translation_noun.get(key)
-        return translated_noun
+        if self.translation_noun_gbl.get(key) is not None:
+            return self.translation_noun_gbl.get(key)
+
+        return self.translation_noun_jp.get(key)
 
     def get_translated_string(self, key: str):
         translated_string: str = None
@@ -63,7 +71,7 @@ class DataProcessor:
         if self.get_translation(key) is not None:
             translated_string = self.get_translation(key)
         elif self.get_translation_noun(key) is not None:
-            translated_string = self.translation_noun(key)
+            translated_string = self.get_translation_noun(key)
         else:
             translated_string = key
 
