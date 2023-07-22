@@ -19,7 +19,7 @@ class DataProcessor:
     def build_translation(self):
         translation_data: dict = {}
 
-        asset: dict = self.util.get_asset_by_path(self.util.get_asset_list('Translation')[0])
+        asset: dict = self.util.get_asset_by_path(path=self.util.get_asset_list('Translation')[0], deflate_data=False)
         document: dict = asset.get('document')
         assert type(document) is dict, document
 
@@ -36,7 +36,7 @@ class DataProcessor:
     def build_translation_noun(self):
         translation_noun_data: dict = {}
 
-        asset: dict = self.util.get_asset_by_path(self.util.get_asset_list('TranslationNoun')[0])
+        asset: dict = self.util.get_asset_by_path(self.util.get_asset_list('TranslationNoun')[0], deflate_data=False)
         document: dict = asset.get('document')
         assert type(document) is dict, document
 
@@ -71,7 +71,7 @@ class DataProcessor:
 
     def process_dict(self, dictionary: dict, parent_path: int, key_stack: str = ''):
         dictionary_copy: dict = deepcopy(dictionary)
-        print(key_stack)
+        #print(key_stack)
 
         for key in dictionary.keys():
             item = dictionary.get(key)
@@ -96,11 +96,10 @@ class DataProcessor:
             or ('instructionSet.action.operationData' in key_stack and key == 'instructionSet')\
             or ('m_Children' in key_stack and key == 'm_Parent')\
             or ('m_Children.m_Clips' in key_stack and key == 'm_ParentTrack')\
-            or ('root.m_Clips' in key_stack and key == 'm_ParentTrack')\
-            or True == False:
+            or ('root.m_Clips' in key_stack and key == 'm_ParentTrack'):
 
                 #dictionary_copy.update({key: {'Omitted': True}})
-                print(f'Skipping {key} in stack {key_stack}')
+                #print(f'Skipping {key} in stack {key_stack}')
                 continue
 
             if type(item) is dict:
@@ -183,7 +182,7 @@ class DataProcessor:
             return circular_reference_check
 
         try:
-            asset: dict = self.util.get_asset_by_path(path)
+            asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
 
             if asset is None:
                 return {

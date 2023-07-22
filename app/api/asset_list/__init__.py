@@ -17,7 +17,7 @@ class Asset(Resource):
     def get(self, asset_type):
         '''Fetch a list of assets of a given type'''
         asset_list = []
-        asset_map: dict = util.get_asset_by_path('asset_path_map').get(asset_type).get('assets')
+        asset_map: dict = util.get_asset_by_path(path='asset_path_map', deflate_data=False).get(asset_type).get('assets')
 
         for asset in asset_map:
             asset_list.append({

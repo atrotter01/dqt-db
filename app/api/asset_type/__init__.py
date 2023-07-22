@@ -13,7 +13,7 @@ util = Util()
 class AssetType(Resource):
     @api.marshal_with(asset_model)
     def get(self):
-        asset_type_list = util.get_asset_by_path('asset_types')
+        asset_type_list = util.get_asset_by_path(path='asset_types', deflate_data=False)
 
         return {
             'asset_type': sorted(asset_type_list)

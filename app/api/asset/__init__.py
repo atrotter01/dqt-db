@@ -17,7 +17,7 @@ class Asset(Resource):
     def get(self, id):
         '''Fetch a given Asset'''
         asset_list = []
-        asset = util.get_asset_by_path(id)
+        asset = util.get_asset_by_path(path=id, deflate_data=True)
 
         display_name: str = asset.get('display_name')
         document: dict = asset.get('processed_document')

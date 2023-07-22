@@ -18,7 +18,7 @@ class Item:
         for path in self.assets:
             
             try:
-                asset = self.util.get_asset_by_path(path)
+                asset = self.util.get_asset_by_path(path=path, deflate_data=True)
 
                 if asset.get('processed_document') is not None:
                     continue

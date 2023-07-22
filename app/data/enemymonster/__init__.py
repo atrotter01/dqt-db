@@ -17,7 +17,7 @@ class EnemyMonster:
     def process_assets(self):
         for path in self.assets:
             try:
-                asset = self.util.get_asset_by_path(path)
+                asset = self.util.get_asset_by_path(path=path, deflate_data=True)
 
                 if asset.get('processed_document') is not None:
                     continue
@@ -35,7 +35,7 @@ class EnemyMonster:
                 print(f'Saving {display_name}')
                 self.util.save_processed_document(path=path, processed_document=document, display_name=display_name)
             except TypeError as ex:
-                print(f'Failed to process with type error {path} {ex} {ex.__traceback__}')
+                print(f'Failed to process with type error {path} {ex}')
                 continue
             except AssertionError as ex:
                 print(f'Failed to process with assertion error {path} {ex}')

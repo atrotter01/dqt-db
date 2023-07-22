@@ -15,7 +15,6 @@ class GenericAsset:
         self.assets = []
         self.asset_types_to_process = []
 
-        '''
         self.asset_types_to_process.append('MonsterProfile')
         self.asset_types_to_process.append('Monsterprofile')
         self.asset_types_to_process.append('AbnormityResistance')
@@ -104,10 +103,9 @@ class GenericAsset:
         self.asset_types_to_process.append('WorldMapAreaSetting')
         self.asset_types_to_process.append('WorldMapStageSetting')
 
-        self.find_small_asset_groups()
-        '''
+        self.find_small_asset_groups(asset_limit=5)
 
-    def find_small_asset_groups(self):
+    def find_small_asset_groups(self, asset_limit):
         unprocessed_assets: dict = self.util.get_unprocessed_assets()
 
         for asset_type in unprocessed_assets.keys():
@@ -120,7 +118,7 @@ class GenericAsset:
 
             unprocessed_count: int = unprocessed_assets.get(asset_type)
 
-            if unprocessed_count > 0 and unprocessed_count < 600:
+            if unprocessed_count > 0 and unprocessed_count < asset_limit:
                 self.asset_types_to_process.append(asset_type)
 
     def process_assets(self):
@@ -128,7 +126,7 @@ class GenericAsset:
             print(f'Processing asset type {asset_type_to_process}')
 
             for path in self.util.get_asset_list(asset_type=asset_type_to_process):
-                asset: dict = self.util.get_asset_by_path(path)
+                asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
 
                 if asset.get('processed') is True:
                     continue
