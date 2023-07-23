@@ -23,7 +23,7 @@ api.add_namespace(asset_type_api)
 
 app.register_blueprint(blueprint=blueprint)
 
-files_index = AutoIndex(app, browse_root='static/images', add_url_rules=False)
+files_index = AutoIndex(app, browse_root='static/dqt_images', add_url_rules=False)
 
 @app.route('/')
 def index():
