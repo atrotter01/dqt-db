@@ -6,9 +6,10 @@ from pprint import pprint
 
 util = Util()
 #asset_list: list = util.get_asset_list('Stage')
-asset: dict = util.get_asset_by_path('5891531898241754695', deflate_data=True)
+asset: list = util.get_asset_by_path('asset_types', deflate_data=False)
+print(sorted(asset))
 #print(asset.keys())
-print(asset.get('document'))
+#print(asset.get('document'))
 #print(asset.get('processed_document'))
 #total_assets: int = len(asset_list)
 #asset_count: int = 0

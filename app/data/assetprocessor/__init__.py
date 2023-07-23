@@ -126,18 +126,40 @@ class AssetProcessor:
 
         self.asset_types_to_process.append('Area')
         self.asset_types_to_process.append('AreaGroup')
-        self.asset_types_to_process.append('AreaExtraReward')
-        '''
 
-        #self.find_small_asset_groups(asset_limit=100)
+        self.asset_types_to_process.append('ButtonScaler')
+        self.asset_types_to_process.append('ButtonSoundPlayer')
+        self.asset_types_to_process.append('ContentSizeFitter')
+        self.asset_types_to_process.append('CriAtomSource')
+        self.asset_types_to_process.append('EnableRendererTrigger')
+        self.asset_types_to_process.append('GradationMap')
+        self.asset_types_to_process.append('Grid')
+        self.asset_types_to_process.append('HorizontalLayoutGroup')
+        self.asset_types_to_process.append('Image')
+        self.asset_types_to_process.append('InvisibleGraphic')
+        self.asset_types_to_process.append('LayoutElement')
+        self.asset_types_to_process.append('MultiTransitionTargetButton')
+        self.asset_types_to_process.append('ObservablePointerDownTrigger')
+        self.asset_types_to_process.append('ObservablePointerUpTrigger')
+        self.asset_types_to_process.append('RawImage')
+        self.asset_types_to_process.append('SimpleAnimation')
+        self.asset_types_to_process.append('TextMeshProUGUI')
+        self.asset_types_to_process.append('UITermsInjector')
+
+        self.asset_types_to_process.append('LargeBattleAreaSetting')
+        self.asset_types_to_process.append('Track Group')
+
         self.asset_types_to_process.append('Stage')
+        '''
 
     def find_small_asset_groups(self, asset_limit):
         unprocessed_assets: dict = self.util.get_unprocessed_assets()
 
         for asset_type in unprocessed_assets.keys():
             if asset_type.endswith('MasterDataStoreSource')\
+            or asset_type.startswith('ArenaGhost')\
             or asset_type.startswith('GuildArenaGhost')\
+            or asset_type.startswith('AreaExtraReward')\
             or asset_type.startswith('LargeBattleAreaSetting')\
             or asset_type.startswith('Track Group'):
                 continue

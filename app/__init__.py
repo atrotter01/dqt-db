@@ -1,6 +1,6 @@
 import json
 import requests
-from flask import Flask, Blueprint, render_template
+from flask import Flask, Blueprint, render_template, Response
 from flask_restx import Api
 from flask_autoindex import AutoIndex
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -60,7 +60,7 @@ def asset(path_id):
     if api_response.status_code == 200:
         asset = api_response.json()[0]
 
-    return render_template('asset.html', asset=json.dumps(asset, indent=2))
+    return Response(json.dumps(asset, indent=2), mimetype='text/json')
 
 @app.route('/imagebrowser')
 @app.route('/imagebrowser/')

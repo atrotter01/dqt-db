@@ -5,7 +5,7 @@ from pathlib import Path
 
 class Util:
     asset_list: list = []
-    cache_keys: list = ['asset_path_map', 'asset_types', 'lookup_cache', 'metadata_cache']
+    cache_keys: list = ['asset_path_map', 'asset_types', 'lookup_cache', 'metadata_cache', 'unprocessed_asset_counts']
     redis_client: redis
     lookup_cache: dict = {}
     possible_circular_references: list = []
@@ -118,6 +118,8 @@ class Util:
                 display_name = asset.get('display_name')
                 processed = asset.get('processed')
 
+                assert filetype is not None, f'{path}: {asset}'
+
                 if filetype not in asset_types:
                     asset_types.append(filetype)
 
@@ -216,4 +218,6 @@ class Util:
                 continue
 
             self.redis_client.delete(f'{path}_processed_data')
+            asset.update({'processed': False})
+            self.redis_client.set(path, json.dumps(asset))
             print(f'Reset {path} ({processed_assets} of {total_assets})')
