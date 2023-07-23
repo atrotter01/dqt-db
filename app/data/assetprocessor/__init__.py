@@ -1,7 +1,7 @@
 from app.util import Util
 from app.data import DataProcessor
 
-class GenericAsset:
+class AssetProcessor:
 
     assets: list
     asset_types_to_process: list
@@ -14,6 +14,9 @@ class GenericAsset:
 
         self.assets = []
         self.asset_types_to_process = []
+
+        '''
+        self.find_small_asset_groups(asset_limit=20)
 
         self.asset_types_to_process.append('MonsterProfile')
         self.asset_types_to_process.append('Monsterprofile')
@@ -30,13 +33,11 @@ class GenericAsset:
         self.asset_types_to_process.append('ASO')
         self.asset_types_to_process.append('AST')
         self.asset_types_to_process.append('Board')
-        self.asset_types_to_process.append('Campaign')
         self.asset_types_to_process.append('el')
         self.asset_types_to_process.append('eq')
         self.asset_types_to_process.append('Equipment')
         self.asset_types_to_process.append('EquipmentPassive')
         self.asset_types_to_process.append('EquipmentProfile')
-        self.asset_types_to_process.append('EventPortal')
         self.asset_types_to_process.append('ExchangeShop')
         self.asset_types_to_process.append('ExchangeShopGoods')
         self.asset_types_to_process.append('ExchangeShopSub')
@@ -102,18 +103,47 @@ class GenericAsset:
         self.asset_types_to_process.append('TreasureChest')
         self.asset_types_to_process.append('WorldMapAreaSetting')
         self.asset_types_to_process.append('WorldMapStageSetting')
+        self.asset_types_to_process.append('Campaign')
+        self.asset_types_to_process.append('EventPortal')
 
-        self.find_small_asset_groups(asset_limit=5)
+        self.asset_types_to_process.append('ActiveSkill')
+        self.asset_types_to_process.append('EnemySkill')
+        self.asset_types_to_process.append('GuestSkill')
+        self.asset_types_to_process.append('NotUsePassiveSkill')
+        self.asset_types_to_process.append('NotUseSkill')
+        self.asset_types_to_process.append('PassiveSkill')
+        self.asset_types_to_process.append('ReactionPassiveSkill')
+        self.asset_types_to_process.append('ReactionSkill')
+
+        self.asset_types_to_process.append('ConsumableItem')
+
+        self.asset_types_to_process.append('LootItemGroup')
+        self.asset_types_to_process.append('LootitemGroup')
+        self.asset_types_to_process.append('LootLottery')
+
+        self.asset_types_to_process.append('AllyMonster')
+        self.asset_types_to_process.append('EnemyMonster')
+
+        self.asset_types_to_process.append('Area')
+        self.asset_types_to_process.append('AreaGroup')
+        self.asset_types_to_process.append('AreaExtraReward')
+        '''
+
+        #self.find_small_asset_groups(asset_limit=100)
+        self.asset_types_to_process.append('Stage')
 
     def find_small_asset_groups(self, asset_limit):
         unprocessed_assets: dict = self.util.get_unprocessed_assets()
 
         for asset_type in unprocessed_assets.keys():
             if asset_type.endswith('MasterDataStoreSource')\
-            or asset_type.startswith('AreaExtraReward')\
             or asset_type.startswith('GuildArenaGhost')\
             or asset_type.startswith('LargeBattleAreaSetting')\
             or asset_type.startswith('Track Group'):
+                continue
+
+            if asset_type.endswith('View'):
+                self.asset_types_to_process.append(asset_type)
                 continue
 
             unprocessed_count: int = unprocessed_assets.get(asset_type)
@@ -142,25 +172,9 @@ class GenericAsset:
                     else:
                         document = self.data_processor.parse_asset(path=path)
 
-                    assert type(document) is dict, document
+                    assert isinstance(document, dict), document
 
-                    display_name: str = None
-                    
-                    if asset_type_to_process == 'LoginBonus':
-                        display_name = document.get('loginBonusName')
-                    elif asset_type_to_process == 'PCPP':
-                        display_name = document.get('itemName')
-                    else:
-                        display_name = document.get('displayName')
-
-                        if display_name is None or display_name == '':
-                            display_name = document.get('m_Name')
-
-                        if display_name is None or display_name == '':
-                            display_name = f'{asset_type_to_process}: {path}'
-
-                    assert type(display_name) is str, document
-                    assert display_name != '', document
+                    display_name: str = self.get_asset_name(document=document, asset_type=asset_type_to_process)
 
                     print(f'Saving {display_name}')
                     self.util.save_processed_document(path=path, processed_document=document, display_name=display_name)
@@ -169,4 +183,56 @@ class GenericAsset:
                     continue
                 except AssertionError as ex:
                     print(f'Failed to process with assertion error {path} {ex}')
+                    raise ex
                     continue
+
+    def get_asset_name(self, document, asset_type):
+        if asset_type == 'LoginBonus':
+            return document.get('loginBonusName')
+
+        if asset_type == 'PCPP':
+            return document.get('itemName')
+
+        if asset_type == 'EnemyMonster':
+            return document.get('profile').get('displayName')
+
+        if asset_type == 'AllyMonster':
+            return document.get('profile').get('displayName')
+
+        if asset_type == 'Stage':
+            achievement_target_name: str = document.get('area').get('achievementTarget').get('displayName')
+            area_group_name: str = document.get('area').get('areaGroup').get('displayName')
+            area_name: str = document.get('area').get('displayName')
+            stage_name: str = document.get('displayName')
+
+            display_name: str = None
+
+            if achievement_target_name is not None and area_group_name is not None:
+                display_name = f'{achievement_target_name} - {area_group_name} - {area_name} - {stage_name}'
+            elif area_group_name is not None:
+                display_name = f'{area_group_name} - {area_name} - {stage_name}'
+            elif achievement_target_name is not None:
+                display_name = f'{achievement_target_name} - {area_name} - {stage_name}'
+            else:
+                display_name = f'{area_name} - {stage_name}'
+
+            return display_name
+
+        display_name: str = document.get('displayName')
+
+        if isinstance(display_name, dict):
+            display_path: int = display_name.get('m_PathID')
+            
+            if display_path is not None:
+                display_asset = self.util.get_asset_by_path(display_path)
+                display_name = display_asset.get('display_name')
+            else:
+                display_name = None
+
+        if display_name is None or display_name == '':
+            display_name = document.get('m_Name')
+
+        if display_name == '':
+            display_name = None
+
+        return display_name

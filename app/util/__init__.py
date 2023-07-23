@@ -16,15 +16,7 @@ class Util:
         self.lookup_cache = self.cache_lookup_table()
 
     def build_asset_list(self):
-        valid_keys: list = []
-
-        for key in self.redis_client.keys():
-            decoded_key = key.decode()
-
-            if decoded_key.endswith('_data'):
-                continue
-
-            valid_keys.append(decoded_key)
+        valid_keys: list = [key.decode() for key in self.redis_client.keys() if not key.decode().endswith('_data')]
 
         return valid_keys
 
@@ -42,14 +34,19 @@ class Util:
 
     def get_asset_by_path(self, path: int, deflate_data: bool = True):
         asset: dict = None
-        
-        if path in self.cache_keys:
-            asset = self.inflate_asset(self.redis_client.get(path))
-        else:
-            asset = json.loads(self.redis_client.get(path))
 
-        if asset is None:
+        #if path in self.cache_keys:
+        #    asset = self.inflate_asset(self.redis_client.get(path))
+        #else:
+        redis_data = self.redis_client.get(path)
+
+        if redis_data is None:
             return None
+
+        asset = json.loads(redis_data)
+
+        if path not in self.cache_keys:
+            assert isinstance(asset, dict), type(asset)
 
         if deflate_data == True and self.redis_client.get(f'{path}_data') is not None:
             asset.update({'document': self.inflate_asset(self.redis_client.get(f'{path}_data'))})
@@ -67,8 +64,12 @@ class Util:
 
     def save_processed_document(self, path: int, processed_document: dict, display_name: str):
         asset: dict = self.get_asset_by_path(path=path, deflate_data=False)
-        asset.update({'display_name': display_name, 'processed': True})
-        self.redis_client.set(path, asset)
+        asset.update({'processed': True})
+    
+        if display_name is not None:
+            asset.update({'display_name': display_name})
+
+        self.redis_client.set(path, json.dumps(asset))
         self.redis_client.set(f'{path}_processed_data', self.deflate_asset(processed_document))
 
     def save_asset(self, path: int, filepath: str, container: str, filetype: str, document: dict, display_name: str):
@@ -89,29 +90,9 @@ class Util:
             return False
 
     def get_unprocessed_assets(self):
-        unprocessed_asset_counts: dict = {}
-        #asset_list: list = self.get_asset_by_path(path='metadata_cache', deflate_data=False)
-        asset_list: list = self.get_asset_list()
+        return self.get_asset_by_path('unprocessed_asset_counts', deflate_data=False)
 
-        for path in asset_list:
-        #for asset in asset_list:
-            asset = self.get_asset_by_path(path)
-            filetype = asset.get('filetype')
-
-            if unprocessed_asset_counts.get(filetype) is None:
-                unprocessed_asset_counts.update({filetype: 0})
-
-            count = unprocessed_asset_counts.get(filetype)
-
-            if asset.get('processed') is False:
-                unprocessed_asset_counts.update({filetype: count+1})
-
-        return unprocessed_asset_counts
-
-    def cache_api_tables(self):
-        self.cache_metadata()
-
-    def cache_metadata(self):
+    def cache_metadata(self, force_rebuild: bool = False):
         asset_list: list = self.asset_list
         metadata_cache: list = []
         asset_types: list = []
@@ -119,11 +100,13 @@ class Util:
         lookup_cache: dict = {}
         total_assets: int = len(self.asset_list)
         processed_assets: int = 0
+        unprocessed_asset_counts: dict = {}
 
         if self.redis_client.get('metadata_cache') is None\
         or self.redis_client.get('asset_types') is None\
         or self.redis_client.get('asset_path_map') is None\
-        or self.redis_client.get('lookup_cache') is None:
+        or self.redis_client.get('lookup_cache') is None\
+        or force_rebuild is True:
             for path in asset_list:
                 if path in self.cache_keys:
                     continue
@@ -170,24 +153,38 @@ class Util:
 
                 lookup_cache[filetype].append(path)
 
+                if unprocessed_asset_counts.get(filetype) is None:
+                    unprocessed_asset_counts.update({filetype: 0})
+
+                if processed is False:
+                    count = unprocessed_asset_counts.get(filetype)
+                    unprocessed_asset_counts.update({filetype: count+1})
+
                 processed_assets = processed_assets + 1
                 print(f'Added {path} to metadata caches. ({processed_assets} of {total_assets})')
 
             print('Saving metadata cache.')
-            deflated_metadata_cache = self.deflate_asset(metadata_cache)
-            self.redis_client.set('metadata_cache', deflated_metadata_cache)
+            #deflated_metadata_cache = self.deflate_asset(metadata_cache)
+            #self.redis_client.set('metadata_cache', deflated_metadata_cache)
+            self.redis_client.set('metadata_cache', json.dumps(metadata_cache))
 
             print('Saving asset type cache.')
-            deflated_asset_types = self.deflate_asset(asset_types)
-            self.redis_client.set('asset_types', deflated_asset_types)
+            #deflated_asset_types = self.deflate_asset(asset_types)
+            #self.redis_client.set('asset_types', deflated_asset_types)
+            self.redis_client.set('asset_types', json.dumps(asset_types))
 
             print('Saving asset path map cache.')
-            deflated_asset_path_map = self.deflate_asset(asset_path_map)
-            self.redis_client.set('asset_path_map', deflated_asset_path_map)
+            #deflated_asset_path_map = self.deflate_asset(asset_path_map)
+            #self.redis_client.set('asset_path_map', deflated_asset_path_map)
+            self.redis_client.set('asset_path_map', json.dumps(asset_path_map))
 
             print('Saving lookup cache.')
-            deflated_lookup_cache = self.deflate_asset(lookup_cache)
-            self.redis_client.set('lookup_cache', deflated_lookup_cache)
+            #deflated_lookup_cache = self.deflate_asset(lookup_cache)
+            #self.redis_client.set('lookup_cache', deflated_lookup_cache)
+            self.redis_client.set('lookup_cache', json.dumps(lookup_cache))
+            
+            print('Saving unprocessed counts.')
+            self.redis_client.set('unprocessed_asset_counts', json.dumps(unprocessed_asset_counts))
 
     def cache_lookup_table(self):
         if self.redis_client.get('lookup_cache') is None:
@@ -199,11 +196,7 @@ class Util:
         asset_cache: dict = self.get_asset_by_path(path='metadata_cache', deflate_data=False)
         
         for asset in asset_cache:
-            filepath: str = asset.get('filepath')
-            path_object: Path = Path(filepath)
-            filename = path_object.stem
-
-            if filename == asset_file:
+            if asset.get('display_name') == asset_file:
                 return asset.get('path')
 
     def reset_processed_data(self, asset_type_to_reset = None):
@@ -224,8 +217,3 @@ class Util:
 
             self.redis_client.delete(f'{path}_processed_data')
             print(f'Reset {path} ({processed_assets} of {total_assets})')
-
-    def clear_caches(self):
-
-        for key in self.cache_keys:
-            self.redis_client.delete(key)

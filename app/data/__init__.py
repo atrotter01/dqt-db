@@ -23,15 +23,15 @@ class DataProcessor:
     def build_translation(self, key):
         translation_data: dict = {}
 
-        asset: dict = self.util.get_asset_by_path(path=self.util.get_asset_list(key)[0], deflate_data=False)
+        asset: dict = self.util.get_asset_by_path(path=self.util.get_asset_list(key)[0], deflate_data=True)
         document: dict = asset.get('document')
-        assert type(document) is dict, document
+        assert isinstance(document, dict), document
 
         for record in document.get('rawData'):
             key: str = record.get('key')
             value: str = record.get('value')
-            assert type(key) is str, key
-            assert type(value) is str, value
+            assert isinstance(key, str), key
+            assert isinstance(value, str), value
 
             translation_data.update({key: value})
 
@@ -40,14 +40,14 @@ class DataProcessor:
     def build_translation_noun(self, key):
         translation_noun_data: dict = {}
 
-        asset: dict = self.util.get_asset_by_path(self.util.get_asset_list(key)[0], deflate_data=False)
+        asset: dict = self.util.get_asset_by_path(self.util.get_asset_list(key)[0], deflate_data=True)
         document: dict = asset.get('document')
-        assert type(document) is dict, document
+        assert isinstance(document, dict), document
 
         for record in document.get('nouns'):
             key: str = record.get('key')
-            assert type(key) is str, key
-            assert type(record) is dict, record
+            assert isinstance(key, str), key
+            assert isinstance(record, dict), record
 
             translation_noun_data.update({key: record})
 
@@ -104,7 +104,8 @@ class DataProcessor:
             or ('instructionSet.action.operationData' in key_stack and key == 'instructionSet')\
             or ('m_Children' in key_stack and key == 'm_Parent')\
             or ('m_Children.m_Clips' in key_stack and key == 'm_ParentTrack')\
-            or ('root.m_Clips' in key_stack and key == 'm_ParentTrack'):
+            or ('root.m_Clips' in key_stack and key == 'm_ParentTrack')\
+            or ('root.friendlyGestures' in key_stack and key == 'friendlyGestures'):
 
                 #dictionary_copy.update({key: {'Omitted': True}})
                 #print(f'Skipping {key} in stack {key_stack}')
@@ -113,12 +114,12 @@ class DataProcessor:
             if type(item) is dict:
                 if 'm_PathID' in item.keys():
                     path: int = item.get('m_PathID')
-                    assert type(path) is int, path
+                    assert isinstance(path, int), path
 
                     if path != 0 and key != 'm_Script':
                         try:
                             recursive_document: dict = self.get_document(path=path, parent_path=parent_path, key_stack=f'{key_stack}.{key}')
-                            assert type(recursive_document) is dict, recursive_document
+                            assert isinstance(recursive_document, dict), recursive_document
 
                             dictionary_copy.update({key: recursive_document})
                         except RecursionError as ex:
@@ -129,7 +130,7 @@ class DataProcessor:
                         continue
                 else:
                     processed_dict: dict = self.process_dict(dictionary=item, parent_path=parent_path, key_stack=f'{key_stack}.{key}')
-                    assert type(processed_dict) is dict, type(processed_dict)
+                    assert isinstance(processed_dict, dict), type(processed_dict)
 
                     dictionary_copy.update({key: processed_dict})
 
@@ -140,12 +141,12 @@ class DataProcessor:
                     if type(element) is dict:
                         if 'm_PathID' in element.keys():
                             element_path: int = element.get('m_PathID')
-                            assert type(element_path) is int, element_path
+                            assert isinstance(element_path, int), element_path
 
                             if element_path != 0:
                                 try:
                                     recursive_document: dict = self.get_document(path=element_path, parent_path=parent_path, key_stack=f'{key_stack}.{key}')
-                                    assert type(recursive_document) is dict, type(recursive_document)
+                                    assert isinstance(recursive_document, dict), type(recursive_document)
 
                                     exploded_list.append(recursive_document)
                                 except RecursionError as ex:
@@ -156,7 +157,7 @@ class DataProcessor:
                         else:
                             try:
                                 processed_dict: dict = self.process_dict(dictionary=element, parent_path=parent_path, key_stack=f'{key_stack}.{key}')
-                                assert type(processed_dict) is dict, type(processed_dict)
+                                assert isinstance(processed_dict, dict), type(processed_dict)
 
                                 exploded_list.append(processed_dict)
                             except RecursionError as ex:
@@ -194,23 +195,23 @@ class DataProcessor:
 
             if asset is None:
                 return {
-                    'missingDataDueToExtractionError': True
+                    'MissingData': True
                 }
 
-            assert type(asset) is dict, f'Path: {path}, Parent Path: {parent_path}'
+            assert isinstance(asset, dict), f'Path: {path}, Parent Path: {parent_path}'
 
             document: dict = asset.get('document')
-            assert type(document) is dict, f'Document Error: {document}'
+            assert isinstance(document, dict), f'Document Error: {document}'
 
             if asset.get('processed_document') is not None:
                 return asset.get('processed_document')
 
             processed_dict: dict = self.process_dict(dictionary=document, parent_path=path, key_stack=key_stack)
-            assert type(processed_dict) is dict, f'Processed Dict Error: {path}'
+            assert isinstance(processed_dict, dict), f'Processed Dict Error: {path}'
 
             return processed_dict
         except TypeError as ex:
-            print(f'Failed to fetch a document for path {path} via {parent_path}')
+            print(f'Failed to fetch a document for path {path} via {parent_path} {ex}')
             raise ex
 
     def parse_asset(self, path: int):
@@ -218,11 +219,12 @@ class DataProcessor:
         self.possible_circular_references = []
 
         document: dict = self.get_document(path=path, key_stack='root')
-        assert type(document) is dict, document
+        assert isinstance(document, dict), document
 
         return document
 
     def check_circular_references(self, path: int, parent_path: int):
+
         if parent_path is not None:
             connected_edge_sets = list(nx.connected_components(self.graph))
 
