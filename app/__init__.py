@@ -25,7 +25,7 @@ app.register_blueprint(blueprint=blueprint)
 
 files_index = AutoIndex(app, browse_root='static/dqt_images', add_url_rules=False)
 
-@app.route('/')
+@app.route('/asset_type')
 def index():
     api_response = requests.get(url='http://localhost:5000/api/asset_type')
     asset_types = {}
@@ -33,7 +33,7 @@ def index():
     if api_response.status_code == 200:
         asset_types = api_response.json().get('asset_type')
 
-    return render_template('index.html', asset_types=asset_types)
+    return render_template('asset_type.html', asset_types=asset_types)
 
 @app.route('/asset_list/<asset_type>')
 def asset_list(asset_type):
