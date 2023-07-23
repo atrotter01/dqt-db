@@ -221,3 +221,28 @@ class Util:
             asset.update({'processed': False})
             self.redis_client.set(path, json.dumps(asset))
             print(f'Reset {path} ({processed_assets} of {total_assets})')
+
+    def get_image_path(self, image_path, lang='en'):
+        path: Path = Path(image_path)
+        filepath_en: list = ['static', 'dqt_images']
+        filepath_ja: list = ['static', 'dqt_images']
+
+        for part in path.parts:
+            if part in ['en', 'ja']:
+                if 'lawson' in path.name.lower():
+                    filepath_en.append('ja')
+                else:
+                    filepath_en.append('en')
+                filepath_ja.append('ja')
+            elif part == f'{path.stem}{path.suffix}':
+                filepath_en.append(part)
+                filepath_ja.append(part)
+            else:
+                filepath_en.append(part.lower())
+                filepath_ja.append(part.lower())
+
+        if lang == 'en':
+            if Path(*filepath_en).absolute().exists():
+                return Path(*filepath_en)
+        
+        return Path(*filepath_ja)

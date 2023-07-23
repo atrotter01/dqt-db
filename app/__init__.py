@@ -7,6 +7,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from app.api.asset import api as asset_api
 from app.api.asset_list import api as asset_list_api
 from app.api.asset_type import api as asset_type_api
+from app.util import Util
 
 app = Flask(__name__, static_folder='../static', template_folder='../templates')
 app.wsgi_app = ProxyFix(app.wsgi_app)
@@ -24,10 +25,21 @@ api.add_namespace(asset_type_api)
 app.register_blueprint(blueprint=blueprint)
 
 files_index = AutoIndex(app, browse_root='static/dqt_images', add_url_rules=False)
+util: Util = Util()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    asset_list: list = util.get_asset_list('EventPortal')
+    events: dict = []
+
+    for path in asset_list:
+        asset = util.get_asset_by_path(path, deflate_data=True)
+        banner_path: str = asset.get('document').get('bannerPath')
+        image_path: str = util.get_image_path(banner_path, lang='en')
+        display_name: str = asset.get('display_name')
+        events.append({'display_name': display_name, 'banner_path': image_path})
+
+    return render_template('index.html', events=sorted(events, key=lambda d: d['display_name']))
 
 @app.route('/asset_type')
 def asset_type():

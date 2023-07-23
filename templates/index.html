@@ -11,5 +11,19 @@
             <a href="/asset_type">Raw Game Data Browser</a><br />
             <a href="/imagebrowser">Game Image Browser</a><br />
         </div>
+        <table>
+            <tbody>
+                  <tr>
+                    {% for event in events %}
+                    <td>
+                        <img src="{{ event.banner_path }}" />
+                    </td>
+                {% if loop.index % 3 == 0 %}
+                </tr>
+                <tr>
+                {% endif %}
+                    {% endfor %}
+            </tbody>
+        </table>
     </body>
 </html>
