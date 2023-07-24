@@ -45,7 +45,7 @@ class Util:
 
         asset = json.loads(redis_data)
 
-        if path not in self.cache_keys:
+        if path not in self.cache_keys and not str(path).endswith('_cache'):
             assert isinstance(asset, dict), type(asset)
 
         if deflate_data == True and self.redis_client.get(f'{path}_data') is not None:
@@ -243,6 +243,6 @@ class Util:
 
         if lang == 'en':
             if Path(*filepath_en).absolute().exists():
-                return Path(*filepath_en)
+                return str(Path(*filepath_en))
         
-        return Path(*filepath_ja)
+        return str(Path(*filepath_ja))
