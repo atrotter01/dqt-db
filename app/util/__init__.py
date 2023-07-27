@@ -1,6 +1,8 @@
 import json
+import re
 import redis
 import brotli
+import math
 from pathlib import Path
 
 class Util:
@@ -223,6 +225,9 @@ class Util:
             print(f'Reset {path} ({processed_assets} of {total_assets})')
 
     def get_image_path(self, image_path, lang='en'):
+        if image_path == '' or image_path is None:
+            return None
+
         path: Path = Path(image_path)
         filepath_en: list = ['static', 'dqt_images']
         filepath_ja: list = ['static', 'dqt_images']
@@ -246,3 +251,29 @@ class Util:
                 return str(Path(*filepath_en))
         
         return str(Path(*filepath_ja))
+
+    def clean_text_string(self, str_to_clean: str, unit: str):
+        str_to_clean = str_to_clean.replace('<unit>', unit)
+        str_to_clean = str_to_clean.replace('<addSign>', '+')
+
+        while '<IfSing_' in str_to_clean:
+            start_pos: int = str_to_clean.find('<IfSing_')+8
+            end_pos: int = str_to_clean.find('(', start_pos)
+            data: str = str_to_clean[start_pos:end_pos]
+            num = int(re.sub('[a-z]|[A-Z]', '', data))
+            choices: list = str_to_clean[end_pos+1:str_to_clean.find(')', end_pos)].split(',')
+
+            if num == 1:
+                str_to_clean = str_to_clean.replace(f'<IfSing_{data}({choices[0]},{choices[1]})>', choices[0])
+            else:
+                str_to_clean = str_to_clean.replace(f'<IfSing_{data}({choices[0]},{choices[1]})>', choices[1])
+
+        return str_to_clean
+
+    def replace_string_variable(self, str_to_clean: str, key: str, value: str):
+        str_to_clean = str_to_clean.replace(f'<{key}>', value)
+
+        return str_to_clean
+    
+    def float_to_str(self, value):
+        return str(math.trunc(value)).replace('-', '')

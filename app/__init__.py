@@ -7,6 +7,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from app.api.asset import api as asset_api
 from app.api.asset_list import api as asset_list_api
 from app.api.asset_type import api as asset_type_api
+from app.api.unit import api as unit_api
 from app.util import Util
 
 app = Flask(__name__, static_folder='../static', template_folder='../templates')
@@ -16,11 +17,13 @@ blueprint: Blueprint = Blueprint('api', __name__, url_prefix='/api')
 api = Api(
     blueprint,
     version='1.0',
-    title='DQT API'
+    title='DQT API',
+    doc=False
 )
 api.add_namespace(asset_api)
 api.add_namespace(asset_list_api)
 api.add_namespace(asset_type_api)
+api.add_namespace(unit_api)
 
 app.register_blueprint(blueprint=blueprint)
 
@@ -46,6 +49,16 @@ def index():
         util.redis_client.set('event_portal_cache', json.dumps(events))
 
     return render_template('index.html', events=sorted(events, key=lambda d: d['display_name']))
+
+@app.route('/unit')
+def unit():
+    api_response = requests.get(url='http://localhost:5000/api/unit/list')
+    units = {}
+
+    if api_response.status_code == 200:
+        units = api_response.json()
+
+    return Response(json.dumps(units, indent=2), mimetype='text/json')
 
 @app.route('/asset_type')
 def asset_type():
