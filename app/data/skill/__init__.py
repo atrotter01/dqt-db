@@ -27,14 +27,18 @@ class Skill:
         skill_ignore_death_endurance = skill.get('ignoreDeathEndurance')
         skill_surehit = skill.get('absolutelyHit')
         skill_ignore_spell_invalid = skill.get('ignoreSpellInvalid')
-        skill_wisdom_cap = skill.get('thresholdOfIntelligence')
-        skill_attack_cap = skill.get('thresholdOfAttack')
+        skill_threshold_of_intelligence = skill.get('thresholdOfIntelligence')
+        skill_threshold_of_attack = skill.get('thresholdOfAttack')
         skill_mp_cost = skill.get('requiredMp')
         skill_is_swap_skill = skill.get('isSwapSkill')
         skill_is_special = skill.get('isSpecial')
         skill_turns_needed = self.util.float_to_str(skill.get('specialCoolTurnCount'))
         skill_times_available = self.util.float_to_str(skill.get('specialAvailableTimes'))
         skill_mp_ratio = self.util.float_to_str(skill.get('remainingMpRatio'))
+        skill_num_attacks = self.util.float_to_str(skill.get('numberOfAttacks'))
+        skill_is_random_target = self.util.float_to_str(skill.get('isRandomTarget'))
+        skill_min_damage = self.util.float_to_str(skill.get('minDamage'))
+        skill_max_damage = self.util.float_to_str(skill.get('maxDamage'))
 
         skill_description = self.util.replace_string_variable(skill_description, 'damagePhysics', skill_potency)
         skill_description = self.util.replace_string_variable(skill_description, 'specialCoolTurn', skill_turns_needed)
@@ -63,14 +67,18 @@ class Skill:
             'skill_ignore_death_endurance': skill_ignore_death_endurance,
             'skill_surehit': skill_surehit,
             'skill_ignore_spell_invalid': skill_ignore_spell_invalid,
-            'skill_wisdom_cap': skill_wisdom_cap,
-            'skill_attack_cap': skill_attack_cap,
+            'skill_threshold_of_intelligence': skill_threshold_of_intelligence,
+            'skill_threshold_of_attack': skill_threshold_of_attack,
             'skill_mp_cost': skill_mp_cost,
             'skill_is_swap_skill': skill_is_swap_skill,
             'skill_potency': skill_potency,
             'skill_is_special': skill_is_special,
             'skill_times_available': skill_times_available,
-            'skill_turns_needed': skill_turns_needed
+            'skill_turns_needed': skill_turns_needed,
+            'skill_num_attacks': skill_num_attacks,
+            'skill_is_random_target': skill_is_random_target,
+            'skill_min_damage': skill_min_damage,
+            'skill_max_damage': skill_max_damage
         }
 
         return skill
