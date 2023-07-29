@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>DQT Database</title>
+    </head>
+    <body>
+        <table>
+            <tbody>
+                {% for unit in units %}
+                <tr>
+                    <td>
+                        <a href="/unit/{{ unit.id }}"><img src="{{ unit.unit_icon }}" /></a>
+                    </td>
+                    <td>
+                        {{ unit.family }}
+                    </td>
+                    <td>
+                        {{ unit.display_name }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>

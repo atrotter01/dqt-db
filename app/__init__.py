@@ -52,13 +52,23 @@ def index():
 
 @app.route('/unit')
 def unit():
-    api_response = requests.get(url='http://localhost:5000/api/unit/list')
-    units = {}
+    api_response = requests.get(url='http://localhost:5000/api/unit/')
+    units = []
 
     if api_response.status_code == 200:
         units = api_response.json()
 
-    return Response(json.dumps(units, indent=2), mimetype='text/json')
+    return render_template('unit_list.html', units=units)
+
+@app.route('/unit/<unit>')
+def unit_detail(unit):
+    api_response = requests.get(url=f'http://localhost:5000/api/unit/{unit}')
+    unit = []
+
+    if api_response.status_code == 200:
+        unit = api_response.json()
+
+    return Response(json.dumps(unit, indent=2), mimetype='text/json')
 
 @app.route('/asset_type')
 def asset_type():

@@ -1,5 +1,6 @@
 import json
 import re
+from typing import Union
 import redis
 import brotli
 import math
@@ -7,7 +8,7 @@ from pathlib import Path
 
 class Util:
     asset_list: list = []
-    cache_keys: list = ['asset_path_map', 'asset_types', 'lookup_cache', 'metadata_cache', 'unprocessed_asset_counts']
+    cache_keys: list = ['asset_path_map', 'asset_types', 'lookup_cache', 'metadata_cache', 'unprocessed_asset_counts', 'asset_list']
     redis_client: redis
     lookup_cache: dict = {}
     possible_circular_references: list = []
@@ -18,7 +19,20 @@ class Util:
         self.lookup_cache = self.cache_lookup_table()
 
     def build_asset_list(self):
-        valid_keys: list = [key.decode() for key in self.redis_client.keys() if not key.decode().endswith('_data')]
+        cached_asset_list = self.get_redis_asset('asset_list')
+        
+        if cached_asset_list is not None:
+            return cached_asset_list
+
+        valid_keys: list = []
+        
+        for key in self.redis_client.keys():
+            key = key.decode()
+
+            if not key.endswith('_data'):
+                valid_keys.append(key)
+
+        self.save_redis_asset(cache_key='asset_list', data=valid_keys)
 
         return valid_keys
 
@@ -276,4 +290,18 @@ class Util:
         return str_to_clean
     
     def float_to_str(self, value):
-        return str(math.trunc(value)).replace('-', '')
+        if math.trunc(value) == value:
+            return str(math.trunc(value)).replace('-', '')
+        else:
+            return str(value).replace('-', '')
+
+    def save_redis_asset(self, cache_key: str, data: Union[dict,list]):
+        return self.redis_client.set(cache_key, self.deflate_asset(data))
+
+    def get_redis_asset(self, cache_key: str):
+        cached_data = self.redis_client.get(cache_key)
+
+        if cached_data is None:
+            return None
+
+        return self.inflate_asset(cached_data)
