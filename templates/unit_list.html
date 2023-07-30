@@ -1,25 +1,58 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>DQT Database</title>
-    </head>
-    <body>
-        <table>
+{% include 'header.html' %}
+        <script>
+            $(document).ready( function () {
+                $('#dt').DataTable();
+            } );
+        </script>
+        <table id="dt">
+            <thead>
+                <tr>
+                    <td>Icon</td>
+                    <td>Name</td>
+                    <td>Family</td>
+                    <td>Role</td>
+                    <td>Rank</td>
+                    <td>Farm</td>
+                    <td>Gacha</td>
+                    <td>LVL</td>
+                    <td>HP</td>
+                    <td>MP</td>
+                    <td>ATK</td>
+                    <td>DEF</td>
+                    <td>AGI</td>
+                    <td>INT</td>
+                    <td>MOV</td>
+                    <td>WEI</td>
+                    <td>#</td>
+                </tr>
+            </thead>
             <tbody>
                 {% for unit in units %}
                 <tr>
                     <td>
-                        <a href="/unit/{{ unit.id }}"><img src="{{ unit.unit_icon }}" /></a>
+                        <a href="/unit/{{ unit.id }}">
+                            <img src="/{{ unit.unit_icon }}" style="width: 64px; height: 80px;" />
+                        </a>
                     </td>
-                    <td>
-                        {{ unit.family }}
-                    </td>
-                    <td>
-                        {{ unit.display_name }}
-                    </td>
+                    <td>{{ unit.display_name }}</td>
+                    <td><span style="display: none">{{ unit.family }}</span><img src="/{{ unit.family_icon }}" alt="{{ unit.family }}" style="width: 64px; height: 64px;" /></td>
+                    <td><span style="display: none">{{ unit.role }}</span><img src="/{{ unit.role_icon }}" alt="{{ unit.role }}" style="width: 64px; height: 64px;" /></td>
+                    <td><span style="display: none">{{ unit.unit_rank }}</span><img src="/{{ unit.unit_rank_icon }}" alt="{{ unit.unit_rank }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ unit.is_quest_reward }}</td>
+                    <td>{{ unit.is_gacha_unit }}</td>
+                    <td>{{ unit.stats_by_level[-1:][0].level }}</td>
+                    <td>{{ unit.stats_by_level[-1:][0].hp }}</td>
+                    <td>{{ unit.stats_by_level[-1:][0].mp }}</td>
+                    <td>{{ unit.stats_by_level[-1:][0].attack }}</td>
+                    <td>{{ unit.stats_by_level[-1:][0].defense }}</td>
+                    <td>{{ unit.stats_by_level[-1:][0].agility }}</td>
+                    <td>{{ unit.stats_by_level[-1:][0].intelligence }}</td>
+                    <td>{{ unit.move }}</td>
+                    <td>{{ unit.weight }}</td>
+                    <td>{{ unit.almanac_number }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-    </body>
-</html>
+
+{% include 'footer.html' %}

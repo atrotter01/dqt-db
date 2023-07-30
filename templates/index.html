@@ -1,30 +1,11 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>DQT Database</title>
-    </head>
-    <body>
-        <div>
-            <img src='/static/images/dracky_spin.gif' /><br />
-            Coming Soon. <br />
-            Peter is too lazy to learn Python, so I have to do all of the coding. -Artea<br /><br />
-            <a href="/unit">Unit</a><br />
-            <a href="/asset_type">Raw Game Data Browser</a><br />
-            <a href="/imagebrowser">Game Image Browser</a><br />
-        </div>
-        <table>
-            <tbody>
-                  <tr>
-                    {% for event in events %}
-                    <td>
-                        <img src="{{ event.banner_path }}" />
-                    </td>
-                {% if loop.index % 3 == 0 %}
-                </tr>
-                <tr>
-                {% endif %}
-                    {% endfor %}
-            </tbody>
-        </table>
-    </body>
-</html>
+{% include 'header.html' %}
+
+<p>
+    <img src='/static/images/dracky_spin.gif' />
+</p>
+<p>
+Coming Soon.<br />
+Peter is too lazy to learn Python, so I have to do all of the coding. -Artea
+</p>
+
+{% include 'footer.html' %}

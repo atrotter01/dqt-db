@@ -68,7 +68,7 @@ def unit_detail(unit):
     if api_response.status_code == 200:
         unit = api_response.json()
 
-    return Response(json.dumps(unit, indent=2), mimetype='text/json')
+    return render_template('unit_detail.html', unit=unit[0])
 
 @app.route('/asset_type')
 def asset_type():

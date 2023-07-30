@@ -63,4 +63,4 @@ class Asset(Resource):
             unit = self.unit_parser.get_data(path=path)
             self.units.append(unit)
 
-        return sorted(self.units, key=lambda d: d['display_name'])
+        return sorted(self.units, key=lambda d: d['almanac_number'])
