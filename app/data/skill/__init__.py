@@ -39,6 +39,48 @@ class Skill:
         skill_is_random_target = self.util.float_to_str(skill.get('isRandomTarget'))
         skill_min_damage = self.util.float_to_str(skill.get('minDamage'))
         skill_max_damage = self.util.float_to_str(skill.get('maxDamage'))
+        skill_action_type = self.util.float_to_str(skill.get('activeSkillActionType'))
+        skill_type = self.util.float_to_str(skill.get('activeSkillType'))
+        skill_target_type = self.util.float_to_str(skill.get('activeSkillTargetType'))
+        skill_damage_calculation_type = self.util.float_to_str(skill.get('damageCalculationType'))
+        skill_enhancements: list = []
+
+        for enhancement in skill.get('enhancements'):
+            enhancement_level = enhancement.get('enhancementLevel')
+            enhancement_max_accumulation = enhancement.get('maxAccumulation')
+            enhancement_required_mp_reduction = enhancement.get('requiredMpReduction')
+            enhancement_damage_increase_multiplier = enhancement.get('damageIncrease').get('multiplier')
+            enhancement_damage_increase_static_addition = enhancement.get('damageIncrease').get('addition')
+            enhancement_healing_increase_multiplier = enhancement.get('healingIncrease').get('multiplier')
+            enhancement_healing_increase_static_addition = enhancement.get('healingIncrease').get('addition')
+            enhancement_mp_damage_increase_multiplier = enhancement.get('mpDamageIncrease').get('multiplier')
+            enhancement_mp_damage_increase_static_addition = enhancement.get('mpDamageIncrease').get('addition')
+            enhancement_mp_healing_increase_multiplier = enhancement.get('mpHealingIncrease').get('multiplier')
+            enhancement_mp_healing_increase_static_addition = enhancement.get('mpHealingIncrease').get('addition')
+            enhancement_accuracy_increase = enhancement.get('accuracyIncrease')
+            enhancement_abnormity_accuracy_increase = enhancement.get('abnormityAccuracyIncrease')
+            enhancement_status_change_accuracy_increase = enhancement.get('statusChangeAccuracyIncrease')
+            enhancement_abnormity_duration_increase = enhancement.get('abnormityDurationIncrease')
+            enhancement_status_change_duration_increase = enhancement.get('statusChangeDurationIncrease')
+
+            skill_enhancements.append({
+                'enhancement_level': enhancement_level,
+                'enhancement_max_accumulation': enhancement_max_accumulation,
+                'enhancement_required_mp_reduction': enhancement_required_mp_reduction,
+                'enhancement_damage_increase_multiplier': enhancement_damage_increase_multiplier,
+                'enhancement_damage_increase_static_addition': enhancement_damage_increase_static_addition,
+                'enhancement_healing_increase_multiplier': enhancement_healing_increase_multiplier,
+                'enhancement_healing_increase_static_addition': enhancement_healing_increase_static_addition,
+                'enhancement_mp_damage_increase_multiplier': enhancement_mp_damage_increase_multiplier,
+                'enhancement_mp_damage_increase_static_addition': enhancement_mp_damage_increase_static_addition,
+                'enhancement_mp_healing_increase_multiplier': enhancement_mp_healing_increase_multiplier,
+                'enhancement_mp_healing_increase_static_addition': enhancement_mp_healing_increase_static_addition,
+                'enhancement_accuracy_increase': enhancement_accuracy_increase,
+                'enhancement_abnormity_accuracy_increase': enhancement_abnormity_accuracy_increase,
+                'enhancement_status_change_accuracy_increase': enhancement_status_change_accuracy_increase,
+                'enhancement_abnormity_duration_increase': enhancement_abnormity_duration_increase,
+                'enhancement_status_change_duration_increase': enhancement_status_change_duration_increase
+            })
 
         skill_description = self.util.replace_string_variable(skill_description, 'damagePhysics', skill_potency)
         skill_description = self.util.replace_string_variable(skill_description, 'specialCoolTurn', skill_turns_needed)
@@ -78,7 +120,12 @@ class Skill:
             'skill_num_attacks': skill_num_attacks,
             'skill_is_random_target': skill_is_random_target,
             'skill_min_damage': skill_min_damage,
-            'skill_max_damage': skill_max_damage
+            'skill_max_damage': skill_max_damage,
+            'skill_action_type': skill_action_type,
+            'skill_type': skill_type, 
+            'skill_target_type': skill_target_type, 
+            'skill_damage_calculation_type': skill_damage_calculation_type,
+            'skill_enhancements': skill_enhancements
         }
 
         return skill
