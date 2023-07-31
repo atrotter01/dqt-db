@@ -149,7 +149,7 @@ class Skill:
         skill_description = skill_text.get('skill_description')
 
         passive_skill: dict = {
-            'id': path,
+            'id': skill_id,
             'level_learned': level_learned,
             'skill_name': skill_name,
             'skill_description': skill_description,
@@ -231,6 +231,7 @@ class Skill:
         awakening_passive_skill.update({'awakening_level': awakening_level})
 
         return awakening_passive_skill
+
     def parse_awakening_reaction_passive_skill(self, skill: dict, awakening_level: str):
         if awakening_level > 0:
             awakening_level = self.util.float_to_str(awakening_level / 10)
@@ -431,6 +432,32 @@ class Skill:
 
         asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
         skill: dict = self.parse_active_skill(skill=asset.get('processed_document'), level_learned=None, path=path)
+        self.util.save_redis_asset(cache_key=cache_key, data=skill)
+        
+        return skill
+
+    def get_passive_skill(self, path):
+        cache_key: str = f'{path}_parsed_asset'
+        cached_asset: dict = self.util.get_redis_asset(cache_key=cache_key)
+
+        if cached_asset is not None:
+            return cached_asset
+
+        asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
+        skill: dict = self.parse_passive_skill(skill=asset.get('processed_document'), level_learned=None, path=path)
+        self.util.save_redis_asset(cache_key=cache_key, data=skill)
+        
+        return skill
+
+    def get_reaction_skill(self, path):
+        cache_key: str = f'{path}_parsed_asset'
+        cached_asset: dict = self.util.get_redis_asset(cache_key=cache_key)
+
+        if cached_asset is not None:
+            return cached_asset
+
+        asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
+        skill: dict = self.parse_reaction_passive_skill(skill=asset.get('processed_document'), level_learned=None, path=path)
         self.util.save_redis_asset(cache_key=cache_key, data=skill)
         
         return skill

@@ -4,10 +4,10 @@ from flask import Flask, Blueprint, render_template, Response
 from flask_restx import Api
 from flask_autoindex import AutoIndex
 from werkzeug.middleware.proxy_fix import ProxyFix
-from app.api.active_skill import api as active_skill_api
 from app.api.asset import api as asset_api
 from app.api.asset_list import api as asset_list_api
 from app.api.asset_type import api as asset_type_api
+from app.api.skill import api as skill_api
 from app.api.unit import api as unit_api
 from app.util import Util
 
@@ -22,10 +22,10 @@ api = Api(
     doc=False
 )
 
-api.add_namespace(active_skill_api)
 api.add_namespace(asset_api)
 api.add_namespace(asset_list_api)
 api.add_namespace(asset_type_api)
+api.add_namespace(skill_api)
 api.add_namespace(unit_api)
 
 app.register_blueprint(blueprint=blueprint)
@@ -62,6 +62,34 @@ def unit():
         units = api_response.json()
 
     return render_template('unit_list.html', units=units)
+
+@app.route('/skill')
+def skill():
+    active_skill_api_response = requests.get(url='http://localhost:5000/api/skill/active_skill')
+    active_skills = []
+
+    if active_skill_api_response.status_code == 200:
+        active_skills = active_skill_api_response.json()
+
+    enemy_skill_api_response = requests.get(url='http://localhost:5000/api/skill/enemy_skill')
+    enemy_skills = []
+
+    if enemy_skill_api_response.status_code == 200:
+        enemy_skills = enemy_skill_api_response.json()
+
+    passive_skill_api_response = requests.get(url='http://localhost:5000/api/skill/passive_skill')
+    passive_skills = []
+
+    if passive_skill_api_response.status_code == 200:
+        passive_skills = passive_skill_api_response.json()
+
+    reaction_skill_api_response = requests.get(url='http://localhost:5000/api/skill/reaction_skill')
+    reaction_skills = []
+
+    if reaction_skill_api_response.status_code == 200:
+        reaction_skills = reaction_skill_api_response.json()
+
+    return render_template('skill_list.html', active_skills=active_skills, enemy_skills=enemy_skills, passive_skills=passive_skills, reaction_skills=reaction_skills)
 
 @app.route('/unit/<unit>')
 def unit_detail(unit):
