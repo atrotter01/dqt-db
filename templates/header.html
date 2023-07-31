@@ -6,28 +6,59 @@
         <script src="/static/js/jquery-3.7.0.min.js"></script>
         <script src="//cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
         <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes" />
         <meta name="description" content="Dragon Quest Tact - Database" />
+        <script type="text/javascript" src="/static/js/staticlogo.js">
+
+            /***********************************************
+            * Site Logo script- (c) Dynamic Drive DHTML code library (www.dynamicdrive.com)
+            * Please keep this notice intact
+            * Visit Project Page at http://www.dynamicdrive.com for full source code
+            ***********************************************/
+            
+        </script>
+
+        <style type="text/css">
+            body {
+                margin: 0;
+                padding: 0;
+                background: #ffffff;
+                font-family: arial, helvetica, sans-serif;
+            }
+            h1 {
+                margin: 0 0 20px 0;
+                font-size: 1.4em;
+                font-weight: bold;
+                text-align: center;
+            }
+            div.navbar, div.navbar a {
+                width: 300px;
+                padding:5px;
+                text-decoration: none;
+                font-size: 0.8em;
+                color: #000;
+                font-family: arial, helvetica, sans-serif;
+                float: left;
+            }
+            div.container {
+                padding:10px;
+                display: inline-block;
+            }
+        </style>
     </head>
     <body>
         <body>
-            <!-- Responsive navbar-->
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                <div class="container">
-                    <a class="navbar-brand" href="#">DQT Database</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                            <li class="nav-item"><a class="nav-link {% if request.path == '/' %} active {% endif %}" aria-current="page" href="/">Home</a></li>
-                            <li class="nav-item"><a class="nav-link {% if request.path == '/unit' %} active {% endif %}" href="/unit">Units</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/asset_type">Raw Game Data Browser</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/imagebrowser">Image Browser</a></li>
-                        </ul>
-                    </div>
+            <div>
+                <div class="navbar">
+                    <div style="background-image:url('/static/images/button1.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href="/">Home</a></div>
+                    <div style="background-image:url('/static/images/button2.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href="/unit">Units</a></div>
+                    <div style="background-image:url('/static/images/button3.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href='#'>Equipment</a></div>
+                    <div style="background-image:url('/static/images/button1.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href='#'>Skills</a></div>
+                    <div style="background-image:url('/static/images/button2.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href='#'>Events</a></div>
+                    <div style="background-image:url('/static/images/button3.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href='#'>Shops</a></div>
+                    <div style="background-image:url('/static/images/button1.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href='#'>Items</a></div>
+                    <div style="background-image:url('/static/images/button2.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href="/asset_type">Raw Data</a></div>
+                    <div style="background-image:url('/static/images/button3.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href="/imagebrowser">Images</a></div>
                 </div>
-            </nav>
-            <!-- Page content-->
-            <div class="container">
+                <div class="container">

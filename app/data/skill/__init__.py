@@ -13,7 +13,8 @@ class Skill:
 
         return
 
-    def parse_active_skill(self, skill: dict, level_learned: str):
+    def parse_active_skill(self, skill: dict, level_learned: str = None, path = None):
+        skill_id = path
         skill_potency = self.util.float_to_str(skill.get('attackMagnificationPermil') / 10)
         skill_name = skill.get('displayName')
         skill_description = skill.get('description')
@@ -96,6 +97,7 @@ class Skill:
         skill_description = self.util.clean_text_string(str_to_clean=skill_description, unit='%')
 
         skill: dict = {
+            'id': skill_id,
             'level_learned': level_learned,
             'skill_name': skill_name,
             'skill_description': skill_description,
@@ -130,7 +132,8 @@ class Skill:
 
         return skill
 
-    def parse_passive_skill(self, skill: dict, level_learned: str):
+    def parse_passive_skill(self, skill: dict, level_learned: str = None, path = None):
+        skill_id = path
         skill_name = skill.get('passiveSkillName')
         skill_description = skill.get('description')
         skill_is_invisible = skill.get('isInvisible')
@@ -146,6 +149,7 @@ class Skill:
         skill_description = skill_text.get('skill_description')
 
         passive_skill: dict = {
+            'id': path,
             'level_learned': level_learned,
             'skill_name': skill_name,
             'skill_description': skill_description,
@@ -157,9 +161,10 @@ class Skill:
 
         return passive_skill
 
-    def parse_reaction_passive_skill(self, skill: dict, level_learned: str):
+    def parse_reaction_passive_skill(self, skill: dict, level_learned: str = None, path = None):
         abnormity_status_table = self.resistance_parser.build_abnormity_status_table()
 
+        skill_id = path
         skill_name = skill.get('displayName')
         skill_description = skill.get('description')
         skill_is_invisible: bool = skill.get('isInvisible')
@@ -192,6 +197,7 @@ class Skill:
         skill_description = skill_text.get('skill_description')
 
         reaction_passive_skill: dict = {
+            'id': skill_id,
             'level_learned': level_learned,
             'skill_name': skill_name,
             'skill_description': skill_description,
@@ -415,3 +421,16 @@ class Skill:
             'display_name': display_name,
             'description': description
         }
+
+    def get_active_skill(self, path):
+        cache_key: str = f'{path}_parsed_asset'
+        cached_asset: dict = self.util.get_redis_asset(cache_key=cache_key)
+
+        if cached_asset is not None:
+            return cached_asset
+
+        asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
+        skill: dict = self.parse_active_skill(skill=asset.get('processed_document'), level_learned=None, path=path)
+        self.util.save_redis_asset(cache_key=cache_key, data=skill)
+        
+        return skill

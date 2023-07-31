@@ -4,6 +4,7 @@ from flask import Flask, Blueprint, render_template, Response
 from flask_restx import Api
 from flask_autoindex import AutoIndex
 from werkzeug.middleware.proxy_fix import ProxyFix
+from app.api.active_skill import api as active_skill_api
 from app.api.asset import api as asset_api
 from app.api.asset_list import api as asset_list_api
 from app.api.asset_type import api as asset_type_api
@@ -20,6 +21,8 @@ api = Api(
     title='DQT API',
     doc=False
 )
+
+api.add_namespace(active_skill_api)
 api.add_namespace(asset_api)
 api.add_namespace(asset_list_api)
 api.add_namespace(asset_type_api)

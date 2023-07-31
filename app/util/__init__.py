@@ -282,6 +282,12 @@ class Util:
             else:
                 str_to_clean = str_to_clean.replace(f'<IfSing_{data}({choices[0]},{choices[1]})>', choices[1])
 
+            # Handle bugged skill text
+            if num == 1:
+                str_to_clean = str_to_clean.replace(f'<IfSing_{data}({choices[0]},{choices[1]})', choices[0])
+            else:
+                str_to_clean = str_to_clean.replace(f'<IfSing_{data}({choices[0]},{choices[1]})', choices[1])
+
         return str_to_clean
 
     def replace_string_variable(self, str_to_clean: str, key: str, value: str):
