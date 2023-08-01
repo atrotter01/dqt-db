@@ -1,0 +1,33 @@
+{% include 'header.html' %}
+        <script>
+            $(document).ready( function () {
+                $('#dt').DataTable();
+            } );
+        </script>
+        <h4>Consumable Items</h4>
+        <div>
+            <table id="dt">
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Description</td>
+                        <td>Rank</td>
+                        <td>Icon</td>
+                        <td>Limit</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.display_name }}</td>
+                        <td>{{ item.description }}</td>
+                        <td><img src="/{{ item.rank_icon_path }}" style="width: 64px; height: 64px;" /></td>
+                        <td><img src="/{{ item.icon_path }}" style="width: 64px; height: 64px;" /></td>
+                        <td>{{ item.possession_limit }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+{% include 'footer.html' %}

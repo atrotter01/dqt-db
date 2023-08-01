@@ -7,6 +7,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from app.api.asset import api as asset_api
 from app.api.asset_list import api as asset_list_api
 from app.api.asset_type import api as asset_type_api
+from app.api.item import api as item_api
 from app.api.skill import api as skill_api
 from app.api.unit import api as unit_api
 from app.util import Util
@@ -25,6 +26,7 @@ api = Api(
 api.add_namespace(asset_api)
 api.add_namespace(asset_list_api)
 api.add_namespace(asset_type_api)
+api.add_namespace(item_api)
 api.add_namespace(skill_api)
 api.add_namespace(unit_api)
 
@@ -90,6 +92,16 @@ def skill():
         reaction_skills = reaction_skill_api_response.json()
 
     return render_template('skill_list.html', active_skills=active_skills, enemy_skills=enemy_skills, passive_skills=passive_skills, reaction_skills=reaction_skills)
+
+@app.route('/item')
+def item():
+    api_response = requests.get(url='http://localhost:5000/api/item')
+    items = []
+
+    if api_response.status_code == 200:
+        items = api_response.json()
+
+    return render_template('item.html', items=items)
 
 @app.route('/unit/<unit>')
 def unit_detail(unit):
