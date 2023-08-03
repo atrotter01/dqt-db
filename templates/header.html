@@ -1,64 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <link href="/css/styles.css" rel="stylesheet" />
         <title>DQT Database</title>
-        <script src="/static/js/jquery-3.7.0.min.js"></script>
-        <script src="//cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="/static/css/datatables.css" />
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Dragon Quest Tact - Database" />
-        <script type="text/javascript" src="/static/js/staticlogo.js">
 
-            /***********************************************
-            * Site Logo script- (c) Dynamic Drive DHTML code library (www.dynamicdrive.com)
-            * Please keep this notice intact
-            * Visit Project Page at http://www.dynamicdrive.com for full source code
-            ***********************************************/
-            
-        </script>
+        <script src="/static/js/jquery-3.7.0.min.js"></script>
+        <script type="text/javascript" src="/static/js/staticlogo.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="/static/css/datatables.css" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" />
+
+        <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.6/b-2.4.1/b-colvis-2.4.1/b-html5-2.4.1/b-print-2.4.1/fh-3.4.0/r-2.5.0/rr-1.4.1/sc-2.2.0/sl-1.7.0/datatables.min.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+        <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.6/b-2.4.1/b-colvis-2.4.1/b-html5-2.4.1/b-print-2.4.1/fh-3.4.0/r-2.5.0/rr-1.4.1/sc-2.2.0/sl-1.7.0/datatables.min.js"></script>
 
         <style type="text/css">
-            body {
-                margin: 0;
-                padding: 0;
-                background: #ffffff;
-                font-family: arial, helvetica, sans-serif;
+            .navbar_image {
+                width: 185px;
+                height: 53px;
+                padding-left: 100px;
+                padding-top: 35px;
+                margin-bottom: 10px;
+                box-sizing: content-box;
             }
-            h1 {
-                margin: 0 0 20px 0;
-                font-size: 1.4em;
-                font-weight: bold;
-                text-align: center;
-            }
-            div.navbar, div.navbar a {
-                width: 300px;
-                padding:5px;
+            .navbar_image a {
                 text-decoration: none;
-                font-size: 0.8em;
+                font-size: 1.3em;
                 color: #000;
-                font-family: arial, helvetica, sans-serif;
-                float: left;
-            }
-            div.container {
-                padding: 10px;
-                display: inline-block;
             }
         </style>
     </head>
     <body>
-        <body>
-            <div>
-                <div class="navbar">
-                    <div style="background-image:url('/static/images/button1.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href="/">Home</a></div>
-                    <div style="background-image:url('/static/images/button2.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href="/unit">Units</a></div>
-                    <div style="background-image:url('/static/images/button3.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href='#'>Equipment</a></div>
-                    <div style="background-image:url('/static/images/button1.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href='/skill'>Skills</a></div>
-                    <div style="background-image:url('/static/images/button2.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href='#'>Events</a></div>
-                    <div style="background-image:url('/static/images/button3.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href='#'>Shops</a></div>
-                    <div style="background-image:url('/static/images/button1.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href='/item'>Items</a></div>
-                    <div style="background-image:url('/static/images/button2.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href="/asset_type">Raw Data</a></div>
-                    <div style="background-image:url('/static/images/button3.png');width:185px; height:53px; color:#3b2700; padding-left:100px; padding-top:30px; margin-bottom:10px; color:#3b2700; font-size:2em;"><a href="/imagebrowser">Images</a></div>
+        <div class="offcanvas offcanvas-start h-100 d-flex align-items-center justify-content-center" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel" data-bs-theme="dark">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasLabel">Dragon Quest Tact Database</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="col">
+                    <div class="navbar_image" style="background-image:url('/static/images/button1.png');"><a href="/">&nbsp;Home</a></div>
+                    <div class="navbar_image" style="background-image:url('/static/images/button2.png');"><a href="/unit">&nbsp;Units</a></div>
+                    <div class="navbar_image" style="background-image:url('/static/images/button3.png');"><a href='#'>&nbsp;Equipment</a></div>
+                    <div class="navbar_image" style="background-image:url('/static/images/button1.png');"><a href='/skill'>&nbsp;Skills</a></div>
+                    <div class="navbar_image" style="background-image:url('/static/images/button2.png');"><a href='#'>&nbsp;Events</a></div>
+                    <div class="navbar_image" style="background-image:url('/static/images/button3.png');"><a href='#'>&nbsp;Shops</a></div>
+                    <div class="navbar_image" style="background-image:url('/static/images/button1.png');"><a href='/item'>&nbsp;Items</a></div>
+                    <div class="navbar_image" style="background-image:url('/static/images/button2.png');"><a href="/asset_type">&nbsp;Raw Data</a></div>
+                    <div class="navbar_image" style="background-image:url('/static/images/button3.png');"><a href="/imagebrowser">&nbsp;Images</a></div>
                 </div>
-                <div class="container">
+            </div>
+        </div>
+        <div class="container-fluid" style="overflow-y: hidden; height: calc(100vh);">
+            <nav class="navbar" style="padding: 0px; margin: 0px;">
+                <div>
+                    <a class="navbar-brand" href="#">
+                        <img src="/static/images/drackyknowledge.png" alt="Dracky Knowledge" class="navbar-toggler" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas" aria-expanded="false" aria-label="Toggle navigation">
+                    </a>
+                </div>
+            </nav>
+            <div class="row flex-nowrap spinner-border" role="status" id="loading_spinner">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="row flex-nowrap">
+                <div id="content-container" class="col col-sm-auto" style="overflow-y: scroll; height: calc(80vh); width: calc(100vw); display: none;">

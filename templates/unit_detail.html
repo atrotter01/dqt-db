@@ -1,11 +1,12 @@
 {% include 'header.html' %}
+
     <script>
-        dt_options = {
+        var dt_options = {
+            autoWidth: false,
             sorting: true,
             searching: false,
-            pageLength: 25,
-            width: 600
-        }
+            pageLength: 25
+        };
 
         $(document).ready( function () {
             $('#dt_stats').DataTable(dt_options);
@@ -19,328 +20,331 @@
             $('#dt_awakening_reaction_skills').DataTable(dt_options);
             $('#dt_blossom_board').DataTable(dt_options);
             $('#dt_character_builder').DataTable(dt_options);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
         } );
     </script>
     <h4>Unit Details</h4>
-        <div>
-            <p><span style="font-weight: bold;">Name: </span>{{ unit.display_name }}</p>
-            <p><span style="font-weight: bold;">Family: </span>{{ unit.family }}</p>
-            <p><span style="font-weight: bold;">Role: </span>{{ unit.role }}</p>
-            <p><span style="font-weight: bold;">Rank: </span>{{ unit.unit_rank }}</p>
-            <p><span style="font-weight: bold;">Farmable: </span>{{ unit.is_quest_reward }}</p>
-            <p><span style="font-weight: bold;">Gacha: </span>{{ unit.is_gacha_unit }}</p>
-            <p><span style="font-weight: bold;">Move: </span>{{ unit.move }}</p>
-            <p><span style="font-weight: bold;">Weight: </span>{{ unit.weight }}</p>
-            <p><span style="font-weight: bold;">Almanac Number: </span>{{ unit.almanac_number }}</p>
-        </div>
-        <hr />
-        <h4>Stats By Level</h4>
-        <div>
-            <table id="dt_stats">
-                <thead>
-                    <tr>
-                        <td>LVL</td>
-                        <td>HP</td>
-                        <td>MP</td>
-                        <td>ATK</td>
-                        <td>DEF</td>
-                        <td>AGI</td>
-                        <td>INT</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for level in unit.stats_by_level %}
-                    <tr>
-                        <td>{{ level.level }}</td>
-                        <td>{{ level.hp }}</td>
-                        <td>{{ level.mp }}</td>
-                        <td>{{ level.attack }}</td>
-                        <td>{{ level.defense }}</td>
-                        <td>{{ level.agility }}</td>
-                        <td>{{ level.intelligence }}</td>
-                    </tr>
+    <div>
+        <p><span style="font-weight: bold;">Name: </span>{{ unit.display_name }}</p>
+        <p><span style="font-weight: bold;">Family: </span>{{ unit.family }}</p>
+        <p><span style="font-weight: bold;">Role: </span>{{ unit.role }}</p>
+        <p><span style="font-weight: bold;">Rank: </span>{{ unit.unit_rank }}</p>
+        <p><span style="font-weight: bold;">Farmable: </span>{{ unit.is_quest_reward }}</p>
+        <p><span style="font-weight: bold;">Gacha: </span>{{ unit.is_gacha_unit }}</p>
+        <p><span style="font-weight: bold;">Move: </span>{{ unit.move }}</p>
+        <p><span style="font-weight: bold;">Weight: </span>{{ unit.weight }}</p>
+        <p><span style="font-weight: bold;">Almanac Number: </span>{{ unit.almanac_number }}</p>
+    </div>
+    <hr />
+    <h4>Stats By Level</h4>
+    <div>
+        <table id="dt_stats" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>LVL</td>
+                    <td>HP</td>
+                    <td>MP</td>
+                    <td>ATK</td>
+                    <td>DEF</td>
+                    <td>AGI</td>
+                    <td>INT</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for level in unit.stats_by_level %}
+                <tr>
+                    <td>{{ level.level }}</td>
+                    <td>{{ level.hp }}</td>
+                    <td>{{ level.mp }}</td>
+                    <td>{{ level.attack }}</td>
+                    <td>{{ level.defense }}</td>
+                    <td>{{ level.agility }}</td>
+                    <td>{{ level.intelligence }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Rank Up Table</h4>
+    <div>
+        <table id="dt_rankup" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Rank</td>
+                    <td>Level Cap</td>
+                    <td>Gold Cost</td>
+                    <td>Item Name</td>
+                    <td>Item Icon</td>
+                    <td>Quantity</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rank in unit.rank_up_table %}
+                {% for item in rank.rank_up_items %}
+                <tr>
+                    <td>{{ rank.rank_number }}</td>
+                    <td>{{ rank.rank_level_cap }}</td>
+                    <td>{{ rank.rank_gold_cost }}</td>
+                    <td>{{ item.item_name }}</td>
+                    <td><img src="/{{ item.item_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ item.quantity }}</td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Elemental Resistance</h4>
+    <div>
+        <table id="dt_element_resist" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Element</td>
+                    <td>Resistance</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for element in unit.element_resistances %}
+                <tr>
+                    <td>{{ unit.element_resistances[element].name }}</td>
+                    <td>{{ unit.element_resistances[element].rate }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Status Resistance</h4>
+    <div>
+        <table id="dt_status_resist" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Status</td>
+                    <td>Resistance</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for abnormity in unit.abnormity_resistances %}
+                <tr>
+                    <td>{{ unit.abnormity_resistances[abnormity].name }}</td>
+                    <td>{{ unit.abnormity_resistances[abnormity].rate }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Active Skills</h4>
+    <div>
+        <table id="dt_active_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Level</td>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Rank</td>
+                    <td>Range</td>
+                    <td>Reach</td>
+                    <td>Element</td>
+                    <td>Surehit</td>
+                    <td># Hits</td>
+                    <td>MP</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill in unit.active_skills %}
+                <tr>
+                    <td>{{ skill.level_learned }}</td>
+                    <td>{{ skill.skill_name }}</td>
+                    <td>{{ skill.skill_description }}</td>
+                    <td>{{ skill.skill_rank }}</td>
+                    <td><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ skill.skill_reach }}</td>
+                    <td><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ skill.skill_surehit }}</td>
+                    <td>{{ skill.skill_num_attacks }}</td>
+                    <td>{{ skill.skill_mp_cost }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Passive Skills</h4>
+    <div>
+        <table id="dt_passive_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Level</td>
+                    <td>Name</td>
+                    <td>Description</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill in unit.passive_skills %}
+                <tr>
+                    <td>{{ skill.level_learned }}</td>
+                    <td>{{ skill.skill_name }}</td>
+                    <td>{{ skill.skill_description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <h4>Awakening Passive Skills</h4>
+    <div>
+        <table id="dt_awakening_passive_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Awakening</td>
+                    <td>Name</td>
+                    <td>Description</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill in unit.awakening_passive_skills %}
+                <tr>
+                    <td>{{ skill.awakening_level }}</td>
+                    <td>{{ skill.skill_name }}</td>
+                    <td>{{ skill.skill_description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Reaction Skills</h4>
+    <div>
+        <table id="dt_reaction_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Level</td>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Times Available</td>
+                    <td>Accuracy</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill in unit.reaction_passive_skills %}
+                <tr>
+                    <td>{{ skill.level_learned }}</td>
+                    <td>{{ skill.skill_name }}</td>
+                    <td>{{ skill.skill_description }}</td>
+                    <td>{{ skill.skill_times_available }}</td>
+                    <td>{{ skill.skill_accuracy }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <h4>Awakening Reaction Skills</h4>
+    <div>
+        <table id="dt_awakening_reaction_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Awakening</td>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Times Available</td>
+                    <td>Accuracy</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill in unit.awakening_reaction_passive_skills %}
+                <tr>
+                    <td>{{ skill.awakening_level }}</td>
+                    <td>{{ skill.skill_name }}</td>
+                    <td>{{ skill.skill_description }}</td>
+                    <td>{{ skill.skill_times_available }}</td>
+                    <td>{{ skill.skill_accuracy }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <h4>Talent Blossoming</h4>
+    <div>
+        <table id="dt_blossom_board" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Type</td>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Unlock Icon 1</td>
+                    <td>Unlock Item 1</td>
+                    <td>Unlock Quantity 1</td>
+                    <td>Unlock Icon 2</td>
+                    <td>Unlock Item 2</td>
+                    <td>Unlock Quantity 2</td>
+                    <td>Unlock Icon 3</td>
+                    <td>Unlock Item 3</td>
+                    <td>Unlock Quantity 3</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for panel in unit.blossoms %}
+                <tr>
+                    <td>{{ panel.type }}</td>
+                    <td>{% if panel.type == "Passive Skill" or panel.type == "Active Skill" %} {{ panel.data.skill_name }} {% else %} {{ panel.panel_display_name }} {% endif %}</td>
+                    <td>{% if panel.type == "Passive Skill" or panel.type == "Active Skill" %} {{ panel.data.skill_description }} {% else %} {{ panel.panel_description }} {% endif %}</td>
+                    {% for unlock_item in panel.unlock_costs %}
+                    <td>{{ unlock_item.consumption_item_display_name }}</td>
+                    <td><img src="/{{ unlock_item.consumption_item_icon_path }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ unlock_item.consumption_item_quantity }}</td>
                     {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <hr />
-        <h4>Rank Up Table</h4>
-        <div>
-            <table id="dt_rankup">
-                <thead>
-                    <tr>
-                        <td>Rank</td>
-                        <td>Level Cap</td>
-                        <td>Gold Cost</td>
-                        <td>Item Name</td>
-                        <td>Item Icon</td>
-                        <td>Quantity</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for rank in unit.rank_up_table %}
-                    {% for item in rank.rank_up_items %}
-                    <tr>
-                        <td>{{ rank.rank_number }}</td>
-                        <td>{{ rank.rank_level_cap }}</td>
-                        <td>{{ rank.rank_gold_cost }}</td>
-                        <td>{{ item.item_name }}</td>
-                        <td><img src="/{{ item.item_icon }}" style="width: 64px; height: 64px;" /></td>
-                        <td>{{ item.quantity }}</td>
-                    </tr>
+                    {% if panel.unlock_costs|length == 2 %}
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <h4>Character Builder</h4>
+    <div>
+        <table id="dt_character_builder" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Type</td>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Unlock Icon 1</td>
+                    <td>Unlock Item 1</td>
+                    <td>Unlock Quantity 1</td>
+                    <td>Unlock Icon 2</td>
+                    <td>Unlock Item 2</td>
+                    <td>Unlock Quantity 2</td>
+                    <td>Unlock Icon 3</td>
+                    <td>Unlock Item 3</td>
+                    <td>Unlock Quantity 3</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for panel in unit.character_builder_blossoms %}
+                <tr>
+                    <td>{{ panel.type }}</td>
+                    <td>{% if panel.type == "Passive Skill" or panel.type == "Active Skill" %} {{ panel.data.skill_name }} {% else %} {{ panel.panel_display_name }} {% endif %}</td>
+                    <td>{% if panel.type == "Passive Skill" or panel.type == "Active Skill" %} {{ panel.data.skill_description }} {% else %} {{ panel.panel_description }} {% endif %}</td>
+                    {% for unlock_item in panel.unlock_costs %}
+                    <td>{{ unlock_item.consumption_item_display_name }}</td>
+                    <td><img src="/{{ unlock_item.consumption_item_icon_path }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ unlock_item.consumption_item_quantity }}</td>
                     {% endfor %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <hr />
-        <h4>Elemental Resistance</h4>
-        <div>
-            <table id="dt_element_resist">
-                <thead>
-                    <tr>
-                        <td>Element</td>
-                        <td>Resistance</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for element in unit.element_resistances %}
-                    <tr>
-                        <td>{{ unit.element_resistances[element].name }}</td>
-                        <td>{{ unit.element_resistances[element].rate }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <hr />
-        <h4>Status Resistance</h4>
-        <div>
-            <table id="dt_status_resist">
-                <thead>
-                    <tr>
-                        <td>Status</td>
-                        <td>Resistance</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for abnormity in unit.abnormity_resistances %}
-                    <tr>
-                        <td>{{ unit.abnormity_resistances[abnormity].name }}</td>
-                        <td>{{ unit.abnormity_resistances[abnormity].rate }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <hr />
-        <h4>Active Skills</h4>
-        <div>
-            <table id="dt_active_skills">
-                <thead>
-                    <tr>
-                        <td>Level</td>
-                        <td>Name</td>
-                        <td>Description</td>
-                        <td>Rank</td>
-                        <td>Range</td>
-                        <td>Reach</td>
-                        <td>Element</td>
-                        <td>Surehit</td>
-                        <td># Hits</td>
-                        <td>MP</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for skill in unit.active_skills %}
-                    <tr>
-                        <td>{{ skill.level_learned }}</td>
-                        <td>{{ skill.skill_name }}</td>
-                        <td>{{ skill.skill_description }}</td>
-                        <td>{{ skill.skill_rank }}</td>
-                        <td><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
-                        <td>{{ skill.skill_reach }}</td>
-                        <td><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
-                        <td>{{ skill.skill_surehit }}</td>
-                        <td>{{ skill.skill_num_attacks }}</td>
-                        <td>{{ skill.skill_mp_cost }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <hr />
-        <h4>Passive Skills</h4>
-        <div>
-            <table id="dt_passive_skills">
-                <thead>
-                    <tr>
-                        <td>Level</td>
-                        <td>Name</td>
-                        <td>Description</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for skill in unit.passive_skills %}
-                    <tr>
-                        <td>{{ skill.level_learned }}</td>
-                        <td>{{ skill.skill_name }}</td>
-                        <td>{{ skill.skill_description }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <h4>Awakening Passive Skills</h4>
-        <div>
-            <table id="dt_awakening_passive_skills">
-                <thead>
-                    <tr>
-                        <td>Awakening</td>
-                        <td>Name</td>
-                        <td>Description</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for skill in unit.awakening_passive_skills %}
-                    <tr>
-                        <td>{{ skill.awakening_level }}</td>
-                        <td>{{ skill.skill_name }}</td>
-                        <td>{{ skill.skill_description }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <hr />
-        <h4>Reaction Skills</h4>
-        <div>
-            <table id="dt_reaction_skills">
-                <thead>
-                    <tr>
-                        <td>Level</td>
-                        <td>Name</td>
-                        <td>Description</td>
-                        <td>Times Available</td>
-                        <td>Accuracy</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for skill in unit.reaction_passive_skills %}
-                    <tr>
-                        <td>{{ skill.level_learned }}</td>
-                        <td>{{ skill.skill_name }}</td>
-                        <td>{{ skill.skill_description }}</td>
-                        <td>{{ skill.skill_times_available }}</td>
-                        <td>{{ skill.skill_accuracy }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <h4>Awakening Reaction Skills</h4>
-        <div>
-            <table id="dt_awakening_reaction_skills">
-                <thead>
-                    <tr>
-                        <td>Awakening</td>
-                        <td>Name</td>
-                        <td>Description</td>
-                        <td>Times Available</td>
-                        <td>Accuracy</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for skill in unit.awakening_reaction_passive_skills %}
-                    <tr>
-                        <td>{{ skill.awakening_level }}</td>
-                        <td>{{ skill.skill_name }}</td>
-                        <td>{{ skill.skill_description }}</td>
-                        <td>{{ skill.skill_times_available }}</td>
-                        <td>{{ skill.skill_accuracy }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <h4>Talent Blossoming</h4>
-        <div>
-            <table id="dt_blossom_board">
-                <thead>
-                    <tr>
-                        <td>Type</td>
-                        <td>Name</td>
-                        <td>Description</td>
-                        <td>Unlock Icon 1</td>
-                        <td>Unlock Item 1</td>
-                        <td>Unlock Quantity 1</td>
-                        <td>Unlock Icon 2</td>
-                        <td>Unlock Item 2</td>
-                        <td>Unlock Quantity 2</td>
-                        <td>Unlock Icon 3</td>
-                        <td>Unlock Item 3</td>
-                        <td>Unlock Quantity 3</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for panel in unit.blossoms %}
-                    <tr>
-                        <td>{{ panel.type }}</td>
-                        <td>{% if panel.type == "Passive Skill" or panel.type == "Active Skill" %} {{ panel.data.skill_name }} {% else %} {{ panel.panel_display_name }} {% endif %}</td>
-                        <td>{% if panel.type == "Passive Skill" or panel.type == "Active Skill" %} {{ panel.data.skill_description }} {% else %} {{ panel.panel_description }} {% endif %}</td>
-                        {% for unlock_item in panel.unlock_costs %}
-                        <td>{{ unlock_item.consumption_item_display_name }}</td>
-                        <td><img src="/{{ unlock_item.consumption_item_icon_path }}" style="width: 64px; height: 64px;" /></td>
-                        <td>{{ unlock_item.consumption_item_quantity }}</td>
-                        {% endfor %}
-                        {% if panel.unlock_costs|length == 2 %}
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <h4>Character Builder</h4>
-        <div>
-            <table id="dt_character_builder">
-                <thead>
-                    <tr>
-                        <td>Type</td>
-                        <td>Name</td>
-                        <td>Description</td>
-                        <td>Unlock Icon 1</td>
-                        <td>Unlock Item 1</td>
-                        <td>Unlock Quantity 1</td>
-                        <td>Unlock Icon 2</td>
-                        <td>Unlock Item 2</td>
-                        <td>Unlock Quantity 2</td>
-                        <td>Unlock Icon 3</td>
-                        <td>Unlock Item 3</td>
-                        <td>Unlock Quantity 3</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for panel in unit.character_builder_blossoms %}
-                    <tr>
-                        <td>{{ panel.type }}</td>
-                        <td>{% if panel.type == "Passive Skill" or panel.type == "Active Skill" %} {{ panel.data.skill_name }} {% else %} {{ panel.panel_display_name }} {% endif %}</td>
-                        <td>{% if panel.type == "Passive Skill" or panel.type == "Active Skill" %} {{ panel.data.skill_description }} {% else %} {{ panel.panel_description }} {% endif %}</td>
-                        {% for unlock_item in panel.unlock_costs %}
-                        <td>{{ unlock_item.consumption_item_display_name }}</td>
-                        <td><img src="/{{ unlock_item.consumption_item_icon_path }}" style="width: 64px; height: 64px;" /></td>
-                        <td>{{ unlock_item.consumption_item_quantity }}</td>
-                        {% endfor %}
-                        {% if panel.unlock_costs|length == 2 %}
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                    {% if panel.unlock_costs|length == 2 %}
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 {% include 'footer.html' %}
