@@ -5,7 +5,7 @@ from app.data.unit import Unit
 api = Namespace("unit", description="")
 
 unit_model = api.model('unit', {
-    'id': fields.Integer,
+    'id': fields.String,
     'display_name': fields.String,
     'weight': fields.String,
     'move': fields.Integer,
@@ -36,6 +36,14 @@ unit_model = api.model('unit', {
     'character_builder_blossoms': fields.List(fields.Raw)
 })
 
+rank_up_calculator_model = api.model('rank_up_calculator', {
+    'id': fields.String,
+    'display_name': fields.String,
+    'unit_icon': fields.String,
+    'almanac_number': fields.Integer,
+    'rank_up_table': fields.List(fields.Raw),
+})
+
 @api.param("path", "Path")
 @api.route("/")
 @api.route("/<path>")
@@ -62,5 +70,33 @@ class Asset(Resource):
         for path in asset_list:
             unit = self.unit_parser.get_data(path=path)
             self.units.append(unit)
+
+        return sorted(self.units, key=lambda d: d['almanac_number'])
+
+@api.route("/rankup_calculator")
+class RankUpCalculator(Resource):
+
+    util: Util
+    unit_parser: Unit
+    units: list
+
+    @api.marshal_list_with(rank_up_calculator_model)
+    def get(self, path = None):
+        '''Fetch a given Unit'''
+        self.util = Util()
+        self.unit_parser = Unit(util=self.util)
+        self.units = []
+
+        asset_list: list = self.util.get_asset_list('AllyMonster')
+
+        for path in asset_list:
+            unit = self.unit_parser.get_data(path=path)
+            self.units.append({
+                'id': unit.get('id'),
+                'display_name': unit.get('display_name'),
+                'almanac_number': unit.get('almanac_number'),
+                'unit_icon': unit.get('unit_icon'),
+                'rank_up_table': unit.get('rank_up_table')
+            })
 
         return sorted(self.units, key=lambda d: d['almanac_number'])

@@ -23,15 +23,26 @@ class Blossom:
             panel_code = blossom_panel.get('panelCode')
             panel_contents = blossom_panel.get('panelContents')
             panel_unlock_costs = blossom_panel.get('unlockCosts')
-            panel_display_name = panel_contents.get('displayName')
-            panel_description = panel_contents.get('description')
+            panel_display_name = None
+            panel_description = None
+            
+            if panel_contents.get('displayName_translation'):
+                panel_display_name = panel_contents.get('displayName_translation').get('gbl') or panel_contents.get('displayName_translation').get('ja')
+            else:
+                panel_display_name = panel_contents.get('displayName')
+            
+            if panel_contents.get('description_translation'):
+                panel_description = panel_contents.get('description_translation').get('gbl') or panel_contents.get('description_translation').get('ja')
+            else:
+                panel_description = panel_contents.get('description')
+
             panel_effects = panel_contents.get('effects')
             panel_type = panel_effects[0].get('type')
             panel_unlock_items: list = []
 
             for consumption_item in panel_unlock_costs.get('consumptionItems'):
                 consumption_item_quantity = consumption_item.get('quantity')
-                consumption_item_display_name = consumption_item.get('consumableItem').get('displayName')
+                consumption_item_display_name = consumption_item.get('consumableItem').get('displayName_translation').get('gbl') or consumption_item.get('consumableItem').get('displayName_translation').get('ja')
                 consumption_item_icon_path = self.util.get_image_path(consumption_item.get('consumableItem').get('iconPath'))
                 panel_unlock_items.append({
                     'consumption_item_display_name': consumption_item_display_name,

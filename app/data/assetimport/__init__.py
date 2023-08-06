@@ -79,7 +79,7 @@ def process_and_save_asset(path):
             
                 if asset_importer_instance.util.save_asset(path=path, filepath=filepath, container=container, filetype=filetype, document=document, display_name=asset_name):
                     print(f'Saved {path}')
-                    os.unlink(filepath)
+                    #os.unlink(filepath)
                     return True
                 else:
                     return False

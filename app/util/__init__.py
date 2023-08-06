@@ -8,13 +8,21 @@ from pathlib import Path
 
 class Util:
     asset_list: list = []
-    cache_keys: list = ['asset_path_map', 'asset_types', 'lookup_cache', 'metadata_cache', 'unprocessed_asset_counts', 'asset_list']
+    cache_keys: list = [
+        'asset_path_map', 'asset_types', 'lookup_cache', 'metadata_cache', 'unprocessed_asset_counts', 
+        'asset_list', 'event_portal_cache'
+    ]
     redis_client: redis
     lookup_cache: dict = {}
     possible_circular_references: list = []
 
-    def __init__(self):
+    def __init__(self, force_rebuild: bool = False):
         self.redis_client = redis.Redis(host='localhost', port=6379, decode_responses=False)
+
+        if force_rebuild is True:
+            for key in self.cache_keys:
+                self.redis_client.delete(key)
+
         self.asset_list = self.build_asset_list()
         self.lookup_cache = self.cache_lookup_table()
 
@@ -61,7 +69,7 @@ class Util:
 
         asset = json.loads(redis_data)
 
-        if path not in self.cache_keys and not str(path).endswith('_cache'):
+        if path not in self.cache_keys and not str(path).endswith('_cache') and not str(path).endswith('_parsed_asset'):
             assert isinstance(asset, dict), type(asset)
 
         if deflate_data == True and self.redis_client.get(f'{path}_data') is not None:
@@ -108,7 +116,7 @@ class Util:
     def get_unprocessed_assets(self):
         return self.get_asset_by_path('unprocessed_asset_counts', deflate_data=False)
 
-    def cache_metadata(self, force_rebuild: bool = False):
+    def cache_metadata(self):
         asset_list: list = self.asset_list
         metadata_cache: list = []
         asset_types: list = []
@@ -121,10 +129,9 @@ class Util:
         if self.redis_client.get('metadata_cache') is None\
         or self.redis_client.get('asset_types') is None\
         or self.redis_client.get('asset_path_map') is None\
-        or self.redis_client.get('lookup_cache') is None\
-        or force_rebuild is True:
+        or self.redis_client.get('lookup_cache') is None:
             for path in asset_list:
-                if path in self.cache_keys:
+                if path in self.cache_keys or path.endswith('_parsed_asset'):
                     continue
 
                 asset = self.get_asset_by_path(path=path, deflate_data=False)

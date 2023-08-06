@@ -95,13 +95,23 @@ def skill():
 
 @app.route('/item')
 def item():
-    api_response = requests.get(url='http://localhost:5000/api/item')
-    items = []
+    consumable_items = []
+    profile_icons = []
+    packages = []
 
-    if api_response.status_code == 200:
-        items = api_response.json()
+    item_api_response = requests.get(url='http://localhost:5000/api/item/consumableitem')
+    if item_api_response.status_code == 200:
+        consumable_items = item_api_response.json()
 
-    return render_template('item.html', items=items)
+    profile_icon_api_response = requests.get(url='http://localhost:5000/api/item/profileicon')
+    if profile_icon_api_response.status_code == 200:
+        profile_icons = profile_icon_api_response.json()
+
+    package_api_response = requests.get(url='http://localhost:5000/api/item/package')
+    if package_api_response.status_code == 200:
+        packages = package_api_response.json()
+
+    return render_template('item.html', items=consumable_items, icons=profile_icons, packages=packages)
 
 @app.route('/unit/<unit>')
 def unit_detail(unit):
@@ -155,6 +165,16 @@ def asset(path_id):
 @app.route('/imagebrowser/<path:path>')
 def autoindex(path='.'):
     return files_index.render_autoindex(path)
+
+@app.route('/rankup_calculator')
+def rankup_calculator():
+    api_response = requests.get(url=f'http://localhost:5000/api/unit')
+    units = []
+
+    if api_response.status_code == 200:
+        units = api_response.json()
+
+    return render_template('rankup_calculator.html', units=units)
 
 if __name__ == '__main__':
     app.run(debug=True)

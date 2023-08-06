@@ -21,6 +21,7 @@
             <thead>
                 <tr>
                     <td>Name</td>
+                    <td>Icon</td>
                     <td>Description</td>
                     <td>Rank</td>
                     <td>Range</td>
@@ -35,8 +36,12 @@
                 {% for skill in active_skills %}
                 <tr>
                     <td>{{ skill.skill_name }}</td>
+                    <td><img src="/{{ skill.skill_button_icon }}" style="width: 64px; height: 64px;" /></td>
                     <td>{{ skill.skill_description }}</td>
-                    <td>{{ skill.skill_rank }}</td>
+                    <td>
+                        <span style="display: none">{{ skill.skill_rank }}</span>
+                        <img src="/{{ skill.skill_rank_icon }}" style="width: 64px; height: 64px;" />
+                    </td>
                     <td><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
                     <td>{{ skill.skill_reach }}</td>
                     <td><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
@@ -70,7 +75,10 @@
                 <tr>
                     <td>{{ skill.skill_name }}</td>
                     <td>{{ skill.skill_description }}</td>
-                    <td>{{ skill.skill_rank }}</td>
+                    <td>
+                        <span style="display: none">{{ skill.skill_rank }}</span>
+                        <img src="/{{ skill.skill_rank_icon }}" style="width: 64px; height: 64px;" />
+                    </td>
                     <td><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
                     <td>{{ skill.skill_reach }}</td>
                     <td><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>

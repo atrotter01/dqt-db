@@ -15,15 +15,34 @@ class Skill:
 
     def parse_active_skill(self, skill: dict, level_learned: str = None, path = None):
         skill_id = path
+        skill_name = None
+        skill_description = None
+
+        if skill.get('displayName_translation'):
+            skill_name = skill.get('displayName_translation').get('gbl') or skill.get('displayName_translation').get('ja')
+        else:
+            skill_name = skill.get('displayName')
+
+        if skill.get('description_translation') is not None:
+            skill_description = skill.get('description_translation').get('gbl') or skill.get('description_translation').get('ja')
+        else:
+            skill_description = skill.get('description')
+
         skill_potency = self.util.float_to_str(skill.get('attackMagnificationPermil') / 10)
-        skill_name = skill.get('displayName')
-        skill_description = skill.get('description')
         skill_button_icon = self.util.get_image_path(skill.get('buttonBasePath'))
-        skill_rank = skill.get('originRarity').get('displayName')
+        skill_rank = skill.get('originRarity').get('displayName_translation').get('gbl') or skill.get('originRarity').get('displayName_translation').get('ja')
+        skill_rank_icon = self.util.get_image_path(f'Assets/Aiming/Textures/GUI/General/Icon/MonsterIcon/MonsterIconParts/MonsterRankIcon_{skill_rank}.png')
         skill_range_icon = self.util.get_image_path(skill.get('rangeShape').get('iconPath'))
-        skill_reach = skill.get('reachShape').get('description')
-        skill_element = skill.get('element').get('displayName')
+        skill_reach = skill.get('reachShape').get('description_translation').get('gbl') or skill.get('reachShape').get('description_translation').get('ja')
+        skill_element = 'Typeless'
+        
+        if skill.get('element').get('displayName_translation'):
+            skill_element = skill.get('element').get('displayName_translation').get('gbl') or skill.get('element').get('displayName_translation').get('ja')
+
         skill_element_icon = self.util.get_image_path(skill.get('element').get('iconPath'))
+        if skill_element_icon is None:
+            skill_element_icon = self.util.get_image_path('Assets/Aiming/Textures/GUI/General/Battle/CommandPanel/SkillSelectionPanel/ElementIcon/SpellIcon_Mu.png')
+
         skill_ignore_reflect = skill.get('ignoreSkillReflection')
         skill_ignore_death_endurance = skill.get('ignoreDeathEndurance')
         skill_surehit = skill.get('absolutelyHit')
@@ -103,6 +122,7 @@ class Skill:
             'skill_description': skill_description,
             'skill_button_icon': skill_button_icon,
             'skill_rank': skill_rank,
+            'skill_rank_icon': skill_rank_icon,
             'skill_range_icon': skill_range_icon,
             'skill_reach': skill_reach,
             'skill_element': skill_element,
@@ -134,8 +154,19 @@ class Skill:
 
     def parse_passive_skill(self, skill: dict, level_learned: str = None, path = None):
         skill_id = path
-        skill_name = skill.get('passiveSkillName')
-        skill_description = skill.get('description')
+        skill_name = None
+        skill_description = None
+        
+        if skill.get('passiveSkillName_translation'):
+            skill_name = skill.get('passiveSkillName_translation').get('gbl') or skill.get('passiveSkillName_translation').get('ja')
+        else:
+            skill_name = skill.get('passiveSkillName')
+
+        if skill.get('description_translation') is not None:
+            skill_description = skill.get('description_translation').get('gbl') or skill.get('description_translation').get('ja')
+        else:
+            skill_description = skill.get('description')
+
         skill_is_invisible = skill.get('isInvisible')
         skill_is_pve_only = skill.get('isOnlyPve')
         ally_skill_icon = self.util.get_image_path(skill.get('allySideEffectIconPath'))
@@ -165,8 +196,19 @@ class Skill:
         abnormity_status_table = self.resistance_parser.build_abnormity_status_table()
 
         skill_id = path
-        skill_name = skill.get('displayName')
-        skill_description = skill.get('description')
+        skill_name = None
+        skill_description = None
+
+        if skill.get('displayName_translation'):
+            skill_name = skill.get('displayName_translation').get('gbl') or skill.get('displayName_translation').get('ja')
+        else:
+            skill_name = skill.get('displayName')
+
+        if skill.get('description_translation') is not None:
+            skill_description = skill.get('description_translation').get('gbl') or skill.get('description_translation').get('ja')
+        else:
+            skill_description = skill.get('description')
+
         skill_is_invisible: bool = skill.get('isInvisible')
         skill_is_pve_only: bool = skill.get('isOnlyPve')
         skill_times_available = skill.get('availableCount')

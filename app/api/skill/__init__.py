@@ -11,6 +11,7 @@ active_skill_model = api.model('active_skill', {
     'skill_description': fields.String,
     'skill_button_icon': fields.String,
     'skill_rank': fields.String,
+    'skill_rank_icon': fields.String,
     'skill_range_icon': fields.String,
     'skill_reach': fields.String,
     'skill_element': fields.String,

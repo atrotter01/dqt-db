@@ -15,9 +15,8 @@ class AssetProcessor:
         self.assets = []
         self.asset_types_to_process = []
 
+        #self.find_small_asset_groups(asset_limit=50)
         '''
-        self.find_small_asset_groups(asset_limit=20)
-
         self.asset_types_to_process.append('MonsterProfile')
         self.asset_types_to_process.append('Monsterprofile')
         self.asset_types_to_process.append('AbnormityResistance')
@@ -103,7 +102,6 @@ class AssetProcessor:
         self.asset_types_to_process.append('TreasureChest')
         self.asset_types_to_process.append('WorldMapAreaSetting')
         self.asset_types_to_process.append('WorldMapStageSetting')
-        self.asset_types_to_process.append('Campaign')
         self.asset_types_to_process.append('EventPortal')
 
         self.asset_types_to_process.append('ActiveSkill')
@@ -127,6 +125,8 @@ class AssetProcessor:
         self.asset_types_to_process.append('Area')
         self.asset_types_to_process.append('AreaGroup')
 
+        self.asset_types_to_process.append('Campaign')
+
         self.asset_types_to_process.append('ButtonScaler')
         self.asset_types_to_process.append('ButtonSoundPlayer')
         self.asset_types_to_process.append('ContentSizeFitter')
@@ -143,14 +143,15 @@ class AssetProcessor:
         self.asset_types_to_process.append('ObservablePointerUpTrigger')
         self.asset_types_to_process.append('RawImage')
         self.asset_types_to_process.append('SimpleAnimation')
-        self.asset_types_to_process.append('TextMeshProUGUI')
-        self.asset_types_to_process.append('UITermsInjector')
+
+        #self.asset_types_to_process.append('TextMeshProUGUI')
+        #self.asset_types_to_process.append('UITermsInjector')
 
         self.asset_types_to_process.append('LargeBattleAreaSetting')
         self.asset_types_to_process.append('Track Group')
 
-        self.asset_types_to_process.append('Stage')
         '''
+        self.asset_types_to_process.append('Stage')
 
     def find_small_asset_groups(self, asset_limit):
         unprocessed_assets: dict = self.util.get_unprocessed_assets()
@@ -164,13 +165,13 @@ class AssetProcessor:
             or asset_type.startswith('Track Group'):
                 continue
 
-            if asset_type.endswith('View'):
-                self.asset_types_to_process.append(asset_type)
-                continue
+            #if asset_type.endswith('View'):
+            #    self.asset_types_to_process.append(asset_type)
+            #    continue
 
             unprocessed_count: int = unprocessed_assets.get(asset_type)
 
-            if unprocessed_count > 0 and unprocessed_count < asset_limit:
+            if unprocessed_count > 0 and unprocessed_count <= asset_limit:
                 self.asset_types_to_process.append(asset_type)
 
     def process_assets(self):
@@ -210,22 +211,31 @@ class AssetProcessor:
 
     def get_asset_name(self, document, asset_type):
         if asset_type == 'LoginBonus':
-            return document.get('loginBonusName')
+            return document.get('loginBonusName_translation').get('gbl') or document.get('loginBonusName_translation').get('ja')
 
         if asset_type == 'PCPP':
-            return document.get('itemName')
+            return document.get('itemName_translation').get('gbl') or document.get('itemName_translation').get('ja')
 
         if asset_type == 'EnemyMonster':
-            return document.get('profile').get('displayName')
+            return document.get('profile').get('displayName_translation').get('gbl') or document.get('profile').get('displayName_translation').get('ja')
 
         if asset_type == 'AllyMonster':
-            return document.get('profile').get('displayName')
+            return document.get('profile').get('displayName_translation').get('gbl') or document.get('profile').get('displayName_translation').get('ja')
 
         if asset_type == 'Stage':
-            achievement_target_name: str = document.get('area').get('achievementTarget').get('displayName')
-            area_group_name: str = document.get('area').get('areaGroup').get('displayName')
-            area_name: str = document.get('area').get('displayName')
-            stage_name: str = document.get('displayName')
+            achievement_target_name: str = None
+            area_group_name: str = None
+
+            if document.get('area').get('achievementTarget') is not None:
+                if document.get('area').get('achievementTarget').get('displayName_translation') is not None:
+                    achievement_target_name = document.get('area').get('achievementTarget').get('displayName_translation').get('gbl') or document.get('area').get('achievementTarget').get('displayName_translation').get('ja')
+
+            if document.get('area').get('areaGroup') is not None:
+                if document.get('area').get('areaGroup').get('displayName_translation') is not None:
+                    area_group_name: str = document.get('area').get('areaGroup').get('displayName_translation').get('gbl') or document.get('area').get('areaGroup').get('displayName_translation').get('ja')
+
+            area_name: str = document.get('area').get('displayName_translation').get('gbl') or document.get('area').get('displayName_translation').get('ja')
+            stage_name: str = document.get('displayName_translation').get('gbl') or document.get('displayName_translation').get('ja')
 
             display_name: str = None
 
@@ -240,14 +250,23 @@ class AssetProcessor:
 
             return display_name
 
-        display_name: str = document.get('displayName')
+        display_name: str = None
+        
+        if document.get('displayName_translation') is not None:
+            display_name = document.get('displayName_translation').get('gbl') or document.get('displayName_translation').get('ja')
+        else:
+            display_name = document.get('displayName')
 
         if isinstance(display_name, dict):
             display_path: int = display_name.get('m_PathID')
             
             if display_path is not None:
                 display_asset = self.util.get_asset_by_path(display_path)
-                display_name = display_asset.get('display_name')
+
+                if display_asset.get('display_name_translation'):
+                    display_name = display_asset.get('display_name_translation').get('gbl') or display_asset.get('display_name_translation').get('ja')
+                else:
+                    display_name = display_asset.get('display_name')
             else:
                 display_name = None
 

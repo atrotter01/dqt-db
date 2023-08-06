@@ -130,7 +130,7 @@ class Resistance:
             asset = self.util.get_asset_by_path(path)
             document = asset.get('processed_document')
             code = document.get('code')
-            display_name = document.get('displayName')
+            display_name = document.get('displayName_translation').get('gbl') or document.get('displayName_translation').get('ja')
             elements.update({code: display_name})
 
         return elements
@@ -142,7 +142,7 @@ class Resistance:
             asset = self.util.get_asset_by_path(path)
             document = asset.get('processed_document')
             code = document.get('targetType')
-            display_name = document.get('effectStatusName')
+            display_name = document.get('effectStatusName_translation').get('gbl') or document.get('effectStatusName_translation').get('ja')
 
             abnormity_status.update({code: display_name})
 
@@ -155,7 +155,7 @@ class Resistance:
             asset = self.util.get_asset_by_path(path)
             document = asset.get('processed_document')
             code = document.get('resistanceAbnormityStatus').get('resistanceType')
-            display_name = document.get('effectStatusName')
+            display_name = document.get('effectStatusName_translation').get('gbl') or document.get('effectStatusName_translation').get('ja')
 
             if display_name == 'Envenom' or display_name == 'Deep Sleep':
                 continue

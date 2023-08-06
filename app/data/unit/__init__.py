@@ -21,7 +21,7 @@ class Unit:
     def parse_unit(self, path):
         asset = self.util.get_asset_by_path(path=path, deflate_data=True)
         data: dict = asset.get('processed_document')
-        display_name: str = asset.get('display_name')
+        display_name: str = data.get('profile').get('displayName_translation').get('gbl') or data.get('profile').get('displayName_translation').get('ja')
         allow_nicknaming = data.get('allowedNicknaming')
         almanac_visible = data.get('monsterCollectionDisplayed')
         almanac_number = data.get('monsterCollectionNumber')
@@ -31,13 +31,13 @@ class Unit:
         rank_up_table_list: list = []
         abnormity_resistance_table: dict = self.resistance_parser.parse_abnormity_resistance_table(abnormity_resistance_data=data.get('abnormityResistance'))
         element_resistance_table: dict = self.resistance_parser.parse_elemental_resistance_table(element_resistance_data=data.get('elementResistance'))
-        unit_rank = data.get('originRankRarity').get('displayName')
+        unit_rank = data.get('originRankRarity').get('displayName_translation').get('gbl') or data.get('originRankRarity').get('displayName_translation').get('ja')
         unit_rank_icon = data.get('originRankRarity').get('iconPath')
         movement = data.get('mobility')
         weight = data.get('weight')
-        family = data.get('profile').get('family').get('abbrevDisplayName')
+        family = data.get('profile').get('family').get('abbrevDisplayName_translation').get('gbl') or data.get('profile').get('family').get('abbrevDisplayName_translation').get('ja')
         family_icon = data.get('profile').get('family').get('largeIconPath')
-        role = data.get('profile').get('role').get('abbrevDisplayName')
+        role = data.get('profile').get('role').get('abbrevDisplayName_translation').get('gbl') or data.get('profile').get('role').get('abbrevDisplayName_translation').get('ja')
         role_icon = data.get('profile').get('role').get('iconPath')
         unit_icon = data.get('profile').get('iconPath')
         transformed_unit_icon = data.get('profile').get('transformedIconPath')
@@ -63,7 +63,7 @@ class Unit:
 
             for slot in recipe.get('slots'):
                 item = slot.get('item')
-                item_name: str = item.get('displayName')
+                item_name: str = item.get('displayName_translation').get('gbl') or item.get('displayName_translation').get('ja')
                 item_icon: str = item.get('iconPath')
                 quantity: str = slot.get('quantity')
 

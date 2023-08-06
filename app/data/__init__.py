@@ -6,8 +6,8 @@ from pathlib import Path
 class DataProcessor:
 
     graph: nx.Graph
-    translation_jp: dict
-    translation_noun_jp: dict
+    translation_ja: dict
+    translation_noun_ja: dict
     translation_gbl: dict
     translation_noun_gbl: dict
     util: Util
@@ -15,8 +15,8 @@ class DataProcessor:
     def __init__(self, _util: Util):
         self.graph = nx.Graph()
         self.util = _util
-        self.translation_jp = self.build_translation('Translation')
-        self.translation_noun_jp = self.build_translation_noun('TranslationNoun')
+        self.translation_ja = self.build_translation('Translation')
+        self.translation_noun_ja = self.build_translation_noun('TranslationNoun')
         self.translation_gbl = self.build_translation('TranslationGbl')
         self.translation_noun_gbl = self.build_translation_noun('TranslationNounGbl')
 
@@ -54,28 +54,46 @@ class DataProcessor:
         return translation_noun_data
 
     def get_translation(self, key: str):
-        if self.translation_gbl.get(key) is not None:
-            return self.translation_gbl.get(key)
+        translations: dict = {}
 
-        return self.translation_jp.get(key)
+        gbl: str = self.translation_gbl.get(key)
+        ja: str = self.translation_ja.get(key)
+
+        if gbl is None and ja is None:
+            return None
+
+        translations.update({
+            'gbl': gbl,
+            'ja': ja
+        })
+
+        return translations
 
     def get_translation_noun(self, key: str):
-        if self.translation_noun_gbl.get(key) is not None:
-            return self.translation_noun_gbl.get(key)
+        translations: dict = {}
 
-        return self.translation_noun_jp.get(key)
+        gbl: str = self.translation_noun_gbl.get(key)
+        ja: str = self.translation_noun_ja.get(key)
+
+        if gbl is None and ja is None:
+            return None
+
+        translations.update({
+            'gbl': gbl,
+            'ja': ja
+        })
+
+        return translations
 
     def get_translated_string(self, key: str):
-        translated_string: str = None
+        translations: dict = None
 
         if self.get_translation(key) is not None:
-            translated_string = self.get_translation(key)
+            return self.get_translation(key)
         elif self.get_translation_noun(key) is not None:
-            translated_string = self.get_translation_noun(key)
-        else:
-            translated_string = key
+            return self.get_translation_noun(key)
 
-        return translated_string
+        return None
 
     def process_dict(self, dictionary: dict, parent_path: int, key_stack: str = ''):
         dictionary_copy: dict = deepcopy(dictionary)
@@ -169,11 +187,12 @@ class DataProcessor:
                 dictionary_copy.update({key: exploded_list})
 
             elif type(item) is str:
-                translated_string: str = self.get_translated_string(item)
+                translations: dict = self.get_translated_string(item)
 
-                if item != translated_string and item is not None:
-                    dictionary_copy.update({key: translated_string})
-                elif item.lower().endswith('.asset'):
+                if translations is not None:
+                    dictionary_copy.update({f'{key}_translation': translations})
+
+                if item.lower().endswith('.asset'):
                     asset_path_object = Path(item)
                     asset_filename: str = asset_path_object.name.replace('.asset', '')
 
