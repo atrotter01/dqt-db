@@ -33,7 +33,7 @@
                             var icon = item['item_icon'];
                             var name = item['item_name'];
                             var quantity = item['quantity'];
-                            var key = name.replace(' ', '_');
+                            var key = name.replaceAll(' ', '_');
 
                             if(needed_materials[key] == undefined) {
                                 needed_materials[key] = {};
@@ -92,13 +92,13 @@
             html += '</tr><tr>';
 
             Object.keys(needed_materials).sort().forEach((material) => {
-                html += '<td class="text-center"><input onblur="calculate_materials()" type="text" placeholder="Currently Have" id="h_' + needed_materials[material]['name'].replace(' ', '_') + '" /></td>';
+                html += '<td class="text-center"><input onblur="calculate_materials()" type="text" placeholder="Currently Have" id="h_' + needed_materials[material]['name'].replaceAll(' ', '_') + '" /></td>';
             });
 
             html += '</tr><tr>';
 
             Object.keys(needed_materials).sort().forEach((material) => {
-                html += '<td class="text-center" id="t_' + needed_materials[material]['name'].replace(' ', '_') + '">';
+                html += '<td class="text-center" id="t_' + needed_materials[material]['name'].replaceAll(' ', '_') + '">';
             });
 
             html += '</tr></table>';
@@ -110,7 +110,6 @@
                 $('#h_' + material).val(current_qty);
 
                 if(needed_materials[material] != undefined) {
-                    console.log(material);
                     var needed_qty = needed_materials[material]['quantity'];
 
                     if(current_qty == undefined || current_qty == '') {
@@ -119,7 +118,6 @@
 
                     var net_qty = needed_qty - current_qty;
                     var html = '<span class="text-center">' + net_qty + '</span>';
-                    console.log(html);
 
                     $('#t_' + material).html(html);
                 }
