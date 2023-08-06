@@ -1,0 +1,123 @@
+{% include 'header.html' %}
+
+    <script>
+        $(document).ready( function () {
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+        } );
+
+        var rank_up_table = [];
+
+        $.get( "/api/unit/rankup_calculator").done(function(data) { rank_up_table = data; });
+
+        function calculate_materials() {
+            var needed_materials = {};
+            var gold_cost = 0;
+
+            for(const unit of rank_up_table) {
+                var id = unit['id'];
+                var desired_id = '#d_' + id;
+                var current_id = '#c_' + id;
+                var desired_rank = $(desired_id).val();
+                var current_rank = $(current_id).val();
+
+                for(const rank of unit['rank_up_table']) {
+                    var rank_number = rank['rank_number'];
+                    var gold = rank['rank_gold_cost'];
+
+                    if(rank_number > current_rank && rank_number <= desired_rank) {
+                        gold_cost += gold;
+
+                        for(const item of rank['rank_up_items']) {
+                            var icon = item['item_icon'];
+                            var name = item['item_name'];
+                            var quantity = item['quantity'];
+
+                            if(needed_materials[name] == undefined) {
+                                needed_materials[name] = {};
+                                needed_materials[name]['quantity'] = quantity;
+                                needed_materials[name]['icon'] = icon;
+                                needed_materials[name]['name'] = name;
+                            } else {
+                                needed_materials[name]['quantity'] += quantity;
+                            }
+                        }
+                    }
+                }
+
+                if(gold_cost > 0) {
+                    needed_materials['gold'] = {};
+                    needed_materials['gold']['quantity'] = gold_cost;
+                    needed_materials['gold']['icon'] = 'static/dqt_images/assets/aiming/textures/gui/general/icon/consumableitem/CI_G_01.png';
+                    needed_materials['gold']['name'] = 'Gold';
+                }
+            }
+
+            $('#calculator_results').html('');
+            var html = '<table class="table table-striped table-bordered"><thead class="table-dark">';
+
+            Object.keys(needed_materials).sort().forEach((material) => {
+                html += '<td>' + needed_materials[material]['name'] + '</td>';
+            });
+
+            html += '</thead><tbody><tr>';
+
+                Object.keys(needed_materials).sort().forEach((material) => {
+                html += '<td><img style="width: 64px; height: 64px;" src="' + needed_materials[material]['icon'] + '" /></td>';
+            });
+
+            html += '</tr><tr>';
+
+            Object.keys(needed_materials).sort().forEach((material) => {
+                html += '<td style="text-align: center">' + needed_materials[material]['quantity'] + '</td>';
+            });
+
+            html += '</tr></table>';
+
+            $('#calculator_results').html(html);
+        }
+
+    </script>
+    <div id="calculator_results" class="sticky-top" style="background-color: #ffffff; overflow-y: scroll;">
+
+    </div>
+    <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+        <thead>
+            <tr>
+                <td>Icon</td>
+                <td>Name</td>
+                <td>Current Rank</td>
+                <td>Desired Rank</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for unit in units %}
+            <tr>
+                <td>
+                    <a href="/unit/{{ unit.id }}">
+                        <img src="/{{ unit.unit_icon }}" style="width: 64px; height: 80px;" />
+                    </a>
+                </td>
+                <td>{{ unit.display_name }}</td>
+                <td>
+                    <select id="c_{{unit.id}}" onchange="calculate_materials()">
+                        <option value="0">0</option>
+                        {% for rank in unit.rank_up_table %}
+                        <option value="{{ rank.rank_number }}">{{ rank.rank_number }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <select id="d_{{unit.id}}" onchange="calculate_materials()">
+                        <option value="0">0</option>
+                        {% for rank in unit.rank_up_table %}
+                        <option value="{{ rank.rank_number }}">{{ rank.rank_number }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% include 'footer.html' %}
