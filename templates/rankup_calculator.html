@@ -7,6 +7,7 @@
         } );
 
         var rank_up_table = [];
+        var current_materials = {};
 
         $.get( "/api/unit/rankup_calculator").done(function(data) { rank_up_table = data; });
 
@@ -32,49 +33,97 @@
                             var icon = item['item_icon'];
                             var name = item['item_name'];
                             var quantity = item['quantity'];
+                            var key = name.replace(' ', '_');
 
-                            if(needed_materials[name] == undefined) {
-                                needed_materials[name] = {};
-                                needed_materials[name]['quantity'] = quantity;
-                                needed_materials[name]['icon'] = icon;
-                                needed_materials[name]['name'] = name;
+                            if(needed_materials[key] == undefined) {
+                                needed_materials[key] = {};
+                                needed_materials[key]['quantity'] = quantity;
+                                needed_materials[key]['icon'] = icon;
+                                needed_materials[key]['name'] = name;
                             } else {
-                                needed_materials[name]['quantity'] += quantity;
+                                needed_materials[key]['quantity'] += quantity;
                             }
                         }
                     }
                 }
 
                 if(gold_cost > 0) {
-                    needed_materials['gold'] = {};
-                    needed_materials['gold']['quantity'] = gold_cost;
-                    needed_materials['gold']['icon'] = 'static/dqt_images/assets/aiming/textures/gui/general/icon/consumableitem/CI_G_01.png';
-                    needed_materials['gold']['name'] = 'Gold';
+                    needed_materials['Gold'] = {};
+                    needed_materials['Gold']['quantity'] = gold_cost;
+                    needed_materials['Gold']['icon'] = 'static/dqt_images/assets/aiming/textures/gui/general/icon/consumableitem/CI_G_01.png';
+                    needed_materials['Gold']['name'] = 'Gold';
                 }
             }
 
-            $('#calculator_results').html('');
+            Object.keys(needed_materials).sort().forEach((material) => {
+                var key = material;
+                var id = 'h_' + key;
+                var val = $('#' + id).val();
+
+                if(val == undefined || val == '') {
+                    val = 0;
+                }
+
+                if(current_materials[key] == undefined) {
+                    current_materials[key] = {};
+                }
+
+                current_materials[key] = val;
+            });
+
             var html = '<table class="table table-striped table-bordered"><thead class="table-dark">';
 
             Object.keys(needed_materials).sort().forEach((material) => {
-                html += '<td>' + needed_materials[material]['name'] + '</td>';
+                html += '<td class="text-center">' + needed_materials[material]['name'] + '</td>';
             });
 
             html += '</thead><tbody><tr>';
 
-                Object.keys(needed_materials).sort().forEach((material) => {
-                html += '<td><img style="width: 64px; height: 64px;" src="' + needed_materials[material]['icon'] + '" /></td>';
+            Object.keys(needed_materials).sort().forEach((material) => {
+                html += '<td class="text-center"><img style="width: 64px; height: 64px;" src="' + needed_materials[material]['icon'] + '" /></td>';
             });
 
             html += '</tr><tr>';
 
             Object.keys(needed_materials).sort().forEach((material) => {
-                html += '<td style="text-align: center">' + needed_materials[material]['quantity'] + '</td>';
+                html += '<td class="text-center">' + needed_materials[material]['quantity'] + '</td>';
+            });
+
+            html += '</tr><tr>';
+
+            Object.keys(needed_materials).sort().forEach((material) => {
+                html += '<td class="text-center"><input onblur="calculate_materials()" type="text" placeholder="Currently Have" id="h_' + needed_materials[material]['name'].replace(' ', '_') + '" /></td>';
+            });
+
+            html += '</tr><tr>';
+
+            Object.keys(needed_materials).sort().forEach((material) => {
+                html += '<td class="text-center" id="t_' + needed_materials[material]['name'].replace(' ', '_') + '">';
             });
 
             html += '</tr></table>';
 
             $('#calculator_results').html(html);
+
+            Object.keys(current_materials).forEach((material) => {
+                var current_qty = current_materials[material];
+                $('#h_' + material).val(current_qty);
+
+                if(needed_materials[material] != undefined) {
+                    console.log(material);
+                    var needed_qty = needed_materials[material]['quantity'];
+
+                    if(current_qty == undefined || current_qty == '') {
+                        current_qty = 0;
+                    }
+
+                    var net_qty = needed_qty - current_qty;
+                    var html = '<span class="text-center">' + net_qty + '</span>';
+                    console.log(html);
+
+                    $('#t_' + material).html(html);
+                }
+            });
         }
 
     </script>
@@ -86,6 +135,8 @@
             <tr>
                 <td>Icon</td>
                 <td>Name</td>
+                <td>Unit Rank</td>
+                <td>Family</td>
                 <td>Current Rank</td>
                 <td>Desired Rank</td>
             </tr>
@@ -99,6 +150,8 @@
                     </a>
                 </td>
                 <td>{{ unit.display_name }}</td>
+                <td><span style="display: none">{{ unit.unit_rank }}</span><img src="/{{ unit.unit_rank_icon }}" alt="{{ unit.unit_rank }}" style="width: 64px; height: 64px;" /></td>
+                <td><span style="display: none">{{ unit.family }}</span><img src="/{{ unit.family_icon }}" alt="{{ unit.family }}" style="width: 64px; height: 64px;" /></td>
                 <td>
                     <select id="c_{{unit.id}}" onchange="calculate_materials()">
                         <option value="0">0</option>
