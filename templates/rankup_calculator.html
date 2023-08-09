@@ -92,7 +92,7 @@
             html += '</tr><tr>';
 
             Object.keys(needed_materials).sort().forEach((material) => {
-                html += '<td class="text-center"><input onblur="calculate_materials()" type="text" placeholder="Currently Have" id="h_' + needed_materials[material]['name'].replaceAll(' ', '_') + '" /></td>';
+                html += '<td class="text-center"><input onblur="calculate_materials()" type="text" placeholder="Currently Have" id="h_' + needed_materials[material]['name'].replaceAll(' ', '_') + '" name="h_' + needed_materials[material]['name'].replaceAll(' ', '_') + '" class="form-control" /></td>';
             });
 
             html += '</tr><tr>';
@@ -124,7 +124,49 @@
             });
         }
 
+        function saveForm() {
+            var form_data = JSON.stringify($('#calculator_form').serializeArray());
+            var base64_encoded_data = btoa(form_data);
+
+            localStorage.setItem('rank_up_calculator', base64_encoded_data);
+        }
+
+        function loadForm() {
+            var base64_encoded_data = localStorage.getItem('rank_up_calculator');
+
+            if(base64_encoded_data == undefined || base64_encoded_data == '') {
+                return
+            }
+
+            var data = JSON.parse(atob(base64_encoded_data));
+
+            Object.keys(data).forEach((key) => {
+                var field = data[key].name;
+                var val = data[key].value;
+
+                if(field.substring(0,1) != 't') {
+                    $('#' + field).val(val);
+                }
+            });
+
+            calculate_materials();
+
+            Object.keys(data).forEach((key) => {
+                var field = data[key].name;
+                var val = data[key].value;
+
+                $('#' + field).val(val);
+            });
+
+            calculate_materials();
+        }
+
     </script>
+    <div>
+        <button type="button" class="btn btn-primary" onclick="saveForm()">Save Data</button>
+        <button type="button" class="btn btn-primary" onclick="loadForm()">Load Data</button>
+    </div>
+    <form name="calculator_form" id="calculator_form">
     <div id="calculator_results" class="sticky-top" style="background-color: #ffffff; overflow-y: scroll;">
 
     </div>
@@ -151,7 +193,7 @@
                 <td><span style="display: none">{{ unit.unit_rank }}</span><img src="/{{ unit.unit_rank_icon }}" alt="{{ unit.unit_rank }}" style="width: 64px; height: 64px;" /></td>
                 <td><span style="display: none">{{ unit.family }}</span><img src="/{{ unit.family_icon }}" alt="{{ unit.family }}" style="width: 64px; height: 64px;" /></td>
                 <td>
-                    <select id="c_{{unit.id}}" onchange="calculate_materials()">
+                    <select id="c_{{unit.id}}" name="c_{{unit.id}}" onchange="calculate_materials()" class="form-control">
                         <option value="0">0</option>
                         {% for rank in unit.rank_up_table %}
                         <option value="{{ rank.rank_number }}">{{ rank.rank_number }}</option>
@@ -159,7 +201,7 @@
                     </select>
                 </td>
                 <td>
-                    <select id="d_{{unit.id}}" onchange="calculate_materials()">
+                    <select id="d_{{unit.id}}" name="d_{{unit.id}}" onchange="calculate_materials()" class="form-control">
                         <option value="0">0</option>
                         {% for rank in unit.rank_up_table %}
                         <option value="{{ rank.rank_number }}">{{ rank.rank_number }}</option>
@@ -170,5 +212,6 @@
             {% endfor %}
         </tbody>
     </table>
+    </form>
 
 {% include 'footer.html' %}
