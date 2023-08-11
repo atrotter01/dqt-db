@@ -222,8 +222,8 @@ class DataProcessor:
             document: dict = asset.get('document')
             assert isinstance(document, dict), f'Document Error: {document}'
 
-            #if asset.get('processed_document') is not None:
-            #    return asset.get('processed_document')
+            if asset.get('processed_document') is not None:
+                return asset.get('processed_document')
 
             processed_dict: dict = self.process_dict(dictionary=document, parent_path=path, key_stack=key_stack)
             processed_dict.update({'linked_asset_id': str(path)})
