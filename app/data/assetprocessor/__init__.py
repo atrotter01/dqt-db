@@ -14,6 +14,7 @@ class AssetProcessor:
 
         self.assets = []
         self.asset_types_to_process = []
+        self.asset_types_to_process.append('AllyMonster')
 
         #self.find_small_asset_groups(asset_limit=50)
         '''
@@ -181,8 +182,8 @@ class AssetProcessor:
             for path in self.util.get_asset_list(asset_type=asset_type_to_process):
                 asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
 
-                if asset.get('processed') is True:
-                    continue
+                #if asset.get('processed') is True:
+                #    continue
 
                 path: int = asset.get('path')
                 print(f'Processing {path}')

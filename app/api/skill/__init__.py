@@ -139,6 +139,12 @@ class PassiveSkill(Resource):
         asset_list.extend(self.util.get_asset_list('NotUsePassiveSkill'))
         asset_list.extend(self.util.get_asset_list('PassiveSkill'))
 
+        for path in self.util.get_asset_list('PS'):
+            asset = self.util.get_asset_by_path(path)
+            
+            if asset.get('processed_document').get('passiveSkillName') is not None:
+                asset_list.append(path)
+
         for path in asset_list:
             skill = self.skill_parser.get_passive_skill(path=path)
 
