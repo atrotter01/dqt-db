@@ -93,6 +93,16 @@ def skill():
 
     return render_template('skill_list.html', active_skills=active_skills, enemy_skills=enemy_skills, passive_skills=passive_skills, reaction_skills=reaction_skills)
 
+@app.route('/skill/<type_of_skill>/<skill>')
+def skill_detail(type_of_skill, skill):
+    api_response = requests.get(url=f'http://localhost:5000/api/skill/{type_of_skill}/{skill}')
+    unit = []
+
+    if api_response.status_code == 200:
+        skill = api_response.json()
+
+    return render_template('skill_detail.html', skill=skill[0])
+
 @app.route('/item')
 def item():
     consumable_items = []
@@ -175,6 +185,88 @@ def rankup_calculator():
         units = api_response.json()
 
     return render_template('rankup_calculator.html', units=units)
+
+@app.route('/stage')
+def stage():
+    #api_response = requests.get(url=f'http://localhost:5000/api/stage')
+    stages = []
+    stage_data = []
+
+    #if api_response.status_code == 200:
+    #    stages = api_response.json()
+
+    for path in util.get_asset_list('Stage'):
+        stage = util.get_asset_by_path(path).get('processed_document')
+
+        stage_name = None
+        if stage.get('displayName_translation') is not None:
+            stage_name = stage.get('displayName_translation').get('gbl') or stage.get('displayName_translation').get('ja')
+
+        area_category = None
+        area_name = None
+        area_banner = None
+        area_group_name = None
+        area_group_banner = None
+        area_group_show_name = None
+        area_show_name = None
+
+        if stage.get('area') is not None:
+            area_name = stage.get('area').get('displayName_translation').get('gbl') or stage.get('area').get('displayName_translation').get('ja')
+            area_banner = util.get_image_path(stage.get('area').get('bannerPath'))
+            area_show_name = stage.get('area').get('showDisplayNameAtBanner')
+
+            if stage.get('area').get('areaGroup') is not None:
+                if stage.get('area').get('areaGroup').get('displayName_translation') is not None:
+                    area_group_name = stage.get('area').get('areaGroup').get('displayName_translation').get('gbl') or stage.get('area').get('areaGroup').get('displayName_translation').get('ja')
+                    area_group_banner = util.get_image_path(stage.get('area').get('areaGroup').get('bannerPath'))
+
+        stage_banner = util.get_image_path(stage.get('bannerImagePath'))
+
+        stage_data.append({
+            'stage_name': stage_name,
+            'area_name': area_name,
+            'stage_banner': stage_banner,
+            'area_banner': area_banner,
+            'area_group_name': area_group_name,
+            'area_group_banner': area_group_banner,
+            'area_show_name': area_show_name,
+            'area_group_show_name': area_group_show_name,
+        })
+
+    # 1: Story
+    # 2: Event
+    # 4: Battle Road
+    # 5: Daily
+    # 6: All Out Battle
+    # 7: Hero Quest
+    # 8: Anniversary Battle
+    # 9: Bloom Door
+    # 10: Large Battle
+    # 11: Guild Co-op Battle
+    # 12: TnT Board
+
+    return render_template('stage.html', stages=stage_data)
+
+@app.route('/event_list')
+def event_list():
+    #api_response = requests.get(url=f'http://localhost:5000/api/stage')
+    events = []
+
+    #if api_response.status_code == 200:
+    #    stages = api_response.json()
+
+    for path in util.get_asset_list('EventPortal'):
+        event = util.get_asset_by_path(path).get('processed_document')
+
+        event_banner = util.get_image_path(event.get('bannerPath'))
+        event_name = event.get('m_Name').replace('EventPortal_', '')
+
+        events.append({
+            'event_banner': event_banner,
+            'event_name': event_name
+        })
+
+    return render_template('event_list.html', events=sorted(events, key=lambda d: d['event_name']))
 
 if __name__ == '__main__':
     app.run(debug=True)

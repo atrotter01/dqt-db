@@ -1,0 +1,145 @@
+{% include 'header.html' %}
+
+    <script>
+        var dt_options = {
+            autoWidth: false,
+            sorting: true,
+            searching: false,
+            pageLength: 25,
+            pagingType: 'numbers',
+        };
+
+        $(document).ready( function () {
+            {% if skill.type_of_skill == 'active_skill' or skill.type_of_skill == 'enemy_skill' %}
+            $('#dt_skill_enhancements').DataTable(dt_options);
+            {% endif %}
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+        } );
+    </script>
+    <h4>Skill Details</h4>
+    {% if skill.type_of_skill == 'active_skill' or skill.type_of_skill == 'enemy_skill' %}
+    <div>
+        <p><span style="font-weight: bold;">Name: </span>{{ skill.skill_name }}</p>
+        <p><span style="font-weight: bold;">Description: </span>{{ skill.skill_description }}</p>
+        <p><span style="font-weight: bold;">Rank: </span><img src="/{{ skill.skill_rank_icon }}" style="width: 64px; height: 64px;" /></p>
+        <p><span style="font-weight: bold;">Range: </span><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></p>
+        <p><span style="font-weight: bold;">Reach: </span>{{ skill.skill_reach }}</p>
+        <p><span style="font-weight: bold;">Element: </span><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></p>
+        <p><span style="font-weight: bold;">Ignores Reflect: </span>{{ skill.skill_ignore_reflect }}</p>
+        <p><span style="font-weight: bold;">Ignores Death Save: </span>{{ skill.skill_ignore_death_endurance }}</p>
+        <p><span style="font-weight: bold;">Ignores Spell Nullify: </span>{{ skill.skill_ignore_spell_invalid }}</p>
+        <p><span style="font-weight: bold;">Is Surehit: </span>{{ skill.skill_surehit }}</p>
+        <p><span style="font-weight: bold;">Threshold of Intelligence: </span>{{ skill.skill_threshold_of_intelligence }}</p>
+        <p><span style="font-weight: bold;">Threshold of Attack: </span>{{ skill.skill_threshold_of_attack }}</p>
+        <p><span style="font-weight: bold;">MP Cost: </span>{{ skill.skill_mp_cost }}</p>
+        <p><span style="font-weight: bold;">Is Swap Skill: </span>{{ skill.skill_is_swap_skill }}</p>
+        <p><span style="font-weight: bold;">Base Potency: </span>{{ skill.skill_potency }}</p>
+        <p><span style="font-weight: bold;">Is Special Skill: </span>{{ skill.skill_is_special }}</p>
+        <p><span style="font-weight: bold;">Times Available: </span>{{ skill.skill_times_available }}</p>
+        <p><span style="font-weight: bold;">Turns Needed: </span>{{ skill.skill_turns_needed }}</p>
+        <p><span style="font-weight: bold;">Number Hits: </span>{{ skill.skill_num_attacks }}</p>
+        <p><span style="font-weight: bold;">Hits Random Targets: </span>{{ skill.skill_is_random_target }}</p>
+        <p><span style="font-weight: bold;">Min Base Damage: </span>{{ skill.skill_min_damage }}</p>
+        <p><span style="font-weight: bold;">Max Base Damage: </span>{{ skill.skill_max_damage }}</p>
+        <p><span style="font-weight: bold;">Action Type: </span>{{ skill.skill_action_type }}</p>
+        <p><span style="font-weight: bold;">Active Skill Type: </span>{{ skill.skill_type }}</p>
+        <p><span style="font-weight: bold;">Target Type: </span>{{ skill.skill_target_type }}</p>
+        <p><span style="font-weight: bold;">Damage Calculation Type: </span>{{ skill.skill_damage_calculation_type }}</p>
+    </div>
+    <hr />
+    <h4>Skill Enhancements</h4>
+    <div>
+        <table id="dt_skill_enhancements" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Level</td>
+                    <td>Max Accumulation</td>
+                    <td>Required MP Reduction</td>
+                    <td>Damage Increase Multiplier</td>
+                    <td>Damage Increase Value</td>
+                    <td>Healing Increase Multiplier</td>
+                    <td>Healing Increase Value</td>
+                    <td>MP Damage Increase Multiplier</td>
+                    <td>MP Damage Increase Value</td>
+                    <td>MP Healing Increase Multiplier</td>
+                    <td>MP Healing Increase Value</td>
+                    <td>Accuracy Increase</td>
+                    <td>Status Effect Accuracy Increase</td>
+                    <td>Status Change Accuracy Increase</td>
+                    <td>Status Effect Duration Increase</td>
+                    <td>Status Change Duration Increase</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill_enhancement in skill.skill_enhancements %}
+                <tr>
+                    <td>{{ skill_enhancement.enhancement_level }}</td>
+                    <td>{{ skill_enhancement.enhancement_max_accumulation }}</td>
+                    <td>{{ skill_enhancement.enhancement_required_mp_reduction }}</td>
+                    <td>{{ skill_enhancement.enhancement_damage_increase_multiplier }}</td>
+                    <td>{{ skill_enhancement.enhancement_damage_increase_static_addition }}</td>
+                    <td>{{ skill_enhancement.enhancement_healing_increase_multiplier }}</td>
+                    <td>{{ skill_enhancement.enhancement_healing_increase_static_addition }}</td>
+                    <td>{{ skill_enhancement.enhancement_mp_damage_increase_multiplier }}</td>
+                    <td>{{ skill_enhancement.enhancement_mp_damage_increase_static_addition }}</td>
+                    <td>{{ skill_enhancement.enhancement_mp_healing_increase_multiplier }}</td>
+                    <td>{{ skill_enhancement.enhancement_mp_healing_increase_static_addition }}</td>
+                    <td>{{ skill_enhancement.enhancement_accuracy_increase }}</td>
+                    <td>{{ skill_enhancement.enhancement_abnormity_accuracy_increase }}</td>
+                    <td>{{ skill_enhancement.enhancement_status_change_accuracy_increase }}</td>
+                    <td>{{ skill_enhancement.enhancement_abnormity_duration_increase }}</td>
+                    <td>{{ skill_enhancement.enhancement_status_change_duration_increase }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if skill.type_of_skill == 'passive_skill' %}
+    <div>
+        <p><span style="font-weight: bold;">Name: </span>{{ skill.skill_name }}</p>
+        <p><span style="font-weight: bold;">Description: </span>{{ skill.skill_description }}</p>
+        <p><span style="font-weight: bold;">Is Invisible: </span>{{ skill.skill_is_invisible }}</p>
+        <p><span style="font-weight: bold;">Is PVE Only: </span>{{ skill.skill_is_pve_only }}</p>
+    </div>
+    {% endif %}
+
+    {% if skill.type_of_skill == 'reaction_skill' %}
+    <div>
+        <p><span style="font-weight: bold;">Name: </span>{{ skill.skill_name }}</p>
+        <p><span style="font-weight: bold;">Description: </span>{{ skill.skill_description }}</p>
+        <p><span style="font-weight: bold;">Is Invisible: </span>{{ skill.skill_is_invisible }}</p>
+        <p><span style="font-weight: bold;">Is PVE Only: </span>{{ skill.skill_is_pve_only }}</p>
+        <p><span style="font-weight: bold;">Times Available: </span>{{ skill.skill_times_available }}</p>
+        <p><span style="font-weight: bold;">Accuracy: </span>{{ skill.skill_accuracy }}</p>
+        <p><span style="font-weight: bold;">Triggers On Enemy Attach: </span>{{ skill.skill_attacker_is_enemy }}</p>
+        <p><span style="font-weight: bold;">Triggers On Self Attack: </span>{{ skill.skill_attacker_is_self }}</p>
+        <p><span style="font-weight: bold;">Triggers On Ally Attack: </span>{{ skill.skill_attacker_is_ally }}</p>
+        <p><span style="font-weight: bold;">Triggers On Enemy Attacked: </span>{{ skill.skill_receiver_is_enemy }}</p>
+        <p><span style="font-weight: bold;">Triggers On Self Attacked: </span>{{ skill.skill_receiver_is_self }}</p>
+        <p><span style="font-weight: bold;">Triggers On Ally Attacked: </span>{{ skill.skill_receiver_is_ally }}</p>
+        <p><span style="font-weight: bold;">Is Activated By Damage: </span>{{ skill.skill_is_activated_by_damage }}</p>
+        <p><span style="font-weight: bold;">Is Activated By Healing: </span>{{ skill.skill_is_activated_by_recovery }}</p>
+        <p><span style="font-weight: bold;">Is Activated By Status Effect: </span>{{ skill.skill_is_activated_by_abnormity }}</p>
+        <p><span style="font-weight: bold;">Is Activated By Death: </span>{{ skill.skill_is_activated_by_death }}</p>
+        <p><span style="font-weight: bold;">Reaction Target: </span>{{ skill.skill_reaction_target }}</p>
+        <p><span style="font-weight: bold;">Multiple Activations Consecutively: </span>{{ skill.skill_multiple_activation_to_same_target }}</p>
+        <p><span style="font-weight: bold;">Is Re-Reactionable: </span>{{ skill.skill_is_re_reactionable }}</p>
+        <hr />
+        <h4>Applicable Status Effects</h4>
+        <div>
+            <table id="dt_status_effects" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+                <tbody>
+                    {% for skill_applicable_abnormity_type in skill.skill_applicable_abnormity_types %}
+                    <tr>
+                        <td>{{ skill_applicable_abnormity_type }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+{% include 'footer.html' %}

@@ -147,7 +147,8 @@ class Skill:
             'skill_type': skill_type, 
             'skill_target_type': skill_target_type, 
             'skill_damage_calculation_type': skill_damage_calculation_type,
-            'skill_enhancements': skill_enhancements
+            'skill_enhancements': skill_enhancements,
+            'type_of_skill': 'active_skill'
         }
 
         return skill
@@ -187,7 +188,8 @@ class Skill:
             'skill_is_invisible': skill_is_invisible,
             'skill_is_pve_only': skill_is_pve_only,
             'ally_skill_icon': ally_skill_icon,
-            'enemy_skill_icon': enemy_skill_icon
+            'enemy_skill_icon': enemy_skill_icon,
+            'type_of_skill': 'passive_skill'
         }
 
         return passive_skill
@@ -260,7 +262,8 @@ class Skill:
             'skill_reaction_target': skill_reaction_target,
             'skill_multiple_activation_to_same_target': skill_multiple_activation_to_same_target,
             'skill_is_re_reactionable': skill_is_re_reactionable,
-            'skill_applicable_abnormity_types': sorted(skill_applicable_abnormity_types)
+            'skill_applicable_abnormity_types': sorted(skill_applicable_abnormity_types),
+            'type_of_skill': 'reaction_skill'
         }
 
         return reaction_passive_skill

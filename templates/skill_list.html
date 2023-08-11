@@ -35,7 +35,7 @@
             <tbody>
                 {% for skill in active_skills %}
                 <tr>
-                    <td>{{ skill.skill_name }}</td>
+                    <td><a href='/skill/active_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
                     <td><img src="/{{ skill.skill_button_icon }}" style="width: 64px; height: 64px;" /></td>
                     <td>{{ skill.skill_description }}</td>
                     <td>
@@ -73,7 +73,7 @@
             <tbody>
                 {% for skill in enemy_skills %}
                 <tr>
-                    <td>{{ skill.skill_name }}</td>
+                    <td><a href='/skill/enemy_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
                     <td>{{ skill.skill_description }}</td>
                     <td>
                         <span style="display: none">{{ skill.skill_rank }}</span>
@@ -103,7 +103,7 @@
             <tbody>
                 {% for skill in passive_skills %}
                 <tr>
-                    <td>{{ skill.skill_name }}</td>
+                    <td><a href='/skill/passive_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
                     <td>{{ skill.skill_description }}</td>
                 </tr>
                 {% endfor %}
@@ -125,7 +125,7 @@
             <tbody>
                 {% for skill in reaction_skills %}
                 <tr>
-                    <td>{{ skill.skill_name }}</td>
+                    <td><a href='/skill/reaction_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
                     <td>{{ skill.skill_description }}</td>
                     <td>{{ skill.skill_times_available }}</td>
                     <td>{{ skill.skill_accuracy }}</td>

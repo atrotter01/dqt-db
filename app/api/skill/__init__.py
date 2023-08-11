@@ -36,7 +36,8 @@ active_skill_model = api.model('active_skill', {
     'skill_type': fields.String, 
     'skill_target_type': fields.Integer,
     'skill_damage_calculation_type': fields.Integer,
-    'skill_enhancements': fields.List(fields.Raw)
+    'skill_enhancements': fields.List(fields.Raw),
+    'type_of_skill': fields.String
 })
 
 passive_skill_model = api.model('passive_skill', {
@@ -47,7 +48,8 @@ passive_skill_model = api.model('passive_skill', {
     'skill_is_invisible': fields.Boolean,
     'skill_is_pve_only': fields.Boolean,
     'ally_skill_icon': fields.String,
-    'enemy_skill_icon': fields.String
+    'enemy_skill_icon': fields.String,
+    'type_of_skill': fields.String
 })
 
 reaction_skill_model = api.model('reaction_skill', {
@@ -72,7 +74,8 @@ reaction_skill_model = api.model('reaction_skill', {
     'skill_reaction_target': fields.String,
     'skill_multiple_activation_to_same_target': fields.Boolean,
     'skill_is_re_reactionable': fields.Boolean,
-    'skill_applicable_abnormity_types': fields.List(fields.Raw)
+    'skill_applicable_abnormity_types': fields.List(fields.Raw),
+    'type_of_skill': fields.String
 })
 
 @api.param("path", "Path")
