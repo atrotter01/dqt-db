@@ -133,6 +133,27 @@ def unit_detail(unit):
 
     return render_template('unit_detail.html', unit=unit[0])
 
+@app.route('/accolade')
+def accolade():
+    accolades: list = []
+    asset_list: list = util.get_asset_list('HonoraryTitle')
+
+    for path in asset_list:
+        asset = util.get_asset_by_path(path, deflate_data=True)
+        document = asset.get('processed_document')
+        banner_path: str = util.get_image_path(document.get('bannerIconPath'), lang='en')
+        display_name: str = document.get('displayName_translation').get('gbl') or document.get('displayName_translation').get('ja')
+        content: str = document.get('content_translation').get('gbl') or document.get('content_translation').get('ja')
+        accolades.append(
+            {
+                'display_name': display_name,
+                'banner_path': banner_path,
+                'content': content
+            }
+        )
+
+    return render_template('accolade.html', accolades=accolades)
+
 @app.route('/asset_type')
 def asset_type():
     api_response = requests.get(url='http://localhost:5000/api/asset_type')
