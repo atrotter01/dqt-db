@@ -19,18 +19,15 @@ class Util:
     def __init__(self, force_rebuild: bool = False):
         self.redis_client = redis.Redis(host='localhost', port=6379, decode_responses=False)
 
-        if force_rebuild is True:
-            for key in self.cache_keys:
-                self.redis_client.delete(key)
+        self.asset_list = self.build_asset_list(force_rebuild=force_rebuild)
+        self.lookup_cache = self.cache_lookup_table(force_rebuild=force_rebuild)
 
-        self.asset_list = self.build_asset_list()
-        self.lookup_cache = self.cache_lookup_table()
+    def build_asset_list(self, force_rebuild: bool = False):
+        if force_rebuild is False:
+            cached_asset_list = self.get_redis_asset('asset_list')
 
-    def build_asset_list(self):
-        cached_asset_list = self.get_redis_asset('asset_list')
-        
-        if cached_asset_list is not None:
-            return cached_asset_list
+            if cached_asset_list is not None:
+                return cached_asset_list
 
         valid_keys: list = []
         
@@ -86,10 +83,12 @@ class Util:
     def deflate_asset(self, asset):
         return brotli.compress(json.dumps(asset).encode())
 
-    def save_processed_document(self, path: int, processed_document: dict, display_name: str):
+    def save_processed_document(self, path: int, processed_document: dict, display_name: str, set_processed_flag: bool = True):
         asset: dict = self.get_asset_by_path(path=path, deflate_data=False)
-        asset.update({'processed': True})
-    
+
+        if set_processed_flag is True:
+            asset.update({'processed': True})
+
         if display_name is not None:
             asset.update({'display_name': display_name})
 
@@ -116,7 +115,7 @@ class Util:
     def get_unprocessed_assets(self):
         return self.get_asset_by_path('unprocessed_asset_counts', deflate_data=False)
 
-    def cache_metadata(self):
+    def cache_metadata(self, force_rebuild: bool = False):
         asset_list: list = self.asset_list
         metadata_cache: list = []
         asset_types: list = []
@@ -129,7 +128,8 @@ class Util:
         if self.redis_client.get('metadata_cache') is None\
         or self.redis_client.get('asset_types') is None\
         or self.redis_client.get('asset_path_map') is None\
-        or self.redis_client.get('lookup_cache') is None:
+        or self.redis_client.get('lookup_cache') is None\
+        or force_rebuild is True:
             for path in asset_list:
                 if path in self.cache_keys or path.endswith('_parsed_asset'):
                     continue
@@ -211,9 +211,11 @@ class Util:
             print('Saving unprocessed counts.')
             self.redis_client.set('unprocessed_asset_counts', json.dumps(unprocessed_asset_counts))
 
-    def cache_lookup_table(self):
+    def cache_lookup_table(self, force_rebuild: bool = False):
         if self.redis_client.get('lookup_cache') is None:
-            self.cache_metadata()
+            self.cache_metadata(force_rebuild=force_rebuild)
+        elif force_rebuild is True:
+            self.cache_metadata(force_rebuild=force_rebuild)
 
         return self.get_asset_by_path(path='lookup_cache', deflate_data=False)
 

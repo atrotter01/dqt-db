@@ -229,6 +229,10 @@ class DataProcessor:
             processed_dict.update({'linked_asset_id': str(path)})
             assert isinstance(processed_dict, dict), f'Processed Dict Error: {path}'
 
+            if parent_path is not None:
+                print(f'Saving processed document for {path}.')
+                self.util.save_processed_document(path=path, processed_document=processed_dict, display_name=None, set_processed_flag=False)
+
             return processed_dict
         except TypeError as ex:
             print(f'Failed to fetch a document for path {path} via {parent_path} {ex}')

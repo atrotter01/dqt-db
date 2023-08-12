@@ -14,13 +14,12 @@ class AssetProcessor:
 
         self.assets = []
         self.asset_types_to_process = []
-        self.asset_types_to_process.append('AllyMonster')
 
-        #self.find_small_asset_groups(asset_limit=50)
-        '''
+        self.find_small_asset_groups(asset_limit=25)
         self.asset_types_to_process.append('MonsterProfile')
         self.asset_types_to_process.append('Monsterprofile')
         self.asset_types_to_process.append('AbnormityResistance')
+        self.asset_types_to_process.append('AbnormityStatus')
         self.asset_types_to_process.append('Achievement')
         self.asset_types_to_process.append('AchievementTarget')
         self.asset_types_to_process.append('ActiveSkillRange')
@@ -151,7 +150,6 @@ class AssetProcessor:
         self.asset_types_to_process.append('LargeBattleAreaSetting')
         self.asset_types_to_process.append('Track Group')
 
-        '''
         self.asset_types_to_process.append('Stage')
 
     def find_small_asset_groups(self, asset_limit):
@@ -161,6 +159,7 @@ class AssetProcessor:
             if asset_type.endswith('MasterDataStoreSource')\
             or asset_type.startswith('ArenaGhost')\
             or asset_type.startswith('GuildArenaGhost')\
+            or asset_type.startswith('GuildArena')\
             or asset_type.startswith('AreaExtraReward')\
             or asset_type.startswith('LargeBattleAreaSetting')\
             or asset_type.startswith('Track Group'):
@@ -182,8 +181,8 @@ class AssetProcessor:
             for path in self.util.get_asset_list(asset_type=asset_type_to_process):
                 asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
 
-                #if asset.get('processed') is True:
-                #    continue
+                if asset.get('processed') is True:
+                    continue
 
                 path: int = asset.get('path')
                 print(f'Processing {path}')
