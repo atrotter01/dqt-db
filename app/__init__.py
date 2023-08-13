@@ -5,6 +5,7 @@ from flask_restx import Api
 from flask_autoindex import AutoIndex
 from werkzeug.middleware.proxy_fix import ProxyFix
 from app.api.asset import api as asset_api
+from app.api.asset_container import api as asset_container_api
 from app.api.asset_list import api as asset_list_api
 from app.api.asset_type import api as asset_type_api
 from app.api.item import api as item_api
@@ -24,6 +25,7 @@ api = Api(
 )
 
 api.add_namespace(asset_api)
+api.add_namespace(asset_container_api)
 api.add_namespace(asset_list_api)
 api.add_namespace(asset_type_api)
 api.add_namespace(item_api)
@@ -154,32 +156,53 @@ def accolade():
 
     return render_template('accolade.html', accolades=accolades)
 
-@app.route('/asset_type')
-def asset_type():
-    api_response = requests.get(url='http://localhost:5000/api/asset_type')
-    asset_types = {}
+@app.route('/asset_container')
+def asset_container():
+    api_response = requests.get(url='http://localhost:5000/api/asset_container')
+    asset_container_response: dict = {}
+    asset_containers: list = []
 
     if api_response.status_code == 200:
-        asset_types = api_response.json().get('asset_type')
+        asset_container_response = api_response.json().get('asset_containers')
+
+    for container in asset_container_response:
+        if container.startswith('/mnt/'):
+            continue
+
+        asset_containers.append(container)
+
+    return render_template('asset_container.html', asset_containers=asset_containers)
+
+@app.route('/asset_container/<container>')
+def asset_type(container):
+    api_response = requests.get(url='http://localhost:5000/api/asset_container')
+    asset_container_response: dict = {}
+    asset_types: list = []
+
+    if api_response.status_code == 200:
+        asset_container_response = api_response.json().get('asset_containers')
+
+    for asset_container in asset_container_response.keys():
+        if asset_container.replace('/', '___') != container:
+            continue
+
+        for asset_type in asset_container_response.get(asset_container):
+            asset_types.append({ 'container': container, 'asset_type': asset_type })
 
     return render_template('asset_type.html', asset_types=asset_types)
 
-@app.route('/asset_list/<asset_type>')
-def asset_list(asset_type):
-    api_response = requests.get(url=f'http://localhost:5000/api/asset_list/{asset_type}')
-    assets = []
+@app.route('/asset_container/<container>/<container_asset_type>')
+def asset_list(container, container_asset_type):
+    api_response = requests.get(url='http://localhost:5000/api/asset_container')
+    asset_container_response: dict = {}
+    container_key: str = container.replace('___', '/')
+    assets: list = []
 
     if api_response.status_code == 200:
-        assets = api_response.json()
+        asset_container_response = api_response.json().get('asset_containers')
+        assets.extend(asset_container_response.get(container_key).get(container_asset_type))
 
-    sorted_assets = list = []
-    
-    try:
-        sorted_assets = sorted(assets, key=lambda d: d['display_name'])
-    except TypeError:
-        sorted_assets = assets
-
-    return render_template('asset_list.html', assets=sorted_assets)
+    return render_template('asset_list.html', assets=assets)
 
 @app.route('/asset/<path_id>')
 def asset(path_id):

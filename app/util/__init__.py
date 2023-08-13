@@ -32,7 +32,7 @@ class Util:
         valid_keys: list = []
         
         for key in self.redis_client.keys():
-            key = key.decode()
+            key = str(key.decode())
 
             if not key.endswith('_data'):
                 valid_keys.append(key)
@@ -53,7 +53,7 @@ class Util:
         else:
             return self.lookup_cache.get(asset_type)
 
-    def get_asset_by_path(self, path: int, deflate_data: bool = True):
+    def get_asset_by_path(self, path: str, deflate_data: bool = True):
         asset: dict = None
 
         #if path in self.cache_keys:
@@ -83,7 +83,7 @@ class Util:
     def deflate_asset(self, asset):
         return brotli.compress(json.dumps(asset).encode())
 
-    def save_processed_document(self, path: int, processed_document: dict, display_name: str, set_processed_flag: bool = True):
+    def save_processed_document(self, path: str, processed_document: dict, display_name: str, set_processed_flag: bool = True):
         asset: dict = self.get_asset_by_path(path=path, deflate_data=False)
 
         if set_processed_flag is True:
@@ -95,7 +95,7 @@ class Util:
         self.redis_client.set(path, json.dumps(asset))
         self.redis_client.set(f'{path}_processed_data', self.deflate_asset(processed_document))
 
-    def save_asset(self, path: int, filepath: str, container: str, filetype: str, document: dict, display_name: str):
+    def save_asset(self, path: str, filepath: str, container: str, filetype: str, document: dict, display_name: str):
         asset: dict = {
             'path': path,
             'filepath': filepath,
@@ -115,6 +115,32 @@ class Util:
     def get_unprocessed_assets(self):
         return self.get_asset_by_path('unprocessed_asset_counts', deflate_data=False)
 
+    def get_assets_by_container(self, processed_filter: bool = None):
+        containers: dict = {}
+
+        for asset in self.get_asset_by_path('metadata_cache', deflate_data=False):
+            path = asset.get('path')
+            container = asset.get('container')
+            display_name = asset.get('display_name')
+            filetype = asset.get('filetype')
+            processed = asset.get('processed')
+
+            if processed_filter is not None and processed != processed_filter:
+                continue
+
+            if containers.get(container) is None:
+                containers.update({container: {}})
+
+            if containers.get(container).get(filetype) is None:
+                containers[container].update({filetype: []})
+
+            containers[container][filetype].append({
+                'display_name': display_name,
+                'path': path
+            })
+
+        return containers
+
     def cache_metadata(self, force_rebuild: bool = False):
         asset_list: list = self.asset_list
         metadata_cache: list = []
@@ -131,6 +157,7 @@ class Util:
         or self.redis_client.get('lookup_cache') is None\
         or force_rebuild is True:
             for path in asset_list:
+                path = str(path)
                 if path in self.cache_keys or path.endswith('_parsed_asset'):
                     continue
 
@@ -233,7 +260,7 @@ class Util:
 
         for path in asset_list:
             asset = self.get_asset_by_path(path=path, deflate_data=False)
-            path: int = asset.get('path')
+            path: str = asset.get('path')
             processed_assets = processed_assets + 1
 
             if asset.get('processed') is True:

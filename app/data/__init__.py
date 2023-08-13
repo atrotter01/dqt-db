@@ -1,11 +1,9 @@
 from copy import deepcopy
-import networkx as nx
 from app.util import Util
 from pathlib import Path
 
 class DataProcessor:
 
-    graph: nx.Graph
     translation_ja: dict
     translation_noun_ja: dict
     translation_gbl: dict
@@ -13,7 +11,6 @@ class DataProcessor:
     util: Util
 
     def __init__(self, _util: Util):
-        self.graph = nx.Graph()
         self.util = _util
         self.translation_ja = self.build_translation('Translation')
         self.translation_noun_ja = self.build_translation_noun('TranslationNoun')
@@ -95,7 +92,7 @@ class DataProcessor:
 
         return None
 
-    def process_dict(self, dictionary: dict, parent_path: int, key_stack: str = ''):
+    def process_dict(self, dictionary: dict, parent_path: str, path_stack: list, key_stack: str = ''):
         dictionary_copy: dict = deepcopy(dictionary)
         #print(key_stack)
 
@@ -113,17 +110,8 @@ class DataProcessor:
             or key == 'prerequisiteStages'\
             or key == 'ghostNpcList'\
             or 'MasterData' in key\
-            or 'root.m_Parent' in key_stack\
             or 'MasterData' in key_stack\
-            or ('areaExpansion.difficultySettings' in key_stack and key == 'area')\
-            or ('areaExpansion.stageSettings' in key_stack and key == 'area')\
-            or ('root.difficultySettings' in key_stack and key == 'area')\
-            or ('root.stageSettings' in key_stack and key == 'area')\
-            or ('instructionSet.action.operationData' in key_stack and key == 'instructionSet')\
-            or ('m_Children' in key_stack and key == 'm_Parent')\
-            or ('m_Children.m_Clips' in key_stack and key == 'm_ParentTrack')\
-            or ('root.m_Clips' in key_stack and key == 'm_ParentTrack')\
-            or ('root.friendlyGestures' in key_stack and key == 'friendlyGestures'):
+            or ('instructionSet' in key_stack and key == 'operationData'):
 
                 #dictionary_copy.update({key: {'Omitted': True}})
                 #print(f'Skipping {key} in stack {key_stack}')
@@ -131,12 +119,18 @@ class DataProcessor:
 
             if type(item) is dict:
                 if 'm_PathID' in item.keys():
-                    path: int = item.get('m_PathID')
-                    assert isinstance(path, int), path
+                    path: str = str(item.get('m_PathID'))
+                    assert isinstance(path, str), path
 
-                    if path != 0 and key != 'm_Script':
+                    if path != '0' and key != 'm_Script':
                         try:
-                            recursive_document: dict = self.get_document(path=path, parent_path=parent_path, key_stack=f'{key_stack}.{key}')
+                            stack_copy: list = deepcopy(path_stack)
+                            stack_copy.append(path)
+
+                            if self.test_cycle(stack_copy):
+                                continue
+
+                            recursive_document: dict = self.get_document(path=path, parent_path=parent_path, key_stack=f'{key_stack}.{key}', path_stack=stack_copy)
                             assert isinstance(recursive_document, dict), recursive_document
 
                             dictionary_copy.update({key: recursive_document})
@@ -147,7 +141,7 @@ class DataProcessor:
                     else:
                         continue
                 else:
-                    processed_dict: dict = self.process_dict(dictionary=item, parent_path=parent_path, key_stack=f'{key_stack}.{key}')
+                    processed_dict: dict = self.process_dict(dictionary=item, parent_path=parent_path, key_stack=f'{key_stack}.{key}', path_stack=path_stack)
                     assert isinstance(processed_dict, dict), type(processed_dict)
 
                     dictionary_copy.update({key: processed_dict})
@@ -158,12 +152,18 @@ class DataProcessor:
                 for element in item:
                     if type(element) is dict:
                         if 'm_PathID' in element.keys():
-                            element_path: int = element.get('m_PathID')
-                            assert isinstance(element_path, int), element_path
+                            element_path: str = str(element.get('m_PathID'))
+                            assert isinstance(element_path, str), element_path
 
-                            if element_path != 0:
+                            if element_path != '0':
                                 try:
-                                    recursive_document: dict = self.get_document(path=element_path, parent_path=parent_path, key_stack=f'{key_stack}.{key}')
+                                    stack_copy: list = deepcopy(path_stack)
+                                    stack_copy.append(element_path)
+
+                                    if self.test_cycle(stack_copy):
+                                        continue
+
+                                    recursive_document: dict = self.get_document(path=element_path, parent_path=parent_path, key_stack=f'{key_stack}.{key}', path_stack=stack_copy)
                                     assert isinstance(recursive_document, dict), type(recursive_document)
 
                                     exploded_list.append(recursive_document)
@@ -174,7 +174,7 @@ class DataProcessor:
                                 exploded_list.append(element)
                         else:
                             try:
-                                processed_dict: dict = self.process_dict(dictionary=element, parent_path=parent_path, key_stack=f'{key_stack}.{key}')
+                                processed_dict: dict = self.process_dict(dictionary=element, parent_path=parent_path, key_stack=f'{key_stack}.{key}', path_stack=path_stack)
                                 assert isinstance(processed_dict, dict), type(processed_dict)
 
                                 exploded_list.append(processed_dict)
@@ -203,12 +203,7 @@ class DataProcessor:
 
         return dictionary_copy
 
-    def get_document(self, path: int, parent_path: int = None, key_stack: str = None):
-        circular_reference_check: dict = self.check_circular_references(path=path, parent_path=parent_path)
-
-        if circular_reference_check is not None:
-            return circular_reference_check
-
+    def get_document(self, path: str, parent_path: str = None, key_stack: str = None, path_stack: list = []):
         try:
             asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
 
@@ -225,47 +220,62 @@ class DataProcessor:
             if asset.get('processed_document') is not None:
                 return asset.get('processed_document')
 
-            processed_dict: dict = self.process_dict(dictionary=document, parent_path=path, key_stack=key_stack)
+            processed_dict: dict = self.process_dict(dictionary=document, parent_path=path, key_stack=key_stack, path_stack=path_stack)
             processed_dict.update({'linked_asset_id': str(path)})
             assert isinstance(processed_dict, dict), f'Processed Dict Error: {path}'
 
             if parent_path is not None:
                 print(f'Saving processed document for {path}.')
-                self.util.save_processed_document(path=path, processed_document=processed_dict, display_name=None, set_processed_flag=False)
+                self.util.save_processed_document(path=path, processed_document=processed_dict, display_name=None, set_processed_flag=True)
 
             return processed_dict
         except TypeError as ex:
             print(f'Failed to fetch a document for path {path} via {parent_path} {ex}')
             raise ex
 
-    def parse_asset(self, path: int):
-        self.graph.clear()
-        self.possible_circular_references = []
-
-        document: dict = self.get_document(path=path, key_stack='root')
+    def parse_asset(self, path: str):
+        document: dict = self.get_document(path=path, key_stack='root', path_stack=[path])
         assert isinstance(document, dict), document
 
         return document
 
-    def check_circular_references(self, path: int, parent_path: int):
+    def test_cycle(self, assets: list):
+        linked_list: LinkedList = LinkedList()
 
-        if parent_path is not None:
-            connected_edge_sets = list(nx.connected_components(self.graph))
+        for asset in assets:
+            linked_list.push(asset)
 
-            for connected_edge in connected_edge_sets:
-                if path in connected_edge and parent_path in connected_edge:
-                    combination_key: str = f'{path}:{parent_path}'
-                    opposing_combination_key: str = f'{parent_path}:{path}'
+        return linked_list.detectLoop()
 
-                    if combination_key in self.possible_circular_references or opposing_combination_key in self.possible_circular_references:
-                        if opposing_combination_key in self.possible_circular_references:
-                            return {'CircularReference': True}
-                    else:
-                        self.possible_circular_references.append(combination_key)
+class Node:
+    data: str
+    next: str
 
-        self.graph.add_node(path)
+    def __init__(self, data: str):
+        self.data = data
+        self.next = None
+  
+class LinkedList:
+    head: Node
 
-        if parent_path is not None:
-            self.graph.add_edge(path, parent_path)
+    def __init__(self):
+        self.head = None
+ 
+    def push(self, new_data: str):
+        new_node: Node = Node(new_data)
+        new_node.next = self.head
+        self.head = new_node
 
-        return
+    def detectLoop(self):
+        slow_p: Node = self.head
+        fast_p: Node = self.head
+
+        while(slow_p and fast_p and fast_p.next):
+            slow_p: Node = slow_p.next
+            fast_p: Node = fast_p.next.next
+
+            if slow_p is not None and fast_p is not None:
+                if slow_p.data == fast_p.data:
+                    return True
+
+        return False

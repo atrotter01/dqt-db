@@ -1,0 +1,58 @@
+{% include 'header.html' %}
+
+    <script>
+        var dt_options = {
+            autoWidth: false,
+            pagingType: 'numbers',
+        };
+
+        $(document).ready( function () {
+            $('#dt').DataTable(dt_options);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+        } );
+    </script>
+    <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+        <thead>
+            <tr>
+                <td>Stage Name</td>
+                <td>Area Name</td>
+                <td>Area Group Name</td>
+                <td>Stage Banner</td>
+                <td>Area Banner</td>
+                <td>Area Group Banner</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stage in stages %}
+            <tr>
+                <td>{{ stage.stage_name }}</td>
+                <td>{{ stage.area_name }}</td>
+                <td>{{ stage.area_group_name }}</td>
+                <td>
+                    <div class="stage_banner" style="background-image:url('/{{ stage.stage_banner }}');">
+                        <span class="banner_text">{{ stage.stage_name }}</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="area_banner" style="background-image:url('/{{ stage.area_banner }}');">
+                        {% if stage.area_show_name == 1 %}
+                        <span class="banner_text">{{ stage.area_name }}</span>
+                        {% endif %}
+                    </div>
+                </td>
+                <td>
+                    {% if stage.area_group_banner != 'None' %}
+                    <div class="area_banner" style="background-image:url('/{{ stage.area_group_banner }}');">
+                        {% if stage.area_group_show_name == 1 %}
+                        <span class="banner_text">{{ stage.area_group_name }}</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% include 'footer.html' %}

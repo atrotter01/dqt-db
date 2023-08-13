@@ -1,0 +1,23 @@
+{% include 'header.html' %}
+
+    <script>
+        $(document).ready( function () {
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+        } );
+    </script>
+    <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+        <tbody>
+            <tr>
+                {% for event in events %}
+                <td><img style='width: 80%; height: 80%;' src="/{{ event.event_banner }}" /></td>
+                {% if loop.index % 5 == 0 %}
+                </tr>
+                <tr>
+                {% endif %}
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+{% include 'footer.html' %}

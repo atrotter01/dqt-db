@@ -34,7 +34,7 @@ class AssetImport:
 
             return asset_map
 
-    def map_path_to_file(self, path: int):
+    def map_path_to_file(self, path: str):
         asset: dict = self.asset_map.get(path)
 
         assert asset is not None, path

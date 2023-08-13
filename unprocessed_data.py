@@ -2,11 +2,16 @@ from app.util import Util
 
 util = Util()
 
-unprocessed_asset_counts: dict = util.get_unprocessed_assets()
+unprocessed_containers: dict = util.get_assets_by_container(processed_filter=False)
 
-for asset_type in sorted(unprocessed_asset_counts):
-    unprocessed_count = unprocessed_asset_counts.get(asset_type)
+for container in sorted(unprocessed_containers):
+    if 'aiming' not in container:
+        continue
 
-    if unprocessed_count > 0:
-        if not asset_type.endswith('MasterDataStoreSource'):
-            print(f'{asset_type}: {unprocessed_count}')
+    if 'prefab' in container:
+        continue
+
+    asset_types = unprocessed_containers.get(container)
+
+    for asset_type in sorted(asset_types):
+        print(f'{container}: {asset_type}: {len(unprocessed_containers.get(container).get(asset_type))}')
