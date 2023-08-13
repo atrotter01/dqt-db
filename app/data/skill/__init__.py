@@ -63,6 +63,7 @@ class Skill:
         skill_type = self.util.float_to_str(skill.get('activeSkillType'))
         skill_target_type = self.util.float_to_str(skill.get('activeSkillTargetType'))
         skill_damage_calculation_type = self.util.float_to_str(skill.get('damageCalculationType'))
+        skill_wave_immune: bool = False
         skill_enhancements: list = []
 
         for enhancement in skill.get('enhancements'):
@@ -110,6 +111,7 @@ class Skill:
         for change_parameter in skill.get('changeParameters'):
             change_parameter_counter = change_parameter_counter + 1
             duration = self.util.float_to_str(change_parameter.get('duration'))
+            skill_wave_immune = change_parameter.get('effect').get('disruptiveWaveImmune')
 
             skill_description = self.util.replace_string_variable(skill_description, f'Turn{change_parameter_counter}', duration)
 
@@ -147,6 +149,7 @@ class Skill:
             'skill_type': skill_type, 
             'skill_target_type': skill_target_type, 
             'skill_damage_calculation_type': skill_damage_calculation_type,
+            'skill_wave_immune': skill_wave_immune,
             'skill_enhancements': skill_enhancements,
             'type_of_skill': 'active_skill'
         }
@@ -268,20 +271,20 @@ class Skill:
 
         return reaction_passive_skill
 
-    def parse_awakening_passive_skill(self, skill: dict, awakening_level: str):
+    def parse_awakening_passive_skill(self, skill: dict, awakening_level: str, path: str = None):
         if awakening_level > 0:
             awakening_level = self.util.float_to_str(awakening_level / 10)
 
-        awakening_passive_skill = self.parse_passive_skill(skill=skill, level_learned='0')
+        awakening_passive_skill = self.parse_passive_skill(skill=skill, level_learned='0', path=path)
         awakening_passive_skill.update({'awakening_level': awakening_level})
 
         return awakening_passive_skill
 
-    def parse_awakening_reaction_passive_skill(self, skill: dict, awakening_level: str):
+    def parse_awakening_reaction_passive_skill(self, skill: dict, awakening_level: str, path: str = None):
         if awakening_level > 0:
             awakening_level = self.util.float_to_str(awakening_level / 10)
 
-        awakening_reaction_passive_skill = self.parse_reaction_passive_skill(skill=skill, level_learned='0')
+        awakening_reaction_passive_skill = self.parse_reaction_passive_skill(skill=skill, level_learned='0', path=path)
         awakening_reaction_passive_skill.update({'awakening_level': awakening_level})
 
         return awakening_reaction_passive_skill
@@ -475,6 +478,7 @@ class Skill:
         if cached_asset is not None:
             return cached_asset
 
+        print(path)
         asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
         skill: dict = self.parse_active_skill(skill=asset.get('processed_document'), level_learned=None, path=path)
         self.util.save_redis_asset(cache_key=cache_key, data=skill)

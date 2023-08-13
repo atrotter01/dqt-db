@@ -4,6 +4,7 @@ from flask import Flask, Blueprint, render_template, Response
 from flask_restx import Api
 from flask_autoindex import AutoIndex
 from werkzeug.middleware.proxy_fix import ProxyFix
+from app.api.accolade import api as accolade_api
 from app.api.asset import api as asset_api
 from app.api.asset_container import api as asset_container_api
 from app.api.asset_list import api as asset_list_api
@@ -24,6 +25,7 @@ api = Api(
     doc=False
 )
 
+api.add_namespace(accolade_api)
 api.add_namespace(asset_api)
 api.add_namespace(asset_container_api)
 api.add_namespace(asset_list_api)
@@ -137,22 +139,11 @@ def unit_detail(unit):
 
 @app.route('/accolade')
 def accolade():
-    accolades: list = []
-    asset_list: list = util.get_asset_list('HonoraryTitle')
+    api_response = requests.get(url='http://localhost:5000/api/accolade/')
+    accolades = []
 
-    for path in asset_list:
-        asset = util.get_asset_by_path(path, deflate_data=True)
-        document = asset.get('processed_document')
-        banner_path: str = util.get_image_path(document.get('bannerIconPath'), lang='en')
-        display_name: str = document.get('displayName_translation').get('gbl') or document.get('displayName_translation').get('ja')
-        content: str = document.get('content_translation').get('gbl') or document.get('content_translation').get('ja')
-        accolades.append(
-            {
-                'display_name': display_name,
-                'banner_path': banner_path,
-                'content': content
-            }
-        )
+    if api_response.status_code == 200:
+        accolades = api_response.json()
 
     return render_template('accolade.html', accolades=accolades)
 

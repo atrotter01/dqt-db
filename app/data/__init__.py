@@ -83,8 +83,6 @@ class DataProcessor:
         return translations
 
     def get_translated_string(self, key: str):
-        translations: dict = None
-
         if self.get_translation(key) is not None:
             return self.get_translation(key)
         elif self.get_translation_noun(key) is not None:

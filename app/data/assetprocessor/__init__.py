@@ -20,7 +20,11 @@ class AssetProcessor:
             asset_types = unprocessed_containers.get(container)
 
             for asset_type in sorted(asset_types):
-                if 'MasterData' in asset_type:
+                if 'MasterData' in asset_type\
+                or asset_type.startswith('AreaExtraReward')\
+                or asset_type.startswith('ArenaGhost')\
+                or asset_type.startswith('GuildArenaCompetition')\
+                or asset_type.startswith('GuildArenaGhost'):
                     continue
 
                 assets: list = unprocessed_containers.get(container).get(asset_type)

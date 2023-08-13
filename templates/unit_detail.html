@@ -160,7 +160,7 @@
                 {% for skill in unit.active_skills %}
                 <tr>
                     <td>{{ skill.level_learned }}</td>
-                    <td>{{ skill.skill_name }}</td>
+                    <td><a href='/active_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
                     <td>{{ skill.skill_description }}</td>
                     <td>{{ skill.skill_rank }}</td>
                     <td><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>

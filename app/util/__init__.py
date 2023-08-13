@@ -92,8 +92,8 @@ class Util:
         if display_name is not None:
             asset.update({'display_name': display_name})
 
-        self.redis_client.set(path, json.dumps(asset))
         self.redis_client.set(f'{path}_processed_data', self.deflate_asset(processed_document))
+        self.redis_client.set(path, json.dumps(asset))
 
     def save_asset(self, path: str, filepath: str, container: str, filetype: str, document: dict, display_name: str):
         asset: dict = {
@@ -119,6 +119,33 @@ class Util:
         containers: dict = {}
 
         for asset in self.get_asset_by_path('metadata_cache', deflate_data=False):
+            path = asset.get('path')
+            container = asset.get('container')
+            display_name = asset.get('display_name')
+            filetype = asset.get('filetype')
+            processed = asset.get('processed')
+
+            if processed_filter is not None and processed != processed_filter:
+                continue
+
+            if containers.get(container) is None:
+                containers.update({container: {}})
+
+            if containers.get(container).get(filetype) is None:
+                containers[container].update({filetype: []})
+
+            containers[container][filetype].append({
+                'display_name': display_name,
+                'path': path
+            })
+
+        return containers
+
+    def get_uncached_assets_by_container(self, processed_filter: bool = None):
+        containers: dict = {}
+
+        for path in self.get_asset_list():
+            asset = self.get_asset_by_path(path=path, deflate_data=False)
             path = asset.get('path')
             container = asset.get('container')
             display_name = asset.get('display_name')
@@ -273,6 +300,17 @@ class Util:
             asset.update({'processed': False})
             self.redis_client.set(path, json.dumps(asset))
             print(f'Reset {path} ({processed_assets} of {total_assets})')
+
+    def reset_asset(self, path: str):
+        asset = self.get_asset_by_path(path=path, deflate_data=False)
+
+        if asset.get('processed') is False:
+            return
+
+        self.redis_client.delete(f'{path}_processed_data')
+        asset.update({'processed': False})
+        self.redis_client.set(path, json.dumps(asset))
+        print(f'Reset {path}')
 
     def get_image_path(self, image_path, lang='en'):
         if image_path == '' or image_path is None:

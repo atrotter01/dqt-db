@@ -83,31 +83,36 @@ class Unit:
         for skill_learning in data.get('activeSkillLearnings'):
             level_learned = skill_learning.get('level')
             skill = skill_learning.get('activeSkill')
-            active_skill = self.skill_parser.parse_active_skill(skill=skill, level_learned=level_learned)
+            skill_id = skill.get('linked_asset_id')
+            active_skill = self.skill_parser.parse_active_skill(skill=skill, level_learned=level_learned, path=skill_id)
             active_skills.append(active_skill)
 
         for skill_learning in data.get('awakeningPassiveSkillLearnings'):
             awakening_level = skill_learning.get('point')
             skill = skill_learning.get('passiveSkill')
-            awakening_passive_skill = self.skill_parser.parse_awakening_passive_skill(skill=skill, awakening_level=awakening_level)
+            skill_id = skill.get('linked_asset_id')
+            awakening_passive_skill = self.skill_parser.parse_awakening_passive_skill(skill=skill, awakening_level=awakening_level, path=skill_id)
             awakening_passive_skills.append(awakening_passive_skill)
 
         for skill_learning in data.get('passiveSkillLearnings'):
             level_learned = skill_learning.get('requiredLevel')
             skill = skill_learning.get('passiveSkill')
-            passive_skill = self.skill_parser.parse_passive_skill(skill=skill, level_learned=level_learned)
+            skill_id = skill.get('linked_asset_id')
+            passive_skill = self.skill_parser.parse_passive_skill(skill=skill, level_learned=level_learned, path=skill_id)
             passive_skills.append(passive_skill)
 
         for skill_learning in data.get('reactionPassiveSkillLearnings'):
             level_learned = skill_learning.get('requiredLevel')
             skill = skill_learning.get('reactionPassiveSkill')
-            reaction_passive_skill = self.skill_parser.parse_reaction_passive_skill(skill=skill, level_learned=level_learned)
+            skill_id = skill.get('linked_asset_id')
+            reaction_passive_skill = self.skill_parser.parse_reaction_passive_skill(skill=skill, level_learned=level_learned, path=skill_id)
             reaction_passive_skills.append(reaction_passive_skill)
 
         for skill_learning in data.get('awakeningReactionPassiveSkillLearnings'):
             awakening_level = skill_learning.get('point')
             skill = skill_learning.get('reactionPassiveSkill')
-            awakening_reaction_passive_skill = self.skill_parser.parse_awakening_reaction_passive_skill(skill=skill, awakening_level=awakening_level)
+            skill_id = skill.get('linked_asset_id')
+            awakening_reaction_passive_skill = self.skill_parser.parse_awakening_reaction_passive_skill(skill=skill, awakening_level=awakening_level, path=skill_id)
             awakening_reaction_passive_skills.append(awakening_reaction_passive_skill)
 
         if blossom_board.get('panels') is not None:
