@@ -160,7 +160,7 @@
                 {% for skill in unit.active_skills %}
                 <tr>
                     <td>{{ skill.level_learned }}</td>
-                    <td><a href='/active_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
+                    <td><a href='/skill/active_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
                     <td>{{ skill.skill_description }}</td>
                     <td>{{ skill.skill_rank }}</td>
                     <td><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
@@ -189,7 +189,7 @@
                 {% for skill in unit.passive_skills %}
                 <tr>
                     <td>{{ skill.level_learned }}</td>
-                    <td>{{ skill.skill_name }}</td>
+                    <td><a href='/skill/passive_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
                     <td>{{ skill.skill_description }}</td>
                 </tr>
                 {% endfor %}
@@ -210,7 +210,7 @@
                 {% for skill in unit.awakening_passive_skills %}
                 <tr>
                     <td>{{ skill.awakening_level }}</td>
-                    <td>{{ skill.skill_name }}</td>
+                    <td><a href='/skill/passive_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
                     <td>{{ skill.skill_description }}</td>
                 </tr>
                 {% endfor %}
@@ -234,7 +234,7 @@
                 {% for skill in unit.reaction_passive_skills %}
                 <tr>
                     <td>{{ skill.level_learned }}</td>
-                    <td>{{ skill.skill_name }}</td>
+                    <td><a href='/skill/reaction_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
                     <td>{{ skill.skill_description }}</td>
                     <td>{{ skill.skill_times_available }}</td>
                     <td>{{ skill.skill_accuracy }}</td>
@@ -259,7 +259,7 @@
                 {% for skill in unit.awakening_reaction_passive_skills %}
                 <tr>
                     <td>{{ skill.awakening_level }}</td>
-                    <td>{{ skill.skill_name }}</td>
+                    <td><a href='/skill/reaction_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
                     <td>{{ skill.skill_description }}</td>
                     <td>{{ skill.skill_times_available }}</td>
                     <td>{{ skill.skill_accuracy }}</td>
@@ -291,7 +291,13 @@
                 {% for panel in unit.blossoms %}
                 <tr>
                     <td>{{ panel.type }}</td>
-                    <td>{% if panel.type == "Passive Skill" or panel.type == "Active Skill" %} {{ panel.data.skill_name }} {% else %} {{ panel.panel_display_name }} {% endif %}</td>
+                    <td>
+                        {% if panel.type == "Passive Skill" or panel.type == "Active Skill" %}
+                        {{ panel.data.skill_name }}
+                        {% else %}
+                        {{ panel.panel_display_name }}
+                        {% endif %}
+                    </td>
                     <td>{% if panel.type == "Passive Skill" or panel.type == "Active Skill" %} {{ panel.data.skill_description }} {% else %} {{ panel.panel_description }} {% endif %}</td>
                     {% for unlock_item in panel.unlock_costs %}
                     <td>{{ unlock_item.consumption_item_display_name }}</td>
