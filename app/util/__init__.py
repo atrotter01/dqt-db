@@ -10,7 +10,7 @@ class Util:
     asset_list: list = []
     cache_keys: list = [
         'asset_path_map', 'asset_types', 'lookup_cache', 'metadata_cache', 'unprocessed_asset_counts', 
-        'asset_list', 'event_portal_cache'
+        'asset_list', 'event_portal_cache', 'codelist_cache'
     ]
     redis_client: redis
     lookup_cache: dict = {}
@@ -389,3 +389,43 @@ class Util:
             return None
 
         return self.inflate_asset(cached_data)
+
+    def get_codelist_path_map(self):
+        codelist: dict = {}
+
+        if self.get_redis_asset('codelist_cache') is not None:
+            return self.get_redis_asset('codelist_cache')
+
+        for asset_type in self.lookup_cache:
+            if 'MasterData' in asset_type:
+                assets: list = self.get_asset_list(asset_type)
+                codelist[asset_type] = {}
+
+                for path in assets:
+                    asset: dict = self.get_asset_by_path(path)
+                    document: dict = asset.get('document')
+
+                    for key in document.keys():
+                        if key.startswith('indexed'):
+                            index: dict = document.get(key)
+                            seeds: list = index.get('seeds')
+
+                            for seed in seeds:
+                                code: str = seed.get('code')
+                                paths: list = []
+                                data: dict = seed.get('data')
+                                datas: list = seed.get('datas')
+                                paths: list = []
+
+                                if data is not None:
+                                    paths.append(data.get('m_PathID'))
+
+                                if datas is not None:
+                                    for data in datas:
+                                        paths.append(data.get('m_PathID'))
+
+                                codelist[asset_type].update({ code: paths})
+
+        self.save_redis_asset(cache_key='codelist_cache', data=codelist)
+
+        return codelist

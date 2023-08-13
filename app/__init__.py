@@ -10,6 +10,7 @@ from app.api.asset_container import api as asset_container_api
 from app.api.asset_list import api as asset_list_api
 from app.api.asset_type import api as asset_type_api
 from app.api.item import api as item_api
+from app.api.shop import api as shop_api
 from app.api.skill import api as skill_api
 from app.api.unit import api as unit_api
 from app.util import Util
@@ -31,6 +32,7 @@ api.add_namespace(asset_container_api)
 api.add_namespace(asset_list_api)
 api.add_namespace(asset_type_api)
 api.add_namespace(item_api)
+api.add_namespace(shop_api)
 api.add_namespace(skill_api)
 api.add_namespace(unit_api)
 
@@ -204,6 +206,26 @@ def asset(path_id):
         asset = api_response.json()[0]
 
     return Response(json.dumps(asset, indent=2), mimetype='text/json')
+
+@app.route('/shop')
+def shop():
+    api_response = requests.get(url='http://localhost:5000/api/shop')
+    shops = []
+
+    if api_response.status_code == 200:
+        shops = api_response.json()
+
+    return render_template('shop.html', shops=shops)
+
+@app.route('/shop/<shop_id>')
+def shop_goods(shop_id):
+    api_response = requests.get(url=f'http://localhost:5000/api/shop/{shop_id}')
+    shop_goods = []
+
+    if api_response.status_code == 200:
+        shop_goods = api_response.json()
+
+    return render_template('shop_goods.html', shop_goods=shop_goods)
 
 @app.route('/imagebrowser')
 @app.route('/imagebrowser/')

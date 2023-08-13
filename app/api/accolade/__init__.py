@@ -1,10 +1,9 @@
 from flask_restx import Namespace, Resource, fields
 from app.util import Util
-from app.data.unit import Unit
 
 api = Namespace("accolade", description="")
 
-unit_model = api.model('accolade', {
+accolade_model = api.model('accolade', {
     'id': fields.String,
     'display_name': fields.String,
     'banner_path': fields.String,
@@ -17,10 +16,9 @@ unit_model = api.model('accolade', {
 class Asset(Resource):
 
     util: Util
-    unit_parser: Unit
     accolades: list
 
-    @api.marshal_list_with(unit_model)
+    @api.marshal_list_with(accolade_model)
     def get(self, path = None):
         '''Fetch a given Accolade'''
         self.util = Util()

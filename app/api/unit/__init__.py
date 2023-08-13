@@ -52,6 +52,7 @@ class Asset(Resource):
     util: Util
     unit_parser: Unit
     units: list
+    cache_key: str
 
     @api.marshal_list_with(unit_model)
     def get(self, path = None):
@@ -65,11 +66,19 @@ class Asset(Resource):
 
             return self.units
 
+        self.cache_key = f'unit_parsed_asset'
+        cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
+
+        if cached_asset is not None:
+            return cached_asset
+
         asset_list: list = self.util.get_asset_list('AllyMonster')
 
         for path in asset_list:
             unit = self.unit_parser.get_data(path=path)
             self.units.append(unit)
+
+        self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.units, key=lambda d: d['almanac_number']))
 
         return sorted(self.units, key=lambda d: d['almanac_number'])
 

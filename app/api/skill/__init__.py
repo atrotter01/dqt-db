@@ -87,6 +87,7 @@ class ActiveSkill(Resource):
     util: Util
     skill_parser: Skill
     skills: list
+    cache_key: str
 
     @api.marshal_list_with(active_skill_model)
     def get(self, path = None):
@@ -100,6 +101,12 @@ class ActiveSkill(Resource):
 
             return self.skills
 
+        self.cache_key = f'active_skills_parsed_asset'
+        cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
+
+        if cached_asset is not None:
+            return cached_asset
+
         asset_list: list = []
         asset_list.extend(self.util.get_asset_list('ActiveSkill'))
         asset_list.extend(self.util.get_asset_list('GuestSkill'))
@@ -111,6 +118,8 @@ class ActiveSkill(Resource):
             if skill.get('skill_name') is not None and skill.get('skill_name') != '':
                 self.skills.append(skill)
 
+        self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.skills, key=lambda d: d['skill_name']))
+
         return sorted(self.skills, key=lambda d: d['skill_name'])
 
 @api.param("path", "Path")
@@ -121,6 +130,7 @@ class PassiveSkill(Resource):
     util: Util
     skill_parser: Skill
     skills: list
+    cache_key: str
 
     @api.marshal_list_with(passive_skill_model)
     def get(self, path = None):
@@ -133,6 +143,12 @@ class PassiveSkill(Resource):
             self.skills.append(self.skill_parser.get_passive_skill(path=path))
 
             return self.skills
+
+        self.cache_key = f'passive_skills_parsed_asset'
+        cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
+
+        if cached_asset is not None:
+            return cached_asset
 
         asset_list: list = []
         asset_list.extend(self.util.get_asset_list('LeaderPassive'))
@@ -152,6 +168,8 @@ class PassiveSkill(Resource):
             if skill.get('skill_name') is not None and skill.get('skill_name') != '':
                 self.skills.append(skill)
 
+        self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.skills, key=lambda d: d['skill_name']))
+
         return sorted(self.skills, key=lambda d: d['skill_name'])
 
 @api.param("path", "Path")
@@ -162,6 +180,7 @@ class ReactionSkill(Resource):
     util: Util
     skill_parser: Skill
     skills: list
+    cache_key: str
 
     @api.marshal_list_with(reaction_skill_model)
     def get(self, path = None):
@@ -175,6 +194,12 @@ class ReactionSkill(Resource):
 
             return self.skills
 
+        self.cache_key = f'reaction_skills_parsed_asset'
+        cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
+
+        if cached_asset is not None:
+            return cached_asset
+
         asset_list: list = []
         asset_list.extend(self.util.get_asset_list('ReactionPassiveSkill'))
 
@@ -183,6 +208,8 @@ class ReactionSkill(Resource):
 
             if skill.get('skill_name') is not None and skill.get('skill_name') != '':
                 self.skills.append(skill)
+
+        self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.skills, key=lambda d: d['skill_name']))
 
         return sorted(self.skills, key=lambda d: d['skill_name'])
 
@@ -194,6 +221,7 @@ class EnemySkill(Resource):
     util: Util
     skill_parser: Skill
     skills: list
+    cache_key: str
 
     @api.marshal_list_with(active_skill_model)
     def get(self, path = None):
@@ -207,6 +235,12 @@ class EnemySkill(Resource):
 
             return self.skills
 
+        self.cache_key = f'enemy_skills_parsed_asset'
+        cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
+
+        if cached_asset is not None:
+            return cached_asset
+
         asset_list: list = []
         asset_list.extend(self.util.get_asset_list('EnemySkill'))
 
@@ -215,5 +249,7 @@ class EnemySkill(Resource):
 
             if skill.get('skill_name') is not None and skill.get('skill_name') != '':
                 self.skills.append(skill)
+
+        self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.skills, key=lambda d: d['skill_name']))
 
         return sorted(self.skills, key=lambda d: d['skill_name'])

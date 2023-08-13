@@ -1,0 +1,49 @@
+{% include 'header.html' %}
+
+    <script>
+        var dt_options = {
+            autoWidth: false,
+            pagingType: 'numbers',
+        };
+
+        $(document).ready( function () {
+            $('#dt_shop').DataTable(dt_options);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+        } );
+    </script>
+    <h4>Shops</h4>
+    <div>
+        <table id="dt_shop" class="table table-striped table-hover table-bordered align-middle" style="width:100%;">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Reminiscene</td>
+                    <td>Banner</td>
+                    <td>Category Banner</td>
+                    <td>Reminiscene Banner</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for shop in shops %}
+                <tr>
+                    <td><a href='/shop/{{ shop.id }}'>{{ shop.display_name }}</a></td>
+                    <td>{{ shop.available_in_reminiscene }}</td>
+                    <td><img src="/{{ shop.banner_path }}" /></td>
+                    <td>
+                        {% if shop.category_banner_path %}
+                        <img src="/{{ shop.category_banner_path }}" />
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if shop.parent_category_banner_path %}
+                        <img src="/{{ shop.parent_category_banner_path }}" />
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% include 'footer.html' %}

@@ -32,6 +32,7 @@ class ConsumableItem(Resource):
 
     util: Util
     items: list
+    cache_key: str
 
     @api.marshal_list_with(item_model)
     def get(self, path = None):
@@ -69,6 +70,12 @@ class ConsumableItem(Resource):
 
             return self.items
 
+        self.cache_key = f'consumable_item_parsed_asset'
+        cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
+
+        if cached_asset is not None:
+            return cached_asset
+
         asset_list: list = []
         asset_list.extend(self.util.get_asset_list('ConsumableItem'))
         asset_list.extend(self.util.get_asset_list('GeneralAlchemyMaterial'))
@@ -101,6 +108,8 @@ class ConsumableItem(Resource):
 
             self.items.append(item)
 
+        self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.items, key=lambda d: d['display_name']))
+
         return sorted(self.items, key=lambda d: d['display_name'])
 
 @api.param("path", "Path")
@@ -110,6 +119,7 @@ class ProfileIcon(Resource):
 
     util: Util
     profile_icons: list
+    cache_key: str
 
     @api.marshal_list_with(profile_icon_model)
     def get(self, path = None):
@@ -145,6 +155,12 @@ class ProfileIcon(Resource):
 
             return self.profile_icons
 
+        self.cache_key = f'profile_icon_parsed_asset'
+        cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
+
+        if cached_asset is not None:
+            return cached_asset
+
         asset_list: list = self.util.get_asset_list('ProfileIcon')
 
         for path in asset_list:
@@ -173,6 +189,8 @@ class ProfileIcon(Resource):
 
             self.profile_icons.append(profile_icon)
 
+        self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.profile_icons, key=lambda d: d['display_name']))
+
         return sorted(self.profile_icons, key=lambda d: d['display_name'])
 
 @api.param("path", "Path")
@@ -182,6 +200,7 @@ class Package(Resource):
 
     util: Util
     packages: list
+    cache_key: str
 
     @api.marshal_list_with(package_model)
     def get(self, path = None):
@@ -210,6 +229,12 @@ class Package(Resource):
 
             return self.packages
 
+        self.cache_key = f'package_parsed_asset'
+        cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
+
+        if cached_asset is not None:
+            return cached_asset
+
         asset_list: list = self.util.get_asset_list('Package')
 
         for path in asset_list:
@@ -230,5 +255,7 @@ class Package(Resource):
             }
 
             self.packages.append(package)
+
+        self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.packages, key=lambda d: d['display_name']))
 
         return sorted(self.packages, key=lambda d: d['display_name'])
