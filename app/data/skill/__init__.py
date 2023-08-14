@@ -366,7 +366,7 @@ class Skill:
 
         if skill.get('passiveSkillStatusElementResistanceMasterData') is not None:
             element_resistances: dict = {}
-            element_resistance_keys: list = ['elementResistanceHyado','elementResistanceMera']
+            element_resistance_keys: dict = self.resistance_parser.get_element_resistance_keys()
             element_resistance_path = skill.get('passiveSkillStatusElementResistanceMasterData').get('m_PathID')
             element_resistance_asset = None
 
@@ -382,13 +382,35 @@ class Skill:
                         element_type: resistance_rate
                     })
 
-                for key in element_resistance_keys:
-                    if key == 'elementResistanceHyado':
-                        skill_name = self.util.replace_string_variable(str_to_clean=skill_name, key=key, value=element_resistances.get(3))
-                        skill_description = self.util.replace_string_variable(str_to_clean=skill_description, key=key, value=element_resistances.get(3))
-                    elif key == 'elementResistanceMera':
-                        skill_name = self.util.replace_string_variable(str_to_clean=skill_name, key=key, value=element_resistances.get(1))
-                        skill_description = self.util.replace_string_variable(str_to_clean=skill_description, key=key, value=element_resistances.get(1))
+                for key in element_resistance_keys.keys():
+                    key_id: int = element_resistance_keys.get(key)
+
+                    skill_name = self.util.replace_string_variable(str_to_clean=skill_name, key=key, value=element_resistances.get(key_id))
+                    skill_description = self.util.replace_string_variable(str_to_clean=skill_description, key=key, value=element_resistances.get(key_id))
+
+        if skill.get('passiveSkillStatusAbnormityResistanceMasterData') is not None:
+            abnormity_resistances: dict = {}
+            abnormity_resistance_keys: dict = self.resistance_parser.get_abnormity_resistance_keys()
+            abnormity_resistance_path = skill.get('passiveSkillStatusAbnormityResistanceMasterData').get('m_PathID')
+            abnormity_resistance_asset = None
+
+            if abnormity_resistance_path != 0:
+                abnormity_resistance_asset = self.util.get_asset_by_path(abnormity_resistance_path)
+                abnormity_resistance_document = abnormity_resistance_asset.get('processed_document')
+
+                for abnormity_resistance in abnormity_resistance_document.get('abnormityResistances'):
+                    abnormity_type = abnormity_resistance.get('type')
+                    resistance_rate = str(math.trunc(abnormity_resistance.get('rate') / 100))
+
+                    abnormity_resistances.update({
+                        abnormity_type: resistance_rate
+                    })
+
+                for key in abnormity_resistance_keys.keys():
+                    key_id: int = abnormity_resistance_keys.get(key)
+
+                    skill_name = self.util.replace_string_variable(str_to_clean=skill_name, key=key, value=abnormity_resistances.get(key_id))
+                    skill_description = self.util.replace_string_variable(str_to_clean=skill_description, key=key, value=abnormity_resistances.get(key_id))
 
         if 'damageEnhancement' in skill_name or 'damageEnhancement' in skill_description:
             skill_damage_increase = self.util.float_to_str(skill.get('passiveSkillExcellentDamageEnhancementEffect').get('damageIncrease') / 100)
@@ -426,6 +448,10 @@ class Skill:
 
     def parse_active_skill_resistance(self, active_skill_resistance_table: dict, display_name: str, description: str):
         active_skill_resistance_keys: dict = {
+            'activeSkillTypeResistanceBreathNone': 0,
+            'activeSkillTypeResistancePhysicsNone': 0,
+            'activeSkillTypeResistanceSpellNone': 0,
+            'activeSkillTypeResistanceTechniqueNone': 0,
             'activeSkillTypeResistanceBreathMera': 1,
             'activeSkillTypeResistancePhysicsMera': 1,
             'activeSkillTypeResistanceSpellMera': 1,

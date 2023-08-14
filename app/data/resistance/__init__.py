@@ -71,7 +71,7 @@ class Resistance:
 
         return abnormity_resistance_table
 
-    def parse_abnormity_resistance(self, abnormity_resistance_table: dict, display_name: str, description: str):
+    def get_abnormity_resistance_keys(self):
         abnormity_resistance_keys: dict = {
             'abnormityResistanceSleep': 1,
             'abnormityResistanceSkip': 2,
@@ -88,6 +88,11 @@ class Resistance:
             'abnormityResistanceCharm': 13
         }
 
+        return abnormity_resistance_keys
+
+    def parse_abnormity_resistance(self, abnormity_resistance_table: dict, display_name: str, description: str):
+        abnormity_resistance_keys: dict = self.get_abnormity_resistance_keys()
+
         for key in abnormity_resistance_keys.keys():
             if key in display_name:
                 abnormity_resistance_type = abnormity_resistance_keys.get(key)
@@ -100,7 +105,7 @@ class Resistance:
             'description': description
         }
 
-    def parse_element_resistance(self, element_resistance_table: dict, display_name: str, description: str):
+    def get_element_resistance_keys(self):
         element_resistance_keys: dict = {
             'elementResistanceMera': 1,
             'elementResistanceGira': 2,
@@ -110,6 +115,11 @@ class Resistance:
             'elementResistanceDein': 6,
             'elementResistanceDoruma': 7,
         }
+
+        return element_resistance_keys
+
+    def parse_element_resistance(self, element_resistance_table: dict, display_name: str, description: str):
+        element_resistance_keys: dict = self.get_element_resistance_keys()
 
         for key in element_resistance_keys.keys():
             if key in display_name:

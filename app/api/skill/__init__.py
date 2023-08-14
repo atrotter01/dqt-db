@@ -162,6 +162,12 @@ class PassiveSkill(Resource):
             if asset.get('processed_document').get('passiveSkillName') is not None:
                 asset_list.append(path)
 
+        for path in self.util.get_asset_list('EquipmentPassive'):
+            asset = self.util.get_asset_by_path(path)
+            
+            if asset.get('processed_document').get('passiveSkillName') is not None:
+                asset_list.append(path)
+
         for path in asset_list:
             skill = self.skill_parser.get_passive_skill(path=path)
 
