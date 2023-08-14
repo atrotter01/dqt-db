@@ -55,6 +55,14 @@ class Unit:
         for rank_up_table in data.get('rankUpTable').get('monsterRankUpList'):
             rank: dict = rank_up_table.get('rank')
             recipe: dict = rank_up_table.get('recipe')
+            stats: dict = {
+                 'hp': rank_up_table.get('hp'),
+                 'mp': rank_up_table.get('mp'),
+                 'attack': rank_up_table.get('attack'),
+                 'defense': rank_up_table.get('defense'),
+                 'intelligence': rank_up_table.get('intelligence'),
+                 'agility': rank_up_table.get('agility')
+            }
 
             rank_number = rank.get('number') + 1
             rank_level_cap: str = rank.get('levelCap')
@@ -77,7 +85,8 @@ class Unit:
                 'rank_number': rank_number,
                 'rank_level_cap': rank_level_cap,
                 'rank_gold_cost': rank_gold_cost,
-                'rank_up_items': rank_up_items
+                'rank_up_items': rank_up_items,
+                'stats_increase': stats
             })
 
         for skill_learning in data.get('activeSkillLearnings'):
