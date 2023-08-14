@@ -1,0 +1,43 @@
+{% include 'header.html' %}
+
+    <script>
+        var dt_options = {
+            autoWidth: false,
+            pagingType: 'numbers',
+        };
+
+        $(document).ready( function () {
+            $('#dt').DataTable(dt_options);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+        } );
+    </script>
+    <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+        <thead>
+            <tr>
+                <td>Name</td>
+                <td>Icon</td>
+                <td>Rank</td>
+                <td>Category</td>
+                <td>Type</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for equipment in equipments %}
+            <tr>
+                <td>
+                    <!--<a href="/equipment/{{ equipment.id }}">-->
+                        <a href="#">
+                        {{ equipment.equipment_display_name }}
+                    </a>
+                </td>
+                <td><img src="/{{ equipment.equipment_icon }}" style="width: 64px; height: 80px;" /></td>
+                <td><span style="display: none">{{ equipment.equipment_rank }}</span><img src="/{{ equipment.equipment_rank_icon }}" alt="{{ equipment.equipment_rank }}" style="width: 64px; height: 64px;" /></td>
+                <td>{{ equipment.equipment_category }}</td>
+                <td>{{ equipment.equipment_type }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% include 'footer.html' %}

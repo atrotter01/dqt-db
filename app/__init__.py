@@ -9,6 +9,7 @@ from app.api.asset import api as asset_api
 from app.api.asset_container import api as asset_container_api
 from app.api.asset_list import api as asset_list_api
 from app.api.asset_type import api as asset_type_api
+from app.api.equipment import api as equipment_api
 from app.api.item import api as item_api
 from app.api.shop import api as shop_api
 from app.api.skill import api as skill_api
@@ -31,6 +32,7 @@ api.add_namespace(asset_api)
 api.add_namespace(asset_container_api)
 api.add_namespace(asset_list_api)
 api.add_namespace(asset_type_api)
+api.add_namespace(equipment_api)
 api.add_namespace(item_api)
 api.add_namespace(shop_api)
 api.add_namespace(skill_api)
@@ -138,6 +140,26 @@ def unit_detail(unit):
         unit = api_response.json()
 
     return render_template('unit_detail.html', unit=unit[0])
+
+@app.route('/equipment')
+def equipment():
+    api_response = requests.get(url=f'http://localhost:5000/api/equipment')
+    equipments = []
+
+    if api_response.status_code == 200:
+        equipments = api_response.json()
+
+    return render_template('equipment_list.html', equipments=equipments)
+
+@app.route('/equipment/<equipment>')
+def equipment_detail(equipment):
+    api_response = requests.get(url=f'http://localhost:5000/api/equipment/{equipment}')
+    equipment = []
+
+    if api_response.status_code == 200:
+        equipment = api_response.json()
+
+    return render_template('equipment_detail.html', equipment=equipment[0])
 
 @app.route('/accolade')
 def accolade():
