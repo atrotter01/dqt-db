@@ -88,8 +88,8 @@ class Equipment:
         cache_key: str = f'{path}_parsed_asset'
         cached_asset: dict = self.util.get_redis_asset(cache_key=cache_key)
 
-        #if cached_asset is not None:
-        #    return cached_asset
+        if cached_asset is not None:
+            return cached_asset
         
         asset: dict = self.parse_equipment(path)
         self.util.save_redis_asset(cache_key=cache_key, data=asset)
