@@ -18,6 +18,7 @@ equipment_model = api.model('equipment', {
     'equipment_category': fields.String,
     'equipment_is_free_alchemy': fields.Boolean,
     'equipment_equipable_roles': fields.List(fields.String),
+    'equipment_status_increase': fields.Raw
 })
 
 @api.param("path", "Path")

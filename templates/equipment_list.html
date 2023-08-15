@@ -20,6 +20,13 @@
                 <td>Rank</td>
                 <td>Category</td>
                 <td>Type</td>
+                <td>HP</td>
+                <td>MP</td>
+                <td>ATK</td>
+                <td>DEF</td>
+                <td>INT</td>
+                <td>AGL</td>
+                <td>MOV</td>
             </tr>
         </thead>
         <tbody>
@@ -35,6 +42,13 @@
                 <td><span style="display: none">{{ equipment.equipment_rank }}</span><img src="/{{ equipment.equipment_rank_icon }}" alt="{{ equipment.equipment_rank }}" style="width: 64px; height: 64px;" /></td>
                 <td>{{ equipment.equipment_category }}</td>
                 <td>{{ equipment.equipment_type }}</td>
+                <td>{{ equipment.equipment_status_increase.hp }}</td>
+                <td>{{ equipment.equipment_status_increase.mp }}</td>
+                <td>{{ equipment.equipment_status_increase.attack }}</td>
+                <td>{{ equipment.equipment_status_increase.defence }}</td>
+                <td>{{ equipment.equipment_status_increase.intelligence }}</td>
+                <td>{{ equipment.equipment_status_increase.agility }}</td>
+                <td>{{ equipment.equipment_status_increase.mobility }}</td>
             </tr>
             {% endfor %}
         </tbody>

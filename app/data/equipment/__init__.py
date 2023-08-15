@@ -29,6 +29,11 @@ class Equipment:
         for role in data.get('limitation').get('limitedMonsterRoles'):
             equipment_equipable_roles.append(role.get('abbrevDisplayName_translation').get('gbl') or role.get('abbrevDisplayName_translation').get('ja'))
 
+        base_passive_skill = data.get('basePassiveSkill')
+        stat_increase_path = base_passive_skill.get('passiveSkillStatusAddEffectMasterData').get('m_PathID')
+        stat_increase_document = self.util.get_asset_by_path(stat_increase_path).get('processed_document')
+        equipment_status_increase = stat_increase_document.get('statusIncrease')
+
         equipment: dict = {
             'id': path,
             'equipment_display_name': equipment_display_name,
@@ -43,6 +48,7 @@ class Equipment:
             'equipment_category': equipment_category,
             'equipment_is_free_alchemy': equipment_is_free_alchemy,
             'equipment_equipable_roles': equipment_equipable_roles,
+            'equipment_status_increase': equipment_status_increase
         }
 
         return equipment
