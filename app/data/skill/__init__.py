@@ -504,7 +504,7 @@ class Skill:
         if cached_asset is not None:
             return cached_asset
 
-        print(path)
+        #print(path)
         asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
         skill: dict = self.parse_active_skill(skill=asset.get('processed_document'), level_learned=None, path=path)
         self.util.save_redis_asset(cache_key=cache_key, data=skill)
