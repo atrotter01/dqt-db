@@ -1,11 +1,14 @@
 from app.util import Util
+from app.data.skill import Skill
 
 class Equipment:
 
     util: Util
+    skill_parser: Skill
 
     def __init__(self, util):
         self.util = util
+        self.skill_parser = Skill(util=util)
 
         return
 
@@ -33,6 +36,31 @@ class Equipment:
         stat_increase_path = base_passive_skill.get('passiveSkillStatusAddEffectMasterData').get('m_PathID')
         stat_increase_document = self.util.get_asset_by_path(stat_increase_path).get('processed_document')
         equipment_status_increase = stat_increase_document.get('statusIncrease')
+        equipment_passive_skill: dict = None
+        equipment_reaction_skill: dict = None
+
+        if data.get('uniquePassiveSkill').get('m_PathID') is None:
+            equipment_passive_skill = self.skill_parser.get_passive_skill(data.get('uniquePassiveSkill').get('linked_asset_id'))
+
+        if data.get('uniqueReactionPassiveSkill').get('m_PathID') is None:
+            equipment_reaction_skill = self.skill_parser.get_reaction_skill(data.get('uniqueReactionPassiveSkill').get('linked_asset_id'))
+
+        equipment_alchemy_slots: dict = {}
+        equipment_alchemy_slot_counter: int = 1
+
+        for alchemy_slot in data.get('alchemyPassiveSkillLotteries'):
+            equipment_alchemy_slots[f'slot_{equipment_alchemy_slot_counter}'] = []
+
+            for passive_skill_candidate in alchemy_slot.get('passiveSkillCandidates'):
+                weight = passive_skill_candidate.get('weight')
+                passive_skill = self.skill_parser.get_passive_skill(passive_skill_candidate.get('passiveSkill').get('linked_asset_id'))
+
+                equipment_alchemy_slots[f'slot_{equipment_alchemy_slot_counter}'].append({
+                    'roll_probability': weight / 1000,
+                    'passive_skill': passive_skill
+                })
+            
+            equipment_alchemy_slot_counter = equipment_alchemy_slot_counter + 1
 
         equipment: dict = {
             'id': path,
@@ -48,7 +76,10 @@ class Equipment:
             'equipment_category': equipment_category,
             'equipment_is_free_alchemy': equipment_is_free_alchemy,
             'equipment_equipable_roles': equipment_equipable_roles,
-            'equipment_status_increase': equipment_status_increase
+            'equipment_status_increase': equipment_status_increase,
+            'equipment_passive_skill': equipment_passive_skill,
+            'equipment_reaction_skill': equipment_reaction_skill,
+            'equipment_alchemy_slots': equipment_alchemy_slots
         }
 
         return equipment
@@ -57,8 +88,8 @@ class Equipment:
         cache_key: str = f'{path}_parsed_asset'
         cached_asset: dict = self.util.get_redis_asset(cache_key=cache_key)
 
-        if cached_asset is not None:
-            return cached_asset
+        #if cached_asset is not None:
+        #    return cached_asset
         
         asset: dict = self.parse_equipment(path)
         self.util.save_redis_asset(cache_key=cache_key, data=asset)

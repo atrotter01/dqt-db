@@ -173,6 +173,7 @@ class Skill:
 
         skill_is_invisible = skill.get('isInvisible')
         skill_is_pve_only = skill.get('isOnlyPve')
+        skill_icon = self.util.get_image_path(skill.get('iconPath'))
         ally_skill_icon = self.util.get_image_path(skill.get('allySideEffectIconPath'))
         enemy_skill_icon = self.util.get_image_path(skill.get('enemySideEffectIconPath'))
 
@@ -190,6 +191,7 @@ class Skill:
             'skill_description': skill_description,
             'skill_is_invisible': skill_is_invisible,
             'skill_is_pve_only': skill_is_pve_only,
+            'skill_icon': skill_icon,
             'ally_skill_icon': ally_skill_icon,
             'enemy_skill_icon': enemy_skill_icon,
             'type_of_skill': 'passive_skill'
@@ -376,6 +378,7 @@ class Skill:
 
                 for element_resistance in element_resistance_document.get('elementResistances'):
                     element_type = element_resistance.get('type')
+                    print(element_type)
                     resistance_rate = str(math.trunc(element_resistance.get('rate') / 100))
 
                     element_resistances.update({
@@ -384,6 +387,9 @@ class Skill:
 
                 for key in element_resistance_keys.keys():
                     key_id: int = element_resistance_keys.get(key)
+
+                    if element_resistances.get(key_id) is None:
+                        continue
 
                     skill_name = self.util.replace_string_variable(str_to_clean=skill_name, key=key, value=element_resistances.get(key_id))
                     skill_description = self.util.replace_string_variable(str_to_clean=skill_description, key=key, value=element_resistances.get(key_id))

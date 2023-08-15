@@ -33,10 +33,7 @@
             {% for equipment in equipments %}
             <tr>
                 <td>
-                    <!--<a href="/equipment/{{ equipment.id }}">-->
-                        <a href="#">
-                        {{ equipment.equipment_display_name }}
-                    </a>
+                    <a href="/equipment/{{ equipment.id }}">{{ equipment.equipment_display_name }}</a>
                 </td>
                 <td><img src="/{{ equipment.equipment_icon }}" style="width: 64px; height: 80px;" /></td>
                 <td><span style="display: none">{{ equipment.equipment_rank }}</span><img src="/{{ equipment.equipment_rank_icon }}" alt="{{ equipment.equipment_rank }}" style="width: 64px; height: 64px;" /></td>

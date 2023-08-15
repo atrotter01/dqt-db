@@ -18,7 +18,10 @@ equipment_model = api.model('equipment', {
     'equipment_category': fields.String,
     'equipment_is_free_alchemy': fields.Boolean,
     'equipment_equipable_roles': fields.List(fields.String),
-    'equipment_status_increase': fields.Raw
+    'equipment_status_increase': fields.Raw,
+    'equipment_passive_skill': fields.Raw,
+    'equipment_reaction_skill': fields.Raw,
+    'equipment_alchemy_slots': fields.Raw,
 })
 
 @api.param("path", "Path")
@@ -46,8 +49,8 @@ class Asset(Resource):
         self.cache_key = f'equipment_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
-        if cached_asset is not None:
-            return cached_asset
+        #if cached_asset is not None:
+        #    return cached_asset
 
         asset_list: list = self.util.get_asset_list('Equipment')
 

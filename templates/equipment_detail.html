@@ -1,0 +1,91 @@
+{% include 'header.html' %}
+
+    <script>
+        var dt_options = {
+            autoWidth: false,
+            sorting: true,
+            searching: false,
+            pageLength: 50,
+            pagingType: 'numbers',
+        };
+
+        $(document).ready( function () {
+            $('#dt').DataTable(dt_options);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+        } );
+    </script>
+    <p><img src="/{{ equipment.equipment_icon }}" /></p>
+    <h4>Equipment Details</h4>
+    <div>
+        <p><span style="font-weight: bold;">Name: </span>{{ equipment.equipment_display_name }}</p>
+        <p><span style="font-weight: bold;">Description: </span>{{ equipment.equipment_description }}</p>
+        <p><span style="font-weight: bold;">Type: </span>{{ equipment.equipment_type }}</p>
+        <p><span style="font-weight: bold;">Category: </span>{{ equipment.equipment_category }}</p>
+        <p><span style="font-weight: bold;">Rank: </span>{{ equipment.equipment_rank }}</p>
+        <p><span style="font-weight: bold;">Alchemy Cost: </span>{{ equipment.equipment_alchemy_cost }}</p>
+        <p><span style="font-weight: bold;">Is Free Alchemy: </span>{{ equipment.equipment_is_free_alchemy }}</p>
+        <p>
+            <span style="font-weight: bold;">Equipable By Roles: </span>
+            {% if equipment.equipment_equipable_roles|length > 0 %}
+                {{ equipment.equipment_equipable_roles|join(', ') }}
+            {% else %}
+                All
+            {% endif %}
+        </p>
+        <p><span style="font-weight: bold;">HP: </span>{{ equipment.equipment_status_increase.hp }}</p>
+        <p><span style="font-weight: bold;">MP: </span>{{ equipment.equipment_status_increase.mp }}</p>
+        <p><span style="font-weight: bold;">ATK: </span>{{ equipment.equipment_status_increase.attack }}</p>
+        <p><span style="font-weight: bold;">DEF: </span>{{ equipment.equipment_status_increase.defence }}</p>
+        <p><span style="font-weight: bold;">INT: </span>{{ equipment.equipment_status_increase.intelligence }}</p>
+        <p><span style="font-weight: bold;">AGL: </span>{{ equipment.equipment_status_increase.agility }}</p>
+        <p><span style="font-weight: bold;">MOV: </span>{{ equipment.equipment_status_increase.mobility }}</p>
+        {% if equipment.equipment_passive_skill.skill_name is defined %}
+        <p><span style="font-weight: bold;">Passive Skill: </span><a href='/skill/passive_skill/{{ equipment.equipment_passive_skill.id }}'>{{ equipment.equipment_passive_skill.skill_name }}</a></p>
+        {% endif %}
+        {% if equipment.equipment_reaction_skill.skill_name is defined %}
+        <p><span style="font-weight: bold;">Reaction Skill: </span><a href='/skill/reaction_skill/{{ equipment.equipment_reaction_skill.id }}'>{{ equipment.equipment_reaction_skill.skill_name }}</a></p>
+        {% endif %}
+    </div>
+    <hr />
+    <h4>Alchemy Rolls</h4>
+    <div>
+        <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Roll 1 Name</td>
+                    <td>Roll 1 Description</td>
+                    <td>Roll 1 Probability</td>
+                    <td>Roll 1 Icon</td>
+                    <td>Roll 2 Name</td>
+                    <td>Roll 2 Description</td>
+                    <td>Roll 2 Probability</td>
+                    <td>Roll 2 Icon</td>
+                    <td>Roll 3 Name</td>
+                    <td>Roll 3 Description</td>
+                    <td>Roll 3 Probability</td>
+                    <td>Roll 3 Icon</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in range(0, equipment.equipment_alchemy_slots.slot_1|length) %}
+                <tr>
+                    <td>{{ equipment.equipment_alchemy_slots.slot_1[x].passive_skill.skill_name }}</td>
+                    <td>{{ equipment.equipment_alchemy_slots.slot_1[x].passive_skill.skill_description }}</td>
+                    <td>{{ equipment.equipment_alchemy_slots.slot_1[x].roll_probability }}%</td>
+                    <td><img src="/{{ equipment.equipment_alchemy_slots.slot_1[x].passive_skill.skill_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ equipment.equipment_alchemy_slots.slot_2[x].passive_skill.skill_name }}</td>
+                    <td>{{ equipment.equipment_alchemy_slots.slot_2[x].passive_skill.skill_description }}</td>
+                    <td>{{ equipment.equipment_alchemy_slots.slot_2[x].roll_probability }}%</td>
+                    <td><img src="/{{ equipment.equipment_alchemy_slots.slot_2[x].passive_skill.skill_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ equipment.equipment_alchemy_slots.slot_3[x].passive_skill.skill_name }}</td>
+                    <td>{{ equipment.equipment_alchemy_slots.slot_3[x].passive_skill.skill_description }}</td>
+                    <td>{{ equipment.equipment_alchemy_slots.slot_3[x].roll_probability }}%</td>
+                    <td><img src="/{{ equipment.equipment_alchemy_slots.slot_3[x].passive_skill.skill_icon }}" style="width: 64px; height: 64px;" /></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% include 'footer.html' %}
