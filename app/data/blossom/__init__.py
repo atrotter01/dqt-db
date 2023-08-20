@@ -105,7 +105,6 @@ class Blossom:
 
             elif panel_type == 5:
                 abnormity_resistance_data = panel_effects[len(panel_effects)-1].get('statusAbnormityResistance')
-                #print(abnormity_resistance_data)
                 abnormity_resistance_table = self.resistance_parser.parse_abnormity_resistance_table(abnormity_resistance_data=abnormity_resistance_data)
                 abnormity_resistance_strings: dict = self.resistance_parser.parse_abnormity_resistance(abnormity_resistance_table=abnormity_resistance_table, display_name=panel_display_name, description=panel_description)
                 panel_display_name = abnormity_resistance_strings.get('display_name')

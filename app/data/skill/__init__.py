@@ -300,7 +300,6 @@ class Skill:
             if passive_skill_enhancement_path != 0:
                 passive_skill_enhancement_asset = self.util.get_asset_by_path(passive_skill_enhancement_path)
                 passive_skill_enhancement_document = passive_skill_enhancement_asset.get('processed_document')
-                #print(passive_skill_enhancement_document)
 
                 for key in passive_skill_enhancement_keys:
                     value: str = None
@@ -322,8 +321,7 @@ class Skill:
             if passive_skill_status_effect_path != 0:
                 passive_skill_status_effect_asset = self.util.get_asset_by_path(passive_skill_status_effect_path)
                 passive_skill_status_effect_document = passive_skill_status_effect_asset.get('processed_document')
-                #print(passive_skill_status_effect_document)
-
+                
                 status_increase_data = self.resistance_parser.parse_status_increase_data(status_increase_data=passive_skill_status_effect_document, display_name=skill_name, description=skill_description)
                 skill_name = status_increase_data.get('display_name')
                 skill_description = status_increase_data.get('description')
@@ -336,8 +334,7 @@ class Skill:
             if abnormity_accuracy_path != 0:
                 abnormity_accuracy_asset = self.util.get_asset_by_path(abnormity_accuracy_path)
                 abnormity_accuracy_document = abnormity_accuracy_asset.get('processed_document')
-                #print(abnormity_accuracy_document)
-
+                
                 for key in abnormity_accuracy_keys:
                     value: str = None
 
@@ -355,8 +352,7 @@ class Skill:
             if critical_correction_path != 0:
                 critical_correction_asset = self.util.get_asset_by_path(critical_correction_path)
                 critical_correction_document = critical_correction_asset.get('processed_document')
-                #print(critical_correction_document)
-
+                
                 for key in critical_correction_keys:
                     value: str = None
 
@@ -378,7 +374,6 @@ class Skill:
 
                 for element_resistance in element_resistance_document.get('elementResistances'):
                     element_type = element_resistance.get('type')
-                    print(element_type)
                     resistance_rate = str(math.trunc(element_resistance.get('rate') / 100))
 
                     element_resistances.update({
@@ -510,7 +505,6 @@ class Skill:
         if cached_asset is not None:
             return cached_asset
 
-        #print(path)
         asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
         skill: dict = self.parse_active_skill(skill=asset.get('processed_document'), level_learned=None, path=path)
         self.util.save_redis_asset(cache_key=cache_key, data=skill)

@@ -7,6 +7,7 @@ api = Namespace("unit", description="")
 unit_model = api.model('unit', {
     'id': fields.String,
     'display_name': fields.String,
+    'flavor_text': fields.String,
     'weight': fields.String,
     'move': fields.Integer,
     'unit_rank': fields.String,

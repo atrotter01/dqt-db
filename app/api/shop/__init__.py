@@ -191,11 +191,9 @@ class ShopGoods(Resource):
                 goods_image = self.util.get_image_path(goods_asset.get('processed_document').get('iconPath'))
 
             else:
-                print(f"{document.get('m_Name')} - {goods_type}")
-
                 for gtype in codelist.keys():
                     if codelist.get(gtype).get(code) is not None:
-                        print(f'{gtype}: {goods_type}')
+                        raise AttributeError(f'{gtype}: {goods_type}')
 
             self.goods.append({
                 'list_order': list_order,

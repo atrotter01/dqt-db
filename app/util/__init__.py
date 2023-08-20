@@ -280,8 +280,14 @@ class Util:
             if asset.get('display_name') == asset_file:
                 return asset.get('path')
 
-    def reset_processed_data(self, asset_type_to_reset = None):
-        asset_list: list = self.get_asset_list(asset_type_to_reset)
+    def reset_processed_data(self, asset_type_to_reset = None, path = None):
+        asset_list: list = []
+
+        if path is not None:
+            asset_list.append(path)
+        else:
+            asset_list.extend(self.get_asset_list(asset_type_to_reset))
+
         total_assets: int = len(asset_list)
         processed_assets: int = 0
 
@@ -380,6 +386,7 @@ class Util:
             return str(value).replace('-', '')
 
     def save_redis_asset(self, cache_key: str, data: Union[dict,list]):
+        print(f'Saving cache key {cache_key}.')
         return self.redis_client.set(cache_key, self.deflate_asset(data))
 
     def get_redis_asset(self, cache_key: str):

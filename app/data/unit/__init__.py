@@ -22,6 +22,7 @@ class Unit:
         asset = self.util.get_asset_by_path(path=path, deflate_data=True)
         data: dict = asset.get('processed_document')
         display_name: str = data.get('profile').get('displayName_translation').get('gbl') or data.get('profile').get('displayName_translation').get('ja')
+        flavor_text: str = None
         allow_nicknaming = data.get('allowedNicknaming')
         almanac_visible = data.get('monsterCollectionDisplayed')
         almanac_number = data.get('monsterCollectionNumber')
@@ -51,6 +52,9 @@ class Unit:
         awakening_reaction_passive_skills: list = []
         blossoms: list = []
         character_builder_blossoms: list = []
+
+        if data.get('profile').get('flavorText_translation') is not None:
+            flavor_text = data.get('profile').get('flavorText_translation').get('gbl') or data.get('profile').get('flavorText_translation').get('ja')
 
         for rank_up_table in data.get('rankUpTable').get('monsterRankUpList'):
             rank: dict = rank_up_table.get('rank')
@@ -133,6 +137,7 @@ class Unit:
         unit: dict = {
             'id': path,
             'display_name': display_name,
+            'flavor_text': flavor_text,
             'weight': weight,
             'move': movement,
             'unit_rank': unit_rank,

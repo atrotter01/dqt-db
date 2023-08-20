@@ -201,7 +201,7 @@ class DataProcessor:
 
         return dictionary_copy
 
-    def get_document(self, path: str, parent_path: str = None, key_stack: str = None, path_stack: list = []):
+    def get_document(self, path: str, parent_path: str = None, key_stack: str = None, path_stack: list = [], force_rebuild: bool = False):
         try:
             asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
 
@@ -216,7 +216,8 @@ class DataProcessor:
             assert isinstance(document, dict), f'Document Error: {document}'
 
             if asset.get('processed_document') is not None:
-                return asset.get('processed_document')
+                if force_rebuild is False:
+                    return asset.get('processed_document')
 
             processed_dict: dict = self.process_dict(dictionary=document, parent_path=path, key_stack=key_stack, path_stack=path_stack)
             processed_dict.update({'linked_asset_id': str(path)})
@@ -231,8 +232,8 @@ class DataProcessor:
             print(f'Failed to fetch a document for path {path} via {parent_path} {ex}')
             raise ex
 
-    def parse_asset(self, path: str):
-        document: dict = self.get_document(path=path, key_stack='root', path_stack=[path])
+    def parse_asset(self, path: str, force_rebuild: bool = False):
+        document: dict = self.get_document(path=path, key_stack='root', path_stack=[path], force_rebuild=force_rebuild)
         assert isinstance(document, dict), document
 
         return document

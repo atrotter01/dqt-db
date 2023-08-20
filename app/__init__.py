@@ -5,14 +5,18 @@ from flask_restx import Api
 from flask_autoindex import AutoIndex
 from werkzeug.middleware.proxy_fix import ProxyFix
 from app.api.accolade import api as accolade_api
+from app.api.area import api as area_api
+from app.api.area_group import api as area_group_api
 from app.api.asset import api as asset_api
 from app.api.asset_container import api as asset_container_api
 from app.api.asset_list import api as asset_list_api
 from app.api.asset_type import api as asset_type_api
+from app.api.enemy_monster import api as enemy_monster_api
 from app.api.equipment import api as equipment_api
 from app.api.item import api as item_api
 from app.api.shop import api as shop_api
 from app.api.skill import api as skill_api
+from app.api.stage import api as stage_api
 from app.api.unit import api as unit_api
 from app.util import Util
 
@@ -28,14 +32,18 @@ api = Api(
 )
 
 api.add_namespace(accolade_api)
+api.add_namespace(area_api)
+api.add_namespace(area_group_api)
 api.add_namespace(asset_api)
 api.add_namespace(asset_container_api)
 api.add_namespace(asset_list_api)
 api.add_namespace(asset_type_api)
+api.add_namespace(enemy_monster_api)
 api.add_namespace(equipment_api)
 api.add_namespace(item_api)
 api.add_namespace(shop_api)
 api.add_namespace(skill_api)
+api.add_namespace(stage_api)
 api.add_namespace(unit_api)
 
 app.register_blueprint(blueprint=blueprint)
