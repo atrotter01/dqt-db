@@ -1,0 +1,50 @@
+{% include 'header.html' %}
+
+    <script>
+        var dt_options = {
+            autoWidth: false,
+            pageLength: 25,
+            pagingType: 'numbers',
+        };
+
+        $(document).ready( function () {
+            var dt = $('#dt').DataTable(dt_options);
+            dt.on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+            $('[data-toggle="tooltip"]').tooltip();
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+        } );
+    </script>
+    <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+        <thead>
+            <tr>
+                <td>Battle Road</td>
+                <td>Units</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for battleroad in battleroads %}
+            <tr>
+                <td>{{ battleroad.area_display_name }}</td>
+                <td>
+                    <div class="container">
+                        <div class="row align-items-start">
+                            {% for unit in battleroad.area_available_monsters|sort(attribute='monster_name') %}
+                            <div class="col col-sm-auto">
+                                <a href='/unit/{{ unit.monster_path }}'>
+                                    <img src="/{{ unit.monster_icon }}" style="width: 64px; height: 64px;" data-toggle="tooltip" data-placement="bottom" title="{{ unit.monster_name }}" />
+                                    <span style="display: none">{{ unit.monster_name }}</span>
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% include 'footer.html' %}

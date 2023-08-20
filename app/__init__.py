@@ -305,17 +305,25 @@ def stage(stage_id):
     # 12: TnT Board
 
 @app.route('/stage/')
-def area_group():
-    #api_response = requests.get(url=f'http://localhost:5000/api/area_group')
-    #area_groups = []
-
-    #if api_response.status_code == 200:
-    #    area_groups = api_response.json()
-
+def area():
     stage_structure = util.get_redis_asset('stage_structure_parsed_asset')
 
-    #return render_template('area_group.html', area_groups=sorted(area_groups, key=lambda d: d['area_group_name']))
     return render_template('stage_list.html', stage_structure=stage_structure)
+
+@app.route('/battleroad/')
+def battleroad():
+    api_response = requests.get(url=f'http://localhost:5000/api/area')
+    area_data = []
+    battleroads = []
+
+    if api_response.status_code == 200:
+        area_data = api_response.json()
+
+    for area in area_data:
+        if area.get('area_category') == 4:
+            battleroads.append(area)
+
+    return render_template('battleroad.html', battleroads=battleroads)
 
 if __name__ == '__main__':
     app.run(debug=True)
