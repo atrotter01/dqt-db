@@ -1,0 +1,247 @@
+{% include 'header.html' %}
+
+    <script>
+        var dt_options = {
+            autoWidth: false,
+            searching: false,
+            pageLength: 25,
+            pagingType: 'numbers',
+        };
+
+        $(document).ready( function () {
+            $('#dt_drops').DataTable(dt_options);
+            $('#dt_missions').DataTable(dt_options);
+            $('#dt_enemies').DataTable(dt_options);
+            //$('#dt_random_enemies').DataTable(dt_options);
+            //$('#dt_reinforcement_enemies').DataTable(dt_options);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+        } );
+    </script>
+    <h4>Stage Details</h4>
+    <div>
+        <p><span style="font-weight: bold;">Name: </span>{{ stage.stage_display_name }}</p>
+        <p><span style="font-weight: bold;">Sub Name: </span>{{ stage.stage_sub_display_name }}</p>
+        <p><span style="font-weight: bold;">Difficulty: </span>{{ stage.stage_difficulty }}</p>
+        <p><span style="font-weight: bold;">Recommended CP: </span>{{ stage.stage_recommended_cp }}</p>
+        <p><span style="font-weight: bold;">Stamina Cost: </span>{{ stage.stage_stamina_cost }}</p>
+        <p><span style="font-weight: bold;">Talent Points: </span>{{ stage.stage_talent_point_gain }}</p>
+        <p><span style="font-weight: bold;">Is Boss Stage: </span>{{ stage.stage_is_boss_stage }}</p>
+        <p><span style="font-weight: bold;">Is Story Stage: </span>{{ stage.stage_is_story_stage }}</p>
+        <p><span style="font-weight: bold;">Is Auto Only: </span>{{ stage.stage_is_auto_only }}</p>
+        {% if stage.stage_is_limited_total_weight %}
+        <p><span style="font-weight: bold;">Weight Limit: </span>{{ stage.stage_limited_total_weight }}</p>
+        {% endif %}
+        {% if stage.stage_is_organization_limit_num %}
+        <p><span style="font-weight: bold;">Unit Limit: </span>{{ stage.stage_organization_limit_num }}</p>
+        {% endif %}
+        <p><span style="font-weight: bold;">Show In Guild Feed On Clear: </span>{{ stage.stage_is_send_feed_when_first_cleared }}</p>
+        <p><span style="font-weight: bold;">Score Challenge Stage: </span>{{ stage.stage_enable_score_challenge }}</p>
+    </div>
+    <hr />
+    <h4>Loot</h4>
+    <div>
+        <table id="dt_drops" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Quantity</td>
+                    <td>Drop %</td>
+                    <td>First Clear Only</td>
+                    <td>Drop Monster</td>
+                    <td>Icon</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stage_drop in stage.stage_drops %}
+                {% for loot in stage_drop.loot_group.loot %}
+                <tr>
+                    <td>{{ loot.display_name }}</td>
+                    <td>{{ loot.quantity }}</td>
+                    <td>{{ stage_drop.drop_percent }}%</td>
+                    <td>{{ stage_drop.first_clear_only }}</td>
+                    <td></td>
+                    <td>
+                        {% if loot.icon != None %}
+                        <img src='/{{ loot.icon }}' style="width: 64px; height: 64px;" />
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+
+                {% for enemy in stage.stage_enemies %}
+                {% for enemy_drop in enemy.monster.enemy_drops %}
+                {% for loot in enemy_drop.loot_group.loot %}
+                <tr>
+                    <td>{{ loot.display_name }}</td>
+                    <td>{{ loot.quantity }}</td>
+                    <td>{{ enemy_drop.drop_percent }}%</td>
+                    <td>{{ enemy_drop.first_clear_only }}</td>
+                    <td><img src='/{{ enemy.monster.enemy_unit_icon }}' style="width: 64px; height: 64px;" /></td>
+                    <td>
+                        {% if loot.icon != None %}
+                        <img src='/{{ loot.icon }}' style="width: 64px; height: 64px;" />
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+                {% endfor %}
+
+                {% for enemy in stage.stage_random_enemies %}
+                {% for enemy_drop in enemy.monster.enemy_drops %}
+                {% for loot in enemy_drop.loot_group.loot %}
+                <tr>
+                    <td>{{ loot.display_name }}</td>
+                    <td>{{ loot.quantity }}</td>
+                    <td>{{ enemy_drop.drop_percent }}%</td>
+                    <td>{{ enemy_drop.first_clear_only }}</td>
+                    <td><img src='/{{ enemy.monster.enemy_unit_icon }}' style="width: 64px; height: 64px;" /></td>
+                    <td>
+                        {% if loot.icon != None %}
+                        <img src='/{{ loot.icon }}' style="width: 64px; height: 64px;" />
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+                {% endfor %}
+
+                {% for enemy in stage.stage_reinforcement_enemies %}
+                {% for enemy_drop in enemy.monster.enemy_drops %}
+                {% for loot in enemy_drop.loot_group.loot %}
+                <tr>
+                    <td>{{ loot.display_name }}</td>
+                    <td>{{ loot.quantity }}</td>
+                    <td>{{ enemy_drop.drop_percent }}%</td>
+                    <td>{{ enemy_drop.first_clear_only }}</td>
+                    <td><img src='/{{ enemy.monster.enemy_unit_icon }}' style="width: 64px; height: 64px;" /></td>
+                    <td>
+                        {% if loot.icon != None %}
+                        <img src='/{{ loot.icon }}' style="width: 64px; height: 64px;" />
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Missions</h4>
+    <div>
+        <table id="dt_missions" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Reward</td>
+                    <td>Quantity</td>
+                    <td>Condition</td>
+                    <td>Icon</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stage_mission in stage.stage_missions %}
+                <tr>
+                    <td>{{ stage_mission.reward_display_name }}</td>
+                    <td>{{ stage_mission.reward_quantity }}</td>
+                    <td>
+                        {% for condition in stage_mission.stage_mission_conditions %}
+                        {{ condition }}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <img src='/{{ stage_mission.reward_icon }}' style="width: 64px; height: 64px;" />
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Enemies</h4>
+    <div>
+        <table id="dt_enemies" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Type</td>
+                    <td>Drop %</td>
+                    <td>Pop %</td>
+                    <td>Level</td>
+                    <td>HP</td>
+                    <td>MP</td>
+                    <td>ATK</td>
+                    <td>DEF</td>
+                    <td>INT</td>
+                    <td>AGI</td>
+                    <td>MOV</td>
+                    <td>Icon</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stage_enemy in stage.stage_enemies %}
+                <tr>
+                    <td><a href='/enemy_monster/{{ stage_enemy.monster.id }}'>{{ stage_enemy.monster.enemy_display_name }}</a></td>
+                    <td>Fixed</td>
+                    <td>{{ stage_enemy.monster.enemy_scout_probability }}%</td>
+                    <td>100%</td>
+                    <td>{{ stage_enemy.monster.enemy_level }}</td>
+                    <td>{{ stage_enemy.monster.enemy_hp }}</td>
+                    <td>{{ stage_enemy.monster.enemy_mp }}</td>
+                    <td>{{ stage_enemy.monster.enemy_attack }}</td>
+                    <td>{{ stage_enemy.monster.enemy_defense }}</td>
+                    <td>{{ stage_enemy.monster.enemy_intelligence }}</td>
+                    <td>{{ stage_enemy.monster.enemy_agility }}</td>
+                    <td>{{ stage_enemy.monster.enemy_mobility }}</td>
+                    <td>
+                        <img src='/{{ stage_enemy.monster.enemy_unit_icon }}' style="width: 64px; height: 64px;" />
+                    </td>
+                </tr>
+                {% endfor %}
+
+                {% for stage_enemy in stage.stage_random_enemies %}
+                <tr>
+                    <td><a href='/enemy_monster/{{ stage_enemy.monster.id }}'>{{ stage_enemy.monster.enemy_display_name }}</a></td>
+                    <td>Random</td>
+                    <td>{{ stage_enemy.monster.enemy_scout_probability }}%</td>
+                    <td>{{ stage_enemy.pop_percentage }}%</td>
+                    <td>{{ stage_enemy.monster.enemy_level }}</td>
+                    <td>{{ stage_enemy.monster.enemy_hp }}</td>
+                    <td>{{ stage_enemy.monster.enemy_mp }}</td>
+                    <td>{{ stage_enemy.monster.enemy_attack }}</td>
+                    <td>{{ stage_enemy.monster.enemy_defense }}</td>
+                    <td>{{ stage_enemy.monster.enemy_intelligence }}</td>
+                    <td>{{ stage_enemy.monster.enemy_agility }}</td>
+                    <td>{{ stage_enemy.monster.enemy_mobility }}</td>
+                    <td>
+                        <img src='/{{ stage_enemy.monster.enemy_unit_icon }}' style="width: 64px; height: 64px;" />
+                    </td>
+                </tr>
+                {% endfor %}
+
+                {% for stage_enemy in stage.stage_reinforcement_enemies %}
+                <tr>
+                    <td><a href='/enemy_monster/{{ stage_enemy.monster.id }}'>{{ stage_enemy.monster.enemy_display_name }}</a></td>
+                    <td>Reinforcement</td>
+                    <td>{{ stage_enemy.monster.enemy_scout_probability }}%</td>
+                    <td>100%</td>
+                    <td>{{ stage_enemy.monster.enemy_level }}</td>
+                    <td>{{ stage_enemy.monster.enemy_hp }}</td>
+                    <td>{{ stage_enemy.monster.enemy_mp }}</td>
+                    <td>{{ stage_enemy.monster.enemy_attack }}</td>
+                    <td>{{ stage_enemy.monster.enemy_defense }}</td>
+                    <td>{{ stage_enemy.monster.enemy_intelligence }}</td>
+                    <td>{{ stage_enemy.monster.enemy_agility }}</td>
+                    <td>{{ stage_enemy.monster.enemy_mobility }}</td>
+                    <td>
+                        <img src='/{{ stage_enemy.monster.enemy_unit_icon }}' style="width: 64px; height: 64px;" />
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% include 'footer.html' %}

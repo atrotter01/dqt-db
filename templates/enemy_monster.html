@@ -1,0 +1,194 @@
+{% include 'header.html' %}
+
+    <script>
+        var dt_options = {
+            autoWidth: false,
+            searching: false,
+            pageLength: 25,
+            pagingType: 'numbers',
+        };
+
+        $(document).ready( function () {
+            $('#dt_element_resist').DataTable(dt_options);
+            $('#dt_status_resist').DataTable(dt_options);
+            $('#dt_active_skills').DataTable(dt_options);
+            $('#dt_drops').DataTable(dt_options);
+            $('#dt_passive_skills').DataTable(dt_options);
+            $('#dt_reaction_skills').DataTable(dt_options);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+        } );
+    </script>
+    <p><img src="/{{ enemy_monster.enemy_unit_icon }}" /></p>
+    <h4>Enemy Monster Details</h4>
+    <div>
+        <p><span style="font-weight: bold;">Name: </span>{{ enemy_monster.enemy_display_name }}</p>
+        <p><span style="font-weight: bold;">Flavor Text: </span>{{ enemy_monster.enemy_flavor_text }}</p>
+        <p><span style="font-weight: bold;">Family: </span>{{ enemy_monster.enemy_family }}</p>
+        <p><span style="font-weight: bold;">Role: </span>{{ enemy_monster.enemy_role }}</p>
+        <p><span style="font-weight: bold;">Family: </span>{{ enemy_monster.enemy_family }}</p>
+        <p><span style="font-weight: bold;">Level: </span>{{ enemy_monster.enemy_level }}</p>
+        <p><span style="font-weight: bold;">HP: </span>{{ enemy_monster.enemy_hp }}</p>
+        <p><span style="font-weight: bold;">MP: </span>{{ enemy_monster.enemy_mp }}</p>
+        <p><span style="font-weight: bold;">Attack: </span>{{ enemy_monster.enemy_attack }}</p>
+        <p><span style="font-weight: bold;">Defense: </span>{{ enemy_monster.enemy_defense }}</p>
+        <p><span style="font-weight: bold;">Intelligence: </span>{{ enemy_monster.enemy_intelligence }}</p>
+        <p><span style="font-weight: bold;">Agility: </span>{{ enemy_monster.enemy_agility }}</p>
+        <p><span style="font-weight: bold;">Move: </span>{{ enemy_monster.enemy_mobility }}</p>
+        <p><span style="font-weight: bold;">Is Strong Enemy: </span>{{ enemy_monster.enemy_is_strong_enemy }}</p>
+        <p><span style="font-weight: bold;">Is Unique Monster: </span>{{ enemy_monster.enemy_is_unique_monster }}</p>
+        <p><span style="font-weight: bold;">Drop %: </span>{{ enemy_monster.enemy_scout_probability }}</p>
+        <p><span style="font-weight: bold;">Is Rare Scout: </span>{{ enemy_monster.enemy_is_rare_scout }}</p>
+    </div>
+    <hr />
+    <h4>Elemental Resistance</h4>
+    <div>
+        <table id="dt_element_resist" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Element</td>
+                    <td>Resistance</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for element in enemy_monster.enemy_element_resistance %}
+                <tr>
+                    <td>{{ enemy_monster.enemy_element_resistance[element].name }}</td>
+                    <td>{{ enemy_monster.enemy_element_resistance[element].rate }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Status Resistance</h4>
+    <div>
+        <table id="dt_status_resist" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Status</td>
+                    <td>Resistance</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for abnormity in enemy_monster.enemy_abnormity_resistance %}
+                <tr>
+                    <td>{{ enemy_monster.enemy_abnormity_resistance[abnormity].name }}</td>
+                    <td>{{ enemy_monster.enemy_abnormity_resistance[abnormity].rate }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Active Skills</h4>
+    <div>
+        <table id="dt_active_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Rank</td>
+                    <td>Range</td>
+                    <td>Reach</td>
+                    <td>Element</td>
+                    <td>Surehit</td>
+                    <td># Hits</td>
+                    <td>MP</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill in enemy_monster.enemy_active_skills %}
+                <tr>
+                    <td><a href='/skill/active_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
+                    <td>{{ skill.skill_description }}</td>
+                    <td>{{ skill.skill_rank }}</td>
+                    <td><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ skill.skill_reach }}</td>
+                    <td><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ skill.skill_surehit }}</td>
+                    <td>{{ skill.skill_num_attacks }}</td>
+                    <td>{{ skill.skill_mp_cost }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Passive Skills</h4>
+    <div>
+        <table id="dt_passive_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Description</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill in enemy_monster.enemy_passive_skills %}
+                <tr>
+                    <td><a href='/skill/passive_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
+                    <td>{{ skill.skill_description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Reaction Skills</h4>
+    <div>
+        <table id="dt_reaction_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Times Available</td>
+                    <td>Accuracy</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill in enemy_monster.enemy_reaction_skills %}
+                <tr>
+                    <td><a href='/skill/reaction_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
+                    <td>{{ skill.skill_description }}</td>
+                    <td>{{ skill.skill_times_available }}</td>
+                    <td>{{ skill.skill_accuracy }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Loot</h4>
+    <div>
+        <table id="dt_drops" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Quantity</td>
+                    <td>Drop %</td>
+                    <td>First Clear Only</td>
+                    <td>Icon</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enemy_drop in enemy_monster.enemy_drops %}
+                {% for loot in enemy_drop.loot_group.loot %}
+                <tr>
+                    <td>{{ loot.display_name }}</td>
+                    <td>{{ loot.quantity }}</td>
+                    <td>{{ enemy_drop.drop_percent }}%</td>
+                    <td>{{ enemy_drop.first_clear_only }}</td>
+                    <td>
+                        {% if loot.icon != None %}
+                        <img src='/{{ loot.icon }}' style="width: 64px; height: 64px;" />
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% include 'footer.html' %}

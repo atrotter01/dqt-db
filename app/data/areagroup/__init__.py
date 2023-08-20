@@ -14,7 +14,7 @@ class AreaGroup:
         data: dict = asset.get('processed_document')
 
         area_group_name = data.get('displayName_translation').get('gbl') or data.get('displayName_translation').get('ja')
-        area_group_banner_path = data.get('bannerPath')
+        area_group_banner_path = self.util.get_image_path(data.get('bannerPath'))
         area_group_score_reward = data.get('enableScoreRanking')
         area_group_show_display_name_at_banner = data.get('showDisplayNameAtBanner')
         area_group_category = data.get('category')

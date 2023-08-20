@@ -32,17 +32,17 @@ class EnemyMonster:
         enemy_agility = data.get('agility')
         enemy_mobility = data.get('mobility')
         enemy_weight = data.get('weight')
-        enemy_is_unique_monster = data.get('uniqueType')
+        enemy_is_unique_monster = data.get('profile').get('uniqueType')
         enemy_is_strong_enemy = data.get('isStrongEnemy')
         enemy_scout_probability = data.get('scoutProbabilityPermyriad')
         enemy_is_rare_scout = data.get('isRareScout')
         enemy_flavor_text: str = None
         enemy_family = data.get('profile').get('family').get('abbrevDisplayName_translation').get('gbl') or data.get('profile').get('family').get('abbrevDisplayName_translation').get('ja')
-        enemy_family_icon = data.get('profile').get('family').get('largeIconPath')
+        enemy_family_icon = self.util.get_image_path(data.get('profile').get('family').get('largeIconPath'))
         enemy_role = data.get('profile').get('role').get('abbrevDisplayName_translation').get('gbl') or data.get('profile').get('role').get('abbrevDisplayName_translation').get('ja')
-        enemy_role_icon = data.get('profile').get('role').get('iconPath')
-        enemy_unit_icon = data.get('profile').get('iconPath')
-        enemy_transformed_unit_icon = data.get('profile').get('transformedIconPath')
+        enemy_role_icon = self.util.get_image_path(data.get('profile').get('role').get('iconPath'))
+        enemy_unit_icon = self.util.get_image_path(data.get('profile').get('iconPath'))
+        enemy_transformed_unit_icon = self.util.get_image_path(data.get('profile').get('transformedIconPath'))
 
         if data.get('profile').get('flavorText_translation') is not None:
             enemy_flavor_text = data.get('profile').get('flavorText_translation').get('gbl') or data.get('profile').get('flavorText_translation').get('ja')

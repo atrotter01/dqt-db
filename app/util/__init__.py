@@ -349,6 +349,8 @@ class Util:
     def clean_text_string(self, str_to_clean: str, unit: str):
         str_to_clean = str_to_clean.replace('<unit>', unit)
         str_to_clean = str_to_clean.replace('<addSign>', '+')
+        str_to_clean = str_to_clean.replace('{', '')
+        str_to_clean = str_to_clean.replace('}', '')
 
         while '<IfSing_' in str_to_clean:
             start_pos: int = str_to_clean.find('<IfSing_')+8
@@ -376,6 +378,7 @@ class Util:
 
     def replace_string_variable(self, str_to_clean: str, key: str, value: str):
         str_to_clean = str_to_clean.replace(f'<{key}>', value)
+        str_to_clean = str_to_clean.replace('{' + str(key) + '}', value)
 
         return str_to_clean
     

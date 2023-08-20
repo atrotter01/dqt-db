@@ -71,7 +71,7 @@ def index():
 
     return render_template('index.html', events=sorted(events, key=lambda d: d['display_name']))
 
-@app.route('/unit')
+@app.route('/unit/')
 def unit():
     api_response = requests.get(url='http://localhost:5000/api/unit/')
     units = []
@@ -81,7 +81,7 @@ def unit():
 
     return render_template('unit_list.html', units=units)
 
-@app.route('/skill')
+@app.route('/skill/')
 def skill():
     active_skill_api_response = requests.get(url='http://localhost:5000/api/skill/active_skill')
     active_skills = []
@@ -119,7 +119,7 @@ def skill_detail(type_of_skill, skill):
 
     return render_template('skill_detail.html', skill=skill[0])
 
-@app.route('/item')
+@app.route('/item/')
 def item():
     consumable_items = []
     profile_icons = []
@@ -149,7 +149,7 @@ def unit_detail(unit):
 
     return render_template('unit_detail.html', unit=unit[0])
 
-@app.route('/equipment')
+@app.route('/equipment/')
 def equipment():
     api_response = requests.get(url=f'http://localhost:5000/api/equipment')
     equipments = []
@@ -169,7 +169,7 @@ def equipment_detail(equipment):
 
     return render_template('equipment_detail.html', equipment=equipment[0])
 
-@app.route('/accolade')
+@app.route('/accolade/')
 def accolade():
     api_response = requests.get(url='http://localhost:5000/api/accolade/')
     accolades = []
@@ -179,7 +179,7 @@ def accolade():
 
     return render_template('accolade.html', accolades=accolades)
 
-@app.route('/asset_container')
+@app.route('/asset_container/')
 def asset_container():
     api_response = requests.get(url='http://localhost:5000/api/asset_container')
     asset_container_response: dict = {}
@@ -237,7 +237,7 @@ def asset(path_id):
 
     return Response(json.dumps(asset, indent=2), mimetype='text/json')
 
-@app.route('/shop')
+@app.route('/shop/')
 def shop():
     api_response = requests.get(url='http://localhost:5000/api/shop')
     shops = []
@@ -257,13 +257,12 @@ def shop_goods(shop_id):
 
     return render_template('shop_goods.html', shop_goods=shop_goods)
 
-@app.route('/imagebrowser')
 @app.route('/imagebrowser/')
 @app.route('/imagebrowser/<path:path>')
 def autoindex(path='.'):
     return files_index.render_autoindex(path)
 
-@app.route('/rankup_calculator')
+@app.route('/rankup_calculator/')
 def rankup_calculator():
     api_response = requests.get(url=f'http://localhost:5000/api/unit')
     units = []
@@ -273,52 +272,25 @@ def rankup_calculator():
 
     return render_template('rankup_calculator.html', units=units)
 
-@app.route('/stage')
-def stage():
-    #api_response = requests.get(url=f'http://localhost:5000/api/stage')
-    stages = []
+@app.route('/enemy_monster/<monster_id>')
+def enemy_monster(monster_id):
+    api_response = requests.get(url=f'http://localhost:5000/api/enemy_monster/{monster_id}')
+    enemy_monster_data = []
+
+    if api_response.status_code == 200:
+        enemy_monster_data = api_response.json()
+
+    return render_template('enemy_monster.html', enemy_monster=enemy_monster_data[0])
+
+@app.route('/stage/<stage_id>')
+def stage(stage_id):
+    api_response = requests.get(url=f'http://localhost:5000/api/stage/{stage_id}')
     stage_data = []
 
-    #if api_response.status_code == 200:
-    #    stages = api_response.json()
+    if api_response.status_code == 200:
+        stage_data = api_response.json()
 
-    for path in util.get_asset_list('Stage'):
-        stage = util.get_asset_by_path(path).get('processed_document')
-
-        stage_name = None
-        if stage.get('displayName_translation') is not None:
-            stage_name = stage.get('displayName_translation').get('gbl') or stage.get('displayName_translation').get('ja')
-
-        area_category = None
-        area_name = None
-        area_banner = None
-        area_group_name = None
-        area_group_banner = None
-        area_group_show_name = None
-        area_show_name = None
-
-        if stage.get('area') is not None:
-            area_name = stage.get('area').get('displayName_translation').get('gbl') or stage.get('area').get('displayName_translation').get('ja')
-            area_banner = util.get_image_path(stage.get('area').get('bannerPath'))
-            area_show_name = stage.get('area').get('showDisplayNameAtBanner')
-
-            if stage.get('area').get('areaGroup') is not None:
-                if stage.get('area').get('areaGroup').get('displayName_translation') is not None:
-                    area_group_name = stage.get('area').get('areaGroup').get('displayName_translation').get('gbl') or stage.get('area').get('areaGroup').get('displayName_translation').get('ja')
-                    area_group_banner = util.get_image_path(stage.get('area').get('areaGroup').get('bannerPath'))
-
-        stage_banner = util.get_image_path(stage.get('bannerImagePath'))
-
-        stage_data.append({
-            'stage_name': stage_name,
-            'area_name': area_name,
-            'stage_banner': stage_banner,
-            'area_banner': area_banner,
-            'area_group_name': area_group_name,
-            'area_group_banner': area_group_banner,
-            'area_show_name': area_show_name,
-            'area_group_show_name': area_group_show_name,
-        })
+    return render_template('stage_detail.html', stage=stage_data[0])
 
     # 1: Story
     # 2: Event
@@ -332,28 +304,18 @@ def stage():
     # 11: Guild Co-op Battle
     # 12: TnT Board
 
-    return render_template('stage.html', stages=stage_data)
-
-@app.route('/event_list')
-def event_list():
-    #api_response = requests.get(url=f'http://localhost:5000/api/stage')
-    events = []
+@app.route('/stage/')
+def area_group():
+    #api_response = requests.get(url=f'http://localhost:5000/api/area_group')
+    #area_groups = []
 
     #if api_response.status_code == 200:
-    #    stages = api_response.json()
+    #    area_groups = api_response.json()
 
-    for path in util.get_asset_list('EventPortal'):
-        event = util.get_asset_by_path(path).get('processed_document')
+    stage_structure = util.get_redis_asset('stage_structure_parsed_asset')
 
-        event_banner = util.get_image_path(event.get('bannerPath'))
-        event_name = event.get('m_Name').replace('EventPortal_', '')
-
-        events.append({
-            'event_banner': event_banner,
-            'event_name': event_name
-        })
-
-    return render_template('event_list.html', events=sorted(events, key=lambda d: d['event_name']))
+    #return render_template('area_group.html', area_groups=sorted(area_groups, key=lambda d: d['area_group_name']))
+    return render_template('stage_list.html', stage_structure=stage_structure)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -3,13 +3,13 @@ import json
 from app.util import Util
 util: Util = Util()
 
-#requests.get(f'http://localhost:5000/api/unit')
-#requests.get(f'http://localhost:5000/api/skill/active_skill')
-#requests.get(f'http://localhost:5000/api/skill/passive_skill')
-#requests.get(f'http://localhost:5000/api/skill/reaction_skill')
-#requests.get(f'http://localhost:5000/api/skill/enemy_skill')
-#requests.get(f'http://localhost:5000/api/equipment')
-#requests.get(f'http://localhost:5000/api/enemy_monster')
+requests.get(f'http://localhost:5000/api/unit')
+requests.get(f'http://localhost:5000/api/skill/active_skill')
+requests.get(f'http://localhost:5000/api/skill/passive_skill')
+requests.get(f'http://localhost:5000/api/skill/reaction_skill')
+requests.get(f'http://localhost:5000/api/skill/enemy_skill')
+requests.get(f'http://localhost:5000/api/equipment')
+requests.get(f'http://localhost:5000/api/enemy_monster')
 
 area_response = requests.get(f'http://localhost:5000/api/area')
 area_group_response = requests.get(f'http://localhost:5000/api/area_group')
@@ -48,12 +48,14 @@ stage_structure: dict = {}
 for area in area_data:
     area_id = area.get('id')
     area_name = area.get('area_display_name')
+    area_banner_path = area.get('area_banner_path')
     associated_area_group_id = area.get('area_group')
 
     if stage_structure.get(area_id) is None:
         stage_structure[area_id] = {}
 
     stage_structure[area_id]['area_group_id'] = associated_area_group_id
+    stage_structure[area_id]['area_banner_path'] = area_banner_path
     stage_structure[area_id]['area_name'] = area_name
     stage_structure[area_id]['stages'] = []
     stage_structure[area_id]['stage_names'] = []
@@ -71,28 +73,26 @@ for area_id in stage_structure:
 for area_group in area_group_data:
     area_group_id = area_group.get('id')
     area_group_name = area_group.get('area_group_display_name')
+    area_group_banner_path = area_group.get('area_group_banner_path')
     area_group_parent_id = area_group.get('area_group_parent')
     area_group_children = area_group.get('area_group_children')
-
-    has_event_portal: bool = False
 
     for area in stage_structure:
         if stage_structure[area]['area_group_id'] == str(area_group_id):
             stage_structure[area]['area_group_name'] = area_group_name
             stage_structure[area]['area_group_parent_id'] = area_group_parent_id
+            stage_structure[area]['area_group_banner_path'] = area_group_banner_path
             stage_structure[area]['area_group_children'].extend(area_group_children)
-
-            if stage_structure[area]['has_event_portal'] is True:
-                has_event_portal = True
-    
-    if has_event_portal is False and area_group_parent_id is None:
-        print(area_group_name)
 
 for stage in stage_data:
     stage_id = stage.get('id')
     stage_name = stage.get('stage_display_name')
     stage_area_id = stage.get('stage_area_id')
-    stage_structure[stage_area_id]['stages'].append(stage_id)
-    stage_structure[stage_area_id]['stage_names'].append(stage_name)
+    stage_structure[stage_area_id]['stages'].append({
+        'stage_id': stage_id,
+        'stage_name': stage_name
+    })
 
-#print(json.dumps(stage_structure))
+print(json.dumps(stage_structure))
+
+util.save_redis_asset(cache_key='stage_structure_parsed_asset', data=stage_structure)

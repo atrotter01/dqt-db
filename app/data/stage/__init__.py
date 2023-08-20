@@ -166,6 +166,93 @@ class Stage:
                     'monster': monster
                 })
 
+        monster_drop_rates: dict = {}
+        monster_counts: dict = {
+            0: 0,
+            1: 0
+        }
+
+        for enemy in stage_enemies:
+            enemy_id = enemy.get('monster').get('id')
+            scout_probability = enemy.get('monster').get('enemy_scout_probability')
+            is_rare_scout = enemy.get('monster').get('enemy_is_rare_scout')
+
+            if scout_probability == 0:
+                continue
+
+            if monster_drop_rates.get(enemy_id) is None:
+                monster_drop_rates[enemy_id] = {}
+                monster_drop_rates[enemy_id]['is_rare_scout'] = is_rare_scout
+                monster_drop_rates[enemy_id]['base_drop_rate'] = scout_probability
+                monster_drop_rates[enemy_id]['count'] = 1
+            else:
+                monster_drop_rates[enemy_id]['count'] = monster_drop_rates[enemy_id]['count'] + 1
+
+            monster_counts[is_rare_scout] = monster_counts[is_rare_scout] + 1
+
+        for enemy in stage_reinforcement_enemies:
+            enemy_id = enemy.get('monster').get('id')
+            scout_probability = enemy.get('monster').get('enemy_scout_probability')
+            is_rare_scout = enemy.get('monster').get('enemy_is_rare_scout')
+
+            if scout_probability == 0:
+                continue
+
+            if monster_drop_rates.get(enemy_id) is None:
+                monster_drop_rates[enemy_id] = {}
+                monster_drop_rates[enemy_id]['is_rare_scout'] = is_rare_scout
+                monster_drop_rates[enemy_id]['base_drop_rate'] = scout_probability
+                monster_drop_rates[enemy_id]['count'] = 1
+            else:
+                monster_drop_rates[enemy_id]['count'] = monster_drop_rates[enemy_id]['count'] + 1
+
+            monster_counts[is_rare_scout] = monster_counts[is_rare_scout] + 1
+
+        for enemy in stage_random_enemies:
+            enemy_id = enemy.get('monster').get('id')
+            scout_probability = enemy.get('monster').get('enemy_scout_probability')
+            is_rare_scout = enemy.get('monster').get('enemy_is_rare_scout')
+
+            if scout_probability == 0:
+                continue
+
+            if monster_drop_rates.get(enemy_id) is None:
+                monster_drop_rates[enemy_id] = {}
+                monster_drop_rates[enemy_id]['is_rare_scout'] = is_rare_scout
+                monster_drop_rates[enemy_id]['base_drop_rate'] = scout_probability
+                monster_drop_rates[enemy_id]['count'] = 1
+            else:
+                monster_drop_rates[enemy_id]['count'] = monster_drop_rates[enemy_id]['count'] + 1
+
+            monster_counts[is_rare_scout] = monster_counts[is_rare_scout] + 1
+
+        for monster in monster_drop_rates:
+            is_rare_scout = monster_drop_rates.get(monster).get('is_rare_scout')
+            base_drop_rate = monster_drop_rates.get(monster).get('base_drop_rate')
+            monster_count = monster_drop_rates.get(monster).get('count')
+            total_scouts = monster_counts.get(is_rare_scout)
+
+            calculated_drop_rate = self.util.float_to_str(((base_drop_rate * monster_count) / total_scouts) / 100)
+
+            for enemy in stage_enemies:
+                enemy_id = enemy.get('monster').get('id')
+
+                if enemy_id == monster:
+                    enemy.get('monster').update({'enemy_scout_probability': calculated_drop_rate})
+
+            for enemy in stage_reinforcement_enemies:
+                enemy_id = enemy.get('monster').get('id')
+
+                if enemy_id == monster:
+                    enemy.get('monster').update({'enemy_scout_probability': calculated_drop_rate})
+
+            for enemy in stage_random_enemies:
+                enemy_id = enemy.get('monster').get('id')
+
+                if enemy_id == monster:
+                    enemy.get('monster').update({'enemy_scout_probability': calculated_drop_rate})
+
+
         for drop_candidate in data.get('fixedReward').get('dropCandidates'):
             drop_percent: int = drop_candidate.get('weight')
             loot_group: dict = self.loot_group_parser.get_data(drop_candidate.get('lootGroup').get('linked_asset_id'))
@@ -207,10 +294,16 @@ class Stage:
                 stage_mission_conditions: list = []
                 
                 for condition in stage_mission_key.get('conditions'):
-                    condition_code = condition.get('code')
+                    condition_code = '0'#condition.get('code')
                     condition_amount = str(condition.get('amount'))
-                    condition_description = condition.get('typeMaster').get('description_translation').get('gbl') or condition.get('typeMaster').get('description_translation').get('ja')
-                    condition_description = self.util.replace_string_variable(str_to_clean=condition_description, key=condition_code, value=condition_amount)
+                    condition_description: str = None
+
+                    if stage_mission_key.get('description_translation') is not None:
+                        condition_description = stage_mission_key.get('description_translation').get('gbl') or stage_mission_key.get('description_translation').get('ja')
+                    else:
+                        condition_description = condition.get('typeMaster').get('description_translation').get('gbl') or condition.get('typeMaster').get('description_translation').get('ja')
+
+                    condition_description = self.util.clean_text_string(str_to_clean=self.util.replace_string_variable(str_to_clean=condition_description, key=condition_code, value=condition_amount), unit='+')
 
                     stage_mission_conditions.append(condition_description)
 
