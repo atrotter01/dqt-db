@@ -80,7 +80,7 @@
             html += '</thead><tbody><tr>';
 
             Object.keys(needed_materials).sort().forEach((material) => {
-                html += '<td class="text-center"><img style="width: 64px; height: 64px;" src="' + needed_materials[material]['icon'] + '" /></td>';
+                html += '<td class="text-center"><img style="width: 64px; height: 64px;" src="/' + needed_materials[material]['icon'] + '" /></td>';
             });
 
             html += '</tr><tr>';
