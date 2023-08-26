@@ -124,6 +124,6 @@ class Asset(Resource):
                         'stamina_per_drop_double_drop_rate': round((100 / (scout_probability * 2)) * stage_stamina_cost, 2),
                     })
 
-        #self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.stages, key=lambda d: d['enemy_display_name']))
+        self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.farmables, key=lambda d: d['enemy_display_name']))
 
         return sorted(self.farmables, key=lambda d: d['enemy_display_name'])
