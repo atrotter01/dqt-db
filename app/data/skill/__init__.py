@@ -63,6 +63,7 @@ class Skill:
         skill_type = self.util.float_to_str(skill.get('activeSkillType'))
         skill_target_type = self.util.float_to_str(skill.get('activeSkillTargetType'))
         skill_damage_calculation_type = self.util.float_to_str(skill.get('damageCalculationType'))
+        skill_ignores_damage_reduction = skill.get('ignoreDamageScaleEffect')
         skill_wave_immune: bool = False
         skill_enhancements: list = []
 
@@ -149,6 +150,7 @@ class Skill:
             'skill_type': skill_type, 
             'skill_target_type': skill_target_type, 
             'skill_damage_calculation_type': skill_damage_calculation_type,
+            'skill_ignores_damage_reduction': skill_ignores_damage_reduction,
             'skill_wave_immune': skill_wave_immune,
             'skill_enhancements': skill_enhancements,
             'type_of_skill': 'active_skill'

@@ -19,6 +19,7 @@ active_skill_model = api.model('active_skill', {
     'skill_wave_immune': fields.Boolean,
     'skill_ignore_reflect': fields.Boolean,
     'skill_ignore_death_endurance': fields.Boolean,
+    'skill_ignores_damage_reduction': fields.Boolean,
     'skill_surehit': fields.Boolean,
     'skill_ignore_spell_invalid': fields.Boolean,
     'skill_threshold_of_intelligence': fields.Integer,
