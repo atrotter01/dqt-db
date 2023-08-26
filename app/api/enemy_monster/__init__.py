@@ -17,7 +17,7 @@ enemy_monster_model = api.model('enemy_monster', {
     'enemy_mobility': fields.Integer,
     'enemy_weight': fields.Integer,
     'enemy_is_strong_enemy': fields.Boolean,
-    'enemy_is_unique_monster': fields.Boolean,
+    'enemy_is_unique_monster': fields.Integer,
     'enemy_scout_probability': fields.Integer,
     'enemy_is_rare_scout': fields.Integer,
     'enemy_flavor_text': fields.String,
@@ -67,7 +67,6 @@ class Asset(Resource):
 
         for path in asset_list:
             enemy_monster = self.enemy_monster_parser.get_data(path=path)
-
             self.enemy_monsters.append(enemy_monster)
 
         self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.enemy_monsters, key=lambda d: d['enemy_display_name']))

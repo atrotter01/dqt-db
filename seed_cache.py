@@ -8,8 +8,13 @@ requests.get(f'http://localhost:5000/api/skill/active_skill')
 requests.get(f'http://localhost:5000/api/skill/passive_skill')
 requests.get(f'http://localhost:5000/api/skill/reaction_skill')
 requests.get(f'http://localhost:5000/api/skill/enemy_skill')
+requests.get(f'http://localhost:5000/api/accolade')
 requests.get(f'http://localhost:5000/api/equipment')
 requests.get(f'http://localhost:5000/api/enemy_monster')
+requests.get(f'http://localhost:5000/api/item/consumableitem')
+requests.get(f'http://localhost:5000/api/item/profileicon')
+requests.get(f'http://localhost:5000/api/item/package')
+requests.get(f'http://localhost:5000/api/shop')
 
 area_response = requests.get(f'http://localhost:5000/api/area')
 area_group_response = requests.get(f'http://localhost:5000/api/area_group')
@@ -92,7 +97,5 @@ for stage in stage_data:
         'stage_id': stage_id,
         'stage_name': stage_name
     })
-
-print(json.dumps(stage_structure))
 
 util.save_redis_asset(cache_key='stage_structure_parsed_asset', data=stage_structure)

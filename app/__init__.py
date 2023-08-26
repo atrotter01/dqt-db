@@ -55,23 +55,7 @@ util: Util = Util()
 
 @app.route('/')
 def index():
-    events: list = []
-
-    if util.redis_client.get('event_portal_cache'):
-        events = util.get_asset_by_path('event_portal_cache', deflate_data=False)
-    else:
-        asset_list: list = util.get_asset_list('EventPortal')
-
-        for path in asset_list:
-            asset = util.get_asset_by_path(path, deflate_data=True)
-            banner_path: str = asset.get('document').get('bannerPath')
-            image_path: str = util.get_image_path(banner_path, lang='en')
-            display_name: str = asset.get('display_name')
-            events.append({'display_name': display_name, 'banner_path': image_path})
-
-        util.redis_client.set('event_portal_cache', json.dumps(events))
-
-    return render_template('index.html', events=sorted(events, key=lambda d: d['display_name']))
+    return render_template('index.html')
 
 @app.route('/unit/')
 def unit():

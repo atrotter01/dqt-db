@@ -62,7 +62,11 @@ class Asset(Resource):
         asset_list: list = self.util.get_asset_list('Stage')
 
         for path in asset_list:
-            stage = self.stage_parser.get_data(path)
+            try:
+                stage = self.stage_parser.get_data(path)
+            except Exception as ex:
+                print(f'Failed to process {path}.')
+                raise ex
 
             self.stages.append(stage)
 

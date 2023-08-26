@@ -240,7 +240,9 @@ class Util:
                     unprocessed_asset_counts.update({filetype: count+1})
 
                 processed_assets = processed_assets + 1
-                print(f'Added {path} to metadata caches. ({processed_assets} of {total_assets})')
+
+                if processed_assets % 10000 == 0:
+                    print(f'Processed {processed_assets} of {total_assets} assets.')
 
             print('Saving metadata cache.')
             #deflated_metadata_cache = self.deflate_asset(metadata_cache)
