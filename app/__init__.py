@@ -13,6 +13,7 @@ from app.api.asset_list import api as asset_list_api
 from app.api.asset_type import api as asset_type_api
 from app.api.enemy_monster import api as enemy_monster_api
 from app.api.equipment import api as equipment_api
+from app.api.farmable import api as farmable_api
 from app.api.item import api as item_api
 from app.api.shop import api as shop_api
 from app.api.skill import api as skill_api
@@ -40,6 +41,7 @@ api.add_namespace(asset_list_api)
 api.add_namespace(asset_type_api)
 api.add_namespace(enemy_monster_api)
 api.add_namespace(equipment_api)
+api.add_namespace(farmable_api)
 api.add_namespace(item_api)
 api.add_namespace(shop_api)
 api.add_namespace(skill_api)
@@ -324,6 +326,16 @@ def battleroad():
             battleroads.append(area)
 
     return render_template('battleroad.html', battleroads=battleroads)
+
+@app.route('/farmable/')
+def farmable():
+    api_response = requests.get(url=f'http://localhost:5000/api/farmable')
+    farmable_data = []
+
+    if api_response.status_code == 200:
+        farmable_data = api_response.json()
+
+    return render_template('farmable.html', farmables=farmable_data)
 
 if __name__ == '__main__':
     app.run(debug=True)

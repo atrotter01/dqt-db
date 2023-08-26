@@ -1,0 +1,45 @@
+{% include 'header.html' %}
+
+    <script>
+        var dt_options = {
+            autoWidth: false,
+            pagingType: 'numbers',
+        };
+
+        $(document).ready( function () {
+            $('#dt_farmable').DataTable(dt_options);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+        } );
+    </script>
+    <h4>Farmables</h4>
+    <div>
+        <table id="dt_farmable" class="table table-striped table-hover table-bordered align-middle" style="width:100%;">
+            <thead>
+                <tr>
+                    <td>Monster</td>
+                    <td>Monster Icon</td>
+                    <td>Stage Name</td>
+                    <td>Stamina</td>
+                    <td>Scout Chance</td>
+                    <td>Avg Stam</td>
+                    <td>Avg Stam (2x Drop)</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for farmable in farmables %}
+                <tr>
+                    <td><a href='/enemy_monster/{{ farmable.enemy_id }}'>{{ farmable.enemy_display_name }}</a></td>
+                    <td><img src="/{{ farmable.enemy_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td><a href='/stage/{{ farmable.stage_id }}'>{{ farmable.stage_display_name }}</a></td>
+                    <td>{{ farmable.stage_stamina_cost }}</td>
+                    <td>{{ farmable.scout_probability }}%</td>
+                    <td>{{ farmable.stamina_per_drop }}</td>
+                    <td>{{ farmable.stamina_per_drop_double_drop_rate }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% include 'footer.html' %}
