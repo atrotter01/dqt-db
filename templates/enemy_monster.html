@@ -8,6 +8,7 @@
             var dt_drops = $('#dt_drops').DataTable(dt_options);
             var dt_passive_skills = $('#dt_passive_skills').DataTable(dt_options);
             var dt_reaction_skills = $('#dt_reaction_skills').DataTable(dt_options);
+            var dt_stages = $('#dt_stages').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
             dt_element.columns.adjust().responsive.recalc();
@@ -16,6 +17,7 @@
             dt_drops.columns.adjust().responsive.recalc();
             dt_passive_skills.columns.adjust().responsive.recalc();
             dt_reaction_skills.columns.adjust().responsive.recalc();
+            dt_stages.columns.adjust().responsive.recalc();
         } );
     </script>
     <p><img src="/{{ enemy_monster.enemy_unit_icon }}" /></p>
@@ -185,6 +187,24 @@
                     </td>
                 </tr>
                 {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Stages</h4>
+    <div>
+        <table id="dt_stages" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Stage</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stage in stages %}
+                <tr>
+                    <td><a href='/stage/{{ stage.stage_id }}'>{{ stage.stage_name }}</a></td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>

@@ -91,6 +91,8 @@ for area_group in area_group_data:
             stage_structure[area]['area_group_banner_path'] = area_group_banner_path
             stage_structure[area]['area_group_children'].extend(area_group_children)
 
+stage_monster_lookup_parsed_asset: dict = {}
+
 for stage in stage_data:
     stage_id = stage.get('id')
     stage_name = stage.get('stage_display_name')
@@ -100,7 +102,41 @@ for stage in stage_data:
         'stage_name': stage_name
     })
 
+    for enemy in stage.get('stage_enemies'):
+        monster_id: str = enemy.get('monster').get('id')
+
+        if stage_monster_lookup_parsed_asset.get(monster_id) is None:
+            stage_monster_lookup_parsed_asset[monster_id] = []
+
+        stage_monster_lookup_parsed_asset[monster_id].append({
+            'stage_id': stage_id,
+            'stage_name': stage_name
+        })
+
+    for enemy in stage.get('stage_random_enemies'):
+        monster_id: str = enemy.get('monster').get('id')
+
+        if stage_monster_lookup_parsed_asset.get(monster_id) is None:
+            stage_monster_lookup_parsed_asset[monster_id] = []
+
+        stage_monster_lookup_parsed_asset[monster_id].append({
+            'stage_id': stage_id,
+            'stage_name': stage_name
+        })
+
+    for enemy in stage.get('stage_reinforcement_enemies'):
+        monster_id: str = enemy.get('monster').get('id')
+
+        if stage_monster_lookup_parsed_asset.get(monster_id) is None:
+            stage_monster_lookup_parsed_asset[monster_id] = []
+
+        stage_monster_lookup_parsed_asset[monster_id].append({
+            'stage_id': stage_id,
+            'stage_name': stage_name
+        })
+
 util.save_redis_asset(cache_key='stage_structure_parsed_asset', data=stage_structure)
+util.save_redis_asset(cache_key='stage_monster_lookup_parsed_asset', data=stage_monster_lookup_parsed_asset)
 
 unit_data = unit_response.json()
 enemy_monster_data = enemy_monster_response.json()

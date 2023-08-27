@@ -266,11 +266,12 @@ def rankup_calculator():
 def enemy_monster(monster_id):
     api_response = requests.get(url=f'http://localhost:5000/api/enemy_monster/{monster_id}')
     enemy_monster_data = []
+    stages: list = util.get_redis_asset('stage_monster_lookup_parsed_asset').get(monster_id)
 
     if api_response.status_code == 200:
         enemy_monster_data = api_response.json()
 
-    return render_template('enemy_monster.html', enemy_monster=enemy_monster_data[0])
+    return render_template('enemy_monster.html', enemy_monster=enemy_monster_data[0], stages=stages)
 
 @app.route('/stage/<stage_id>')
 def stage(stage_id):
