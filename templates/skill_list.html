@@ -20,12 +20,11 @@
             <thead>
                 <tr>
                     <td>Name</td>
-                    <td>Icon</td>
                     <td>Description</td>
                     <td>Rank</td>
+                    <td>Element</td>
                     <td>Range</td>
                     <td>Reach</td>
-                    <td>Element</td>
                     <td>Surehit</td>
                     <td># Hits</td>
                     <td>MP</td>
@@ -35,15 +34,14 @@
                 {% for skill in active_skills %}
                 <tr>
                     <td><a href='/skill/active_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
-                    <td><img src="/{{ skill.skill_button_icon }}" style="width: 64px; height: 64px;" /></td>
                     <td>{{ skill.skill_description }}</td>
                     <td>
                         <span style="display: none">{{ skill.skill_rank }}</span>
                         <img src="/{{ skill.skill_rank_icon }}" style="width: 64px; height: 64px;" />
                     </td>
+                    <td><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
                     <td><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
                     <td>{{ skill.skill_reach }}</td>
-                    <td><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
                     <td>{{ skill.skill_surehit }}</td>
                     <td>{{ skill.skill_num_attacks }}</td>
                     <td>{{ skill.skill_mp_cost }}</td>
@@ -61,9 +59,9 @@
                     <td>Name</td>
                     <td>Description</td>
                     <td>Rank</td>
+                    <td>Element</td>
                     <td>Range</td>
                     <td>Reach</td>
-                    <td>Element</td>
                     <td>Surehit</td>
                     <td># Hits</td>
                     <td>MP</td>
@@ -78,9 +76,9 @@
                         <span style="display: none">{{ skill.skill_rank }}</span>
                         <img src="/{{ skill.skill_rank_icon }}" style="width: 64px; height: 64px;" />
                     </td>
+                    <td><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
                     <td><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
                     <td>{{ skill.skill_reach }}</td>
-                    <td><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
                     <td>{{ skill.skill_surehit }}</td>
                     <td>{{ skill.skill_num_attacks }}</td>
                     <td>{{ skill.skill_mp_cost }}</td>

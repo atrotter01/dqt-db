@@ -3,13 +3,15 @@
     <script>
         $(document).ready( function () {
             {% if skill.type_of_skill == 'active_skill' or skill.type_of_skill == 'enemy_skill' %}
-            var table = $('#dt_skill_enhancements').DataTable(dt_options);
+            var enhancement_table = $('#dt_skill_enhancements').DataTable(dt_options);
             {% endif %}
+            var learned_by_table = $('#dt_learned_by').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
             {% if skill.type_of_skill == 'active_skill' or skill.type_of_skill == 'enemy_skill' %}
-            table.columns.adjust().responsive.recalc();
+            enhancement_table.columns.adjust().responsive.recalc();
             {% endif %}
+            learned_by_table.columns.adjust().responsive.recalc();
         } );
     </script>
     <h4>Skill Details</h4>
@@ -124,6 +126,7 @@
         <p><span style="font-weight: bold;">Reaction Target: </span>{{ skill.skill_reaction_target }}</p>
         <p><span style="font-weight: bold;">Multiple Activations Consecutively: </span>{{ skill.skill_multiple_activation_to_same_target }}</p>
         <p><span style="font-weight: bold;">Is Re-Reactionable: </span>{{ skill.skill_is_re_reactionable }}</p>
+        {% if skill.skill_applicable_abnormity_types|length > 0 %}
         <hr />
         <h4>Applicable Status Effects</h4>
         <div>
@@ -137,6 +140,34 @@
                 </tbody>
             </table>
         </div>
+        {% endif %}
     {% endif %}
+
+    <hr />
+    <h4>Learned By</h4>
+    <div>
+        <table id="dt_learned_by" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <td>Name</td>
+                <td>Icon</td>
+                <td>Type</td>
+            </thead>
+            <tbody>
+                {% for unit in skill_learned_by %}
+                <tr>
+                    <td>
+                        {% if unit.unit_type == 'Enemy Monster' %}
+                        <a href='/enemy_monster/{{ unit.unit_id }}'>{{ unit.unit_name }}</a>
+                        {% else %}
+                        <a href='/unit/{{ unit.unit_id }}'>{{ unit.unit_name }}</a>
+                        {% endif %}
+                    </td>
+                    <td><img src="/{{ unit.unit_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ unit.unit_type }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
 {% include 'footer.html' %}

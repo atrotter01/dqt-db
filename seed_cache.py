@@ -1,16 +1,18 @@
 import requests
 import json
 from app.util import Util
+
 util: Util = Util()
 
-requests.get(f'http://localhost:5000/api/unit')
+unit_response = requests.get(f'http://localhost:5000/api/unit')
 requests.get(f'http://localhost:5000/api/skill/active_skill')
 requests.get(f'http://localhost:5000/api/skill/passive_skill')
 requests.get(f'http://localhost:5000/api/skill/reaction_skill')
 requests.get(f'http://localhost:5000/api/skill/enemy_skill')
 requests.get(f'http://localhost:5000/api/accolade')
 requests.get(f'http://localhost:5000/api/equipment')
-requests.get(f'http://localhost:5000/api/enemy_monster')
+enemy_monster_response = requests.get(f'http://localhost:5000/api/enemy_monster')
+
 requests.get(f'http://localhost:5000/api/item/consumableitem')
 requests.get(f'http://localhost:5000/api/item/profileicon')
 requests.get(f'http://localhost:5000/api/item/package')
@@ -99,3 +101,154 @@ for stage in stage_data:
     })
 
 util.save_redis_asset(cache_key='stage_structure_parsed_asset', data=stage_structure)
+
+unit_data = unit_response.json()
+enemy_monster_data = enemy_monster_response.json()
+
+skill_unit_table: dict = {}
+
+for unit in unit_data:
+    unit_id: str = unit.get('id')
+    unit_name: str = unit.get('display_name')
+    unit_icon: str = unit.get('unit_icon')
+
+    for skill in unit.get('active_skills'):
+        skill_id = skill.get('id')
+
+        if skill_unit_table.get(skill_id) is None:
+            skill_unit_table[skill_id] = []
+        
+        skill_unit_table[skill_id].append({
+            'unit_id': unit_id,
+            'unit_name': unit_name,
+            'unit_icon': unit_icon,
+            'unit_type': 'Unit'
+        })
+
+    for skill in unit.get('passive_skills'):
+        skill_id = skill.get('id')
+
+        if skill_unit_table.get(skill_id) is None:
+            skill_unit_table[skill_id] = []
+        
+        skill_unit_table[skill_id].append({
+            'unit_id': unit_id,
+            'unit_name': unit_name,
+            'unit_icon': unit_icon,
+            'unit_type': 'Unit'
+        })
+
+    for skill in unit.get('awakening_passive_skills'):
+        skill_id = skill.get('id')
+
+        if skill_unit_table.get(skill_id) is None:
+            skill_unit_table[skill_id] = []
+        
+        skill_unit_table[skill_id].append({
+            'unit_id': unit_id,
+            'unit_name': unit_name,
+            'unit_icon': unit_icon,
+            'unit_type': 'Unit'
+        })
+
+    for skill in unit.get('reaction_passive_skills'):
+        skill_id = skill.get('id')
+
+        if skill_unit_table.get(skill_id) is None:
+            skill_unit_table[skill_id] = []
+        
+        skill_unit_table[skill_id].append({
+            'unit_id': unit_id,
+            'unit_name': unit_name,
+            'unit_icon': unit_icon,
+            'unit_type': 'Unit'
+        })
+
+    for skill in unit.get('awakening_reaction_passive_skills'):
+        skill_id = skill.get('id')
+
+        if skill_unit_table.get(skill_id) is None:
+            skill_unit_table[skill_id] = []
+        
+        skill_unit_table[skill_id].append({
+            'unit_id': unit_id,
+            'unit_name': unit_name,
+            'unit_icon': unit_icon,
+            'unit_type': 'Unit'
+        })
+
+    for panel in unit.get('blossoms'):
+        if panel.get('type') == 'Passive Skill' or panel.get('type') == 'Active Skill':
+            skill = panel.get('data')
+            skill_id = skill.get('id')
+
+            if skill_unit_table.get(skill_id) is None:
+                skill_unit_table[skill_id] = []
+        
+            skill_unit_table[skill_id].append({
+                'unit_id': unit_id,
+                'unit_name': unit_name,
+                'unit_icon': unit_icon,
+                'unit_type': 'Unit'
+            })
+
+    for panel in unit.get('character_builder_blossoms'):
+        if panel.get('type') == 'Passive Skill' or panel.get('type') == 'Active Skill':
+            skill = panel.get('data')
+            skill_id = skill.get('id')
+
+            if skill_unit_table.get(skill_id) is None:
+                skill_unit_table[skill_id] = []
+        
+            skill_unit_table[skill_id].append({
+                'unit_id': unit_id,
+                'unit_name': unit_name,
+                'unit_icon': unit_icon,
+                'unit_type': 'Unit'
+            })
+
+for enemy_monster in enemy_monster_data:
+    enemy_monster_id: str = enemy_monster.get('id')
+    enemy_monster_name: str = enemy_monster.get('enemy_display_name')
+    enemy_monster_icon: str = enemy_monster.get('enemy_unit_icon')
+
+    for skill in enemy_monster.get('enemy_active_skills'):
+        skill_id = skill.get('id')
+
+        if skill_unit_table.get(skill_id) is None:
+            skill_unit_table[skill_id] = []
+        
+        skill_unit_table[skill_id].append({
+            'unit_id': enemy_monster_id,
+            'unit_name': enemy_monster_name,
+            'unit_icon': enemy_monster_icon,
+            'unit_type': 'Enemy Monster'
+        })
+
+    for skill in enemy_monster.get('enemy_passive_skills'):
+        skill_id = skill.get('id')
+
+        if skill_unit_table.get(skill_id) is None:
+            skill_unit_table[skill_id] = []
+        
+        skill_unit_table[skill_id].append({
+            'unit_id': enemy_monster_id,
+            'unit_name': enemy_monster_name,
+            'unit_icon': enemy_monster_icon,
+            'unit_type': 'Enemy Monster'
+        })
+
+    for skill in enemy_monster.get('enemy_reaction_skills'):
+        skill_id = skill.get('id')
+
+        if skill_unit_table.get(skill_id) is None:
+            skill_unit_table[skill_id] = []
+        
+        skill_unit_table[skill_id].append({
+            'unit_id': enemy_monster_id,
+            'unit_name': enemy_monster_name,
+            'unit_icon': enemy_monster_icon,
+            'unit_type': 'Enemy Monster'
+        })
+
+util.save_redis_asset(cache_key='skill_unit_table_parsed_asset', data=skill_unit_table)

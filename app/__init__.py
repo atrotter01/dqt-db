@@ -98,12 +98,13 @@ def skill():
 @app.route('/skill/<type_of_skill>/<skill>')
 def skill_detail(type_of_skill, skill):
     api_response = requests.get(url=f'http://localhost:5000/api/skill/{type_of_skill}/{skill}')
-    unit = []
+    skill_data = []
+    skill_learned_by = util.get_redis_asset('skill_unit_table_parsed_asset').get(skill)
 
     if api_response.status_code == 200:
-        skill = api_response.json()
+        skill_data = api_response.json()
 
-    return render_template('skill_detail.html', skill=skill[0])
+    return render_template('skill_detail.html', skill=skill_data[0], skill_learned_by=skill_learned_by)
 
 @app.route('/item/')
 def item():
