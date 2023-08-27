@@ -43,76 +43,6 @@
         <p><span style="font-weight: bold;">Almanac Number: </span>{{ unit.almanac_number }}</p>
     </div>
     <hr />
-    <h4>Stats By Level</h4>
-    <div>
-        <table id="dt_stats" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-            <thead>
-                <tr>
-                    <td>LVL</td>
-                    <td>HP</td>
-                    <td>MP</td>
-                    <td>ATK</td>
-                    <td>DEF</td>
-                    <td>AGI</td>
-                    <td>INT</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for level in unit.stats_by_level %}
-                <tr>
-                    <td>{{ level.level }}</td>
-                    <td>{{ level.hp }}</td>
-                    <td>{{ level.mp }}</td>
-                    <td>{{ level.attack }}</td>
-                    <td>{{ level.defense }}</td>
-                    <td>{{ level.agility }}</td>
-                    <td>{{ level.intelligence }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <hr />
-    <h4>Elemental Resistance</h4>
-    <div>
-        <table id="dt_element_resist" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-            <thead>
-                <tr>
-                    <td>Element</td>
-                    <td>Resistance</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for element in unit.element_resistances %}
-                <tr>
-                    <td>{{ unit.element_resistances[element].name }}</td>
-                    <td>{{ unit.element_resistances[element].rate }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <hr />
-    <h4>Status Resistance</h4>
-    <div>
-        <table id="dt_status_resist" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-            <thead>
-                <tr>
-                    <td>Status</td>
-                    <td>Resistance</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for abnormity in unit.abnormity_resistances %}
-                <tr>
-                    <td>{{ unit.abnormity_resistances[abnormity].name }}</td>
-                    <td>{{ unit.abnormity_resistances[abnormity].rate }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <hr />
     <h4>Active Skills</h4>
     <div>
         <table id="dt_active_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
@@ -242,6 +172,46 @@
             </tbody>
         </table>
     </div>
+    <hr />
+    <h4>Elemental Resistance</h4>
+    <div>
+        <table id="dt_element_resist" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Element</td>
+                    <td>Resistance</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for element in unit.element_resistances %}
+                <tr>
+                    <td>{{ unit.element_resistances[element].name }}</td>
+                    <td>{{ unit.element_resistances[element].rate }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Status Resistance</h4>
+    <div>
+        <table id="dt_status_resist" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Status</td>
+                    <td>Resistance</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for abnormity in unit.abnormity_resistances %}
+                <tr>
+                    <td>{{ unit.abnormity_resistances[abnormity].name }}</td>
+                    <td>{{ unit.abnormity_resistances[abnormity].rate }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <h4>Talent Blossoming</h4>
     <div>
         <table id="dt_blossom_board" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
@@ -323,6 +293,36 @@
                     <td></td>
                     <td></td>
                     {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Stats By Level</h4>
+    <div>
+        <table id="dt_stats" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>LVL</td>
+                    <td>HP</td>
+                    <td>MP</td>
+                    <td>ATK</td>
+                    <td>DEF</td>
+                    <td>AGI</td>
+                    <td>INT</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for level in unit.stats_by_level %}
+                <tr>
+                    <td>{{ level.level }}</td>
+                    <td>{{ level.hp }}</td>
+                    <td>{{ level.mp }}</td>
+                    <td>{{ level.attack }}</td>
+                    <td>{{ level.defense }}</td>
+                    <td>{{ level.agility }}</td>
+                    <td>{{ level.intelligence }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
