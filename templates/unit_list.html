@@ -1,12 +1,6 @@
 {% include 'header.html' %}
 
     <script>
-        var dt_options = {
-            autoWidth: false,
-            pagingType: 'numbers',
-            responsive: true
-        };
-
         $(document).ready( function () {
             var table = $('#dt').DataTable(dt_options);
             $('#loading_spinner').hide();
@@ -19,9 +13,9 @@
             <tr>
                 <td>Name</td>
                 <td>Icon</td>
+                <td>Rank</td>
                 <td>Family</td>
                 <td>Role</td>
-                <td>Rank</td>
                 <td>Farm</td>
                 <td>Gacha</td>
                 <td>LVL</td>
@@ -41,9 +35,9 @@
             <tr>
                 <td><a href="/unit/{{ unit.id }}">{{ unit.display_name }}</a></td>
                 <td><img src="/{{ unit.unit_icon }}" style="width: 64px; height: 80px;" /></td>
+                <td><span style="display: none">{{ unit.unit_rank }}</span><img src="/{{ unit.unit_rank_icon }}" alt="{{ unit.unit_rank }}" style="width: 64px; height: 64px;" /></td>
                 <td><span style="display: none">{{ unit.family }}</span><img src="/{{ unit.family_icon }}" alt="{{ unit.family }}" style="width: 64px; height: 64px;" /></td>
                 <td><span style="display: none">{{ unit.role }}</span><img src="/{{ unit.role_icon }}" alt="{{ unit.role }}" style="width: 64px; height: 64px;" /></td>
-                <td><span style="display: none">{{ unit.unit_rank }}</span><img src="/{{ unit.unit_rank_icon }}" alt="{{ unit.unit_rank }}" style="width: 64px; height: 64px;" /></td>
                 <td>{{ unit.is_quest_reward }}</td>
                 <td>{{ unit.is_gacha_unit }}</td>
                 <td>{{ unit.stats_by_level[-1:][0].level }}</td>
