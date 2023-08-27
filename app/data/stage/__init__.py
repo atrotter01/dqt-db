@@ -177,9 +177,6 @@ class Stage:
             scout_probability = enemy.get('monster').get('enemy_scout_probability')
             is_rare_scout = enemy.get('monster').get('enemy_is_rare_scout')
 
-            if scout_probability == 0:
-                continue
-
             if monster_drop_rates.get(enemy_id) is None:
                 monster_drop_rates[enemy_id] = {}
                 monster_drop_rates[enemy_id]['is_rare_scout'] = is_rare_scout
@@ -194,9 +191,6 @@ class Stage:
             enemy_id = enemy.get('monster').get('id')
             scout_probability = enemy.get('monster').get('enemy_scout_probability')
             is_rare_scout = enemy.get('monster').get('enemy_is_rare_scout')
-
-            if scout_probability == 0:
-                continue
 
             if monster_drop_rates.get(enemy_id) is None:
                 monster_drop_rates[enemy_id] = {}
@@ -213,9 +207,6 @@ class Stage:
             scout_probability = enemy.get('monster').get('enemy_scout_probability')
             is_rare_scout = enemy.get('monster').get('enemy_is_rare_scout')
 
-            if scout_probability == 0:
-                continue
-
             if monster_drop_rates.get(enemy_id) is None:
                 monster_drop_rates[enemy_id] = {}
                 monster_drop_rates[enemy_id]['is_rare_scout'] = is_rare_scout
@@ -231,6 +222,9 @@ class Stage:
             base_drop_rate = monster_drop_rates.get(monster).get('base_drop_rate')
             monster_count = monster_drop_rates.get(monster).get('count')
             total_scouts = monster_counts.get(is_rare_scout)
+
+            if base_drop_rate == 0:
+                continue
 
             calculated_drop_rate = self.util.float_to_str(((base_drop_rate * monster_count) / total_scouts) / 100)
 
