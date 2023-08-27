@@ -99,7 +99,10 @@ def skill():
 def skill_detail(type_of_skill, skill):
     api_response = requests.get(url=f'http://localhost:5000/api/skill/{type_of_skill}/{skill}')
     skill_data = []
-    skill_learned_by = util.get_redis_asset('skill_unit_table_parsed_asset').get(skill)
+    skill_learned_by = []
+    
+    if util.get_redis_asset('skill_unit_table_parsed_asset').get(skill) is not None:
+        skill_learned_by.extend(util.get_redis_asset('skill_unit_table_parsed_asset').get(skill))
 
     if api_response.status_code == 200:
         skill_data = api_response.json()
