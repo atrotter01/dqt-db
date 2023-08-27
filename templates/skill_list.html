@@ -1,12 +1,6 @@
 {% include 'header.html' %}
 
     <script>
-        var dt_options = {
-            autoWidth: false,
-            pagingType: 'numbers',
-            responsive: true
-        };
-
         $(document).ready( function () {
             var dt_active_skills = $('#dt_active_skills').DataTable(dt_options);
             var dt_enemy_skills = $('#dt_enemy_skills').DataTable(dt_options);

@@ -1,14 +1,6 @@
 {% include 'header.html' %}
 
     <script>
-        var dt_options = {
-            autoWidth: false,
-            searching: false,
-            pageLength: 25,
-            pagingType: 'numbers',
-            responsive: true
-        };
-
         $(document).ready( function () {
             var dt_drops = $('#dt_drops').DataTable(dt_options);
             var dt_missions = $('#dt_missions').DataTable(dt_options);

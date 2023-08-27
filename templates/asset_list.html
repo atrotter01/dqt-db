@@ -1,13 +1,6 @@
 {% include 'header.html' %}
 
     <script>
-        var dt_options = {
-            autoWidth: false,
-            pageLength: 100,
-            pagingType: 'numbers',
-            responsive: true
-        };
-
         $(document).ready( function () {
             var table = $('#dt').DataTable(dt_options);
             $('#loading_spinner').hide();

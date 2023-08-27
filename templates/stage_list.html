@@ -1,13 +1,6 @@
 {% include 'header.html' %}
 
     <script>
-        var dt_options = {
-            autoWidth: false,
-            pageLength: 25,
-            pagingType: 'numbers',
-            responsive: true
-        };
-
         $(document).ready( function () {
             var table = $('#dt').DataTable(dt_options);
             $('#loading_spinner').hide();
@@ -25,15 +18,19 @@
         <tbody>
             {% for area in stage_structure %}
             <tr>
-                <td>
-                    {% for stage in stage_structure[area].stages %}
-                    <a href='/stage/{{ stage.stage_id }}'>
-                    {% if stage_structure[area].area_group_name is defined %}
-                    {{ stage_structure[area].area_group_name }} -
-                    {% endif %}
-                    {{ stage_structure[area].area_name }} - {{ stage.stage_name }}
-                    </a><br />
-                    {% endfor %}
+                <td class="align-top">
+                    <ul>
+                        {% for stage in stage_structure[area].stages %}
+                        <li>
+                            <a href='/stage/{{ stage.stage_id }}'>
+                            {% if stage_structure[area].area_group_name is defined %}
+                            {{ stage_structure[area].area_group_name }} -
+                            {% endif %}
+                            {{ stage_structure[area].area_name }} - {{ stage.stage_name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </td>
                 <td class="align-top"><img src="/{{ stage_structure[area].area_banner_path }}" style="width: 512px; height: 144px;" /></td>
             </tr>

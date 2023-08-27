@@ -1,14 +1,6 @@
 {% include 'header.html' %}
 
     <script>
-        var dt_options = {
-            autoWidth: false,
-            searching: false,
-            pageLength: 25,
-            pagingType: 'numbers',
-            responsive: true
-        };
-
         $(document).ready( function () {
             var dt_element = $('#dt_element_resist').DataTable(dt_options);
             var dt_status = $('#dt_status_resist').DataTable(dt_options);

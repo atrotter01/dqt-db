@@ -1,14 +1,6 @@
 {% include 'header.html' %}
 
     <script>
-        var dt_options = {
-            autoWidth: false,
-            searching: false,
-            pageLength: 25,
-            pagingType: 'numbers',
-            responsive: true
-        };
-
         $(document).ready( function () {
             {% if skill.type_of_skill == 'active_skill' or skill.type_of_skill == 'enemy_skill' %}
             var table = $('#dt_skill_enhancements').DataTable(dt_options);

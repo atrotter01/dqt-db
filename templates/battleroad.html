@@ -1,13 +1,6 @@
 {% include 'header.html' %}
 
     <script>
-        var dt_options = {
-            autoWidth: false,
-            pageLength: 25,
-            pagingType: 'numbers',
-            responsive: true
-        };
-
         $(document).ready( function () {
             var dt = $('#dt').DataTable(dt_options);
             dt.on('draw', function () {
