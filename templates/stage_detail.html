@@ -6,14 +6,18 @@
             searching: false,
             pageLength: 25,
             pagingType: 'numbers',
+            responsive: true
         };
 
         $(document).ready( function () {
-            $('#dt_drops').DataTable(dt_options);
-            $('#dt_missions').DataTable(dt_options);
-            $('#dt_enemies').DataTable(dt_options);
+            var dt_drops = $('#dt_drops').DataTable(dt_options);
+            var dt_missions = $('#dt_missions').DataTable(dt_options);
+            var dt_enemies = $('#dt_enemies').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
+            dt_drops.columns.adjust().responsive.recalc();
+            dt_missions.columns.adjust().responsive.recalc();
+            dt_enemies.columns.adjust().responsive.recalc();
         } );
     </script>
     <h4>Stage Details</h4>

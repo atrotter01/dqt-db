@@ -4,12 +4,14 @@
         var dt_options = {
             autoWidth: false,
             pagingType: 'numbers',
+            responsive: true
         };
 
         $(document).ready( function () {
-            $('#dt_accolade').DataTable(dt_options);
+            var table = $('#dt_accolade').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
+            table.columns.adjust().responsive.recalc();
         } );
     </script>
     <h4>Accolades</h4>

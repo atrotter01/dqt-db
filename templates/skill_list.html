@@ -4,15 +4,20 @@
         var dt_options = {
             autoWidth: false,
             pagingType: 'numbers',
+            responsive: true
         };
 
         $(document).ready( function () {
-            $('#dt_active_skills').DataTable(dt_options);
-            $('#dt_enemy_skills').DataTable(dt_options);
-            $('#dt_passive_skills').DataTable(dt_options);
-            $('#dt_reaction_skills').DataTable(dt_options);
+            var dt_active_skills = $('#dt_active_skills').DataTable(dt_options);
+            var dt_enemy_skills = $('#dt_enemy_skills').DataTable(dt_options);
+            var dt_passive_skills = $('#dt_passive_skills').DataTable(dt_options);
+            var dt_reaction_skills = $('#dt_reaction_skills').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
+            dt_active_skills.columns.adjust().responsive.recalc();
+            dt_enemy_skills.columns.adjust().responsive.recalc();
+            dt_passive_skills.columns.adjust().responsive.recalc();
+            dt_reaction_skills.columns.adjust().responsive.recalc();
         } );
     </script>
     <h4>Active Skills</h4>

@@ -6,14 +6,18 @@
             searching: false,
             pageLength: 25,
             pagingType: 'numbers',
+            responsive: true
         };
 
         $(document).ready( function () {
             {% if skill.type_of_skill == 'active_skill' or skill.type_of_skill == 'enemy_skill' %}
-            $('#dt_skill_enhancements').DataTable(dt_options);
+            var table = $('#dt_skill_enhancements').DataTable(dt_options);
             {% endif %}
             $('#loading_spinner').hide();
             $('#content-container').show();
+            {% if skill.type_of_skill == 'active_skill' or skill.type_of_skill == 'enemy_skill' %}
+            table.columns.adjust().responsive.recalc();
+            {% endif %}
         } );
     </script>
     <h4>Skill Details</h4>

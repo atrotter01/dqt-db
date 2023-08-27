@@ -6,17 +6,24 @@
             searching: false,
             pageLength: 25,
             pagingType: 'numbers',
+            responsive: true
         };
 
         $(document).ready( function () {
-            $('#dt_element_resist').DataTable(dt_options);
-            $('#dt_status_resist').DataTable(dt_options);
-            $('#dt_active_skills').DataTable(dt_options);
-            $('#dt_drops').DataTable(dt_options);
-            $('#dt_passive_skills').DataTable(dt_options);
-            $('#dt_reaction_skills').DataTable(dt_options);
+            var dt_element = $('#dt_element_resist').DataTable(dt_options);
+            var dt_status = $('#dt_status_resist').DataTable(dt_options);
+            var dt_active_skills = $('#dt_active_skills').DataTable(dt_options);
+            var dt_drops = $('#dt_drops').DataTable(dt_options);
+            var dt_passive_skills = $('#dt_passive_skills').DataTable(dt_options);
+            var dt_reaction_skills = ('#dt_reaction_skills').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
+            dt_element.columns.adjust().responsive.recalc();
+            dt_status.columns.adjust().responsive.recalc();
+            dt_active_skills.columns.adjust().responsive.recalc();
+            dt_drops.columns.adjust().responsive.recalc();
+            dt_passive_skills.columns.adjust().responsive.recalc();
+            dt_reaction_skills.columns.adjust().responsive.recalc();
         } );
     </script>
     <p><img src="/{{ enemy_monster.enemy_unit_icon }}" /></p>

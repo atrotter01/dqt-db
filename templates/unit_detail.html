@@ -6,22 +6,34 @@
             searching: false,
             pageLength: 25,
             pagingType: 'numbers',
+            responsive: true
         };
 
         $(document).ready( function () {
-            $('#dt_stats').DataTable(dt_options);
-            $('#dt_rankup').DataTable(dt_options);
-            $('#dt_element_resist').DataTable(dt_options);
-            $('#dt_status_resist').DataTable(dt_options);
-            $('#dt_active_skills').DataTable(dt_options);
-            $('#dt_passive_skills').DataTable(dt_options);
-            $('#dt_awakening_passive_skills').DataTable(dt_options);
-            $('#dt_reaction_skills').DataTable(dt_options);
-            $('#dt_awakening_reaction_skills').DataTable(dt_options);
-            $('#dt_blossom_board').DataTable(dt_options);
-            $('#dt_character_builder').DataTable(dt_options);
+            var dt_stats = $('#dt_stats').DataTable(dt_options);
+            var dt_rankup = $('#dt_rankup').DataTable(dt_options);
+            var dt_element = $('#dt_element_resist').DataTable(dt_options);
+            var dt_status = $('#dt_status_resist').DataTable(dt_options);
+            var dt_active_skills = ('#dt_active_skills').DataTable(dt_options);
+            var dt_passive_skills = ('#dt_passive_skills').DataTable(dt_options);
+            var dt_awakening_passive_skills = ('#dt_awakening_passive_skills').DataTable(dt_options);
+            var dt_reaction_skills = ('#dt_reaction_skills').DataTable(dt_options);
+            var dt_awakening_reaction_skills = ('#dt_awakening_reaction_skills').DataTable(dt_options);
+            var dt_blossom = $('#dt_blossom_board').DataTable(dt_options);
+            var dt_character_builder = ('#dt_character_builder').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
+            dt_stats.columns.adjust().responsive.recalc();
+            dt_rankup.columns.adjust().responsive.recalc();
+            dt_element.columns.adjust().responsive.recalc();
+            dt_status.columns.adjust().responsive.recalc();
+            dt_active_skills.columns.adjust().responsive.recalc();
+            dt_passive_skills.columns.adjust().responsive.recalc();
+            dt_awakening_passive_skills.columns.adjust().responsive.recalc();
+            dt_reaction_skills.columns.adjust().responsive.recalc();
+            dt_awakening_reaction_skills.columns.adjust().responsive.recalc();
+            dt_blossom.columns.adjust().responsive.recalc();
+            dt_character_builder.columns.adjust().responsive.recalc();
         } );
     </script>
     <p><img src="/{{ unit.unit_icon }}" /></p>
@@ -64,36 +76,6 @@
                     <td>{{ level.agility }}</td>
                     <td>{{ level.intelligence }}</td>
                 </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <hr />
-    <h4>Rank Up Table</h4>
-    <div>
-        <table id="dt_rankup" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-            <thead>
-                <tr>
-                    <td>Rank</td>
-                    <td>Level Cap</td>
-                    <td>Gold Cost</td>
-                    <td>Item Name</td>
-                    <td>Item Icon</td>
-                    <td>Quantity</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for rank in unit.rank_up_table %}
-                {% for item in rank.rank_up_items %}
-                <tr>
-                    <td>{{ rank.rank_number }}</td>
-                    <td>{{ rank.rank_level_cap }}</td>
-                    <td>{{ rank.rank_gold_cost }}</td>
-                    <td>{{ item.item_name }}</td>
-                    <td><img src="/{{ item.item_icon }}" style="width: 64px; height: 64px;" /></td>
-                    <td>{{ item.quantity }}</td>
-                </tr>
-                {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
@@ -350,6 +332,36 @@
                     <td></td>
                     {% endif %}
                 </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Rank Up Table</h4>
+    <div>
+        <table id="dt_rankup" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Rank</td>
+                    <td>Level Cap</td>
+                    <td>Gold Cost</td>
+                    <td>Item Name</td>
+                    <td>Item Icon</td>
+                    <td>Quantity</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rank in unit.rank_up_table %}
+                {% for item in rank.rank_up_items %}
+                <tr>
+                    <td>{{ rank.rank_number }}</td>
+                    <td>{{ rank.rank_level_cap }}</td>
+                    <td>{{ rank.rank_gold_cost }}</td>
+                    <td>{{ item.item_name }}</td>
+                    <td><img src="/{{ item.item_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ item.quantity }}</td>
+                </tr>
+                {% endfor %}
                 {% endfor %}
             </tbody>
         </table>

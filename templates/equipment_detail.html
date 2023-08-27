@@ -6,12 +6,14 @@
             searching: false,
             pageLength: 50,
             pagingType: 'numbers',
+            responsive: true
         };
 
         $(document).ready( function () {
-            $('#dt').DataTable(dt_options);
+            var table = $('#dt').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
+            table.columns.adjust().responsive.recalc();
         } );
     </script>
     <p><img src="/{{ equipment.equipment_icon }}" /></p>

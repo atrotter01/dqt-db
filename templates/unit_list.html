@@ -4,19 +4,21 @@
         var dt_options = {
             autoWidth: false,
             pagingType: 'numbers',
+            responsive: true
         };
 
         $(document).ready( function () {
-            $('#dt').DataTable(dt_options);
+            var table = $('#dt').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
+            table.columns.adjust().responsive.recalc();
         } );
     </script>
     <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
         <thead>
             <tr>
-                <td>Icon</td>
                 <td>Name</td>
+                <td>Icon</td>
                 <td>Family</td>
                 <td>Role</td>
                 <td>Rank</td>
@@ -37,12 +39,8 @@
         <tbody>
             {% for unit in units %}
             <tr>
-                <td>
-                    <a href="/unit/{{ unit.id }}">
-                        <img src="/{{ unit.unit_icon }}" style="width: 64px; height: 80px;" />
-                    </a>
-                </td>
-                <td>{{ unit.display_name }}</td>
+                <td class="dtr-control"><a href="/unit/{{ unit.id }}">{{ unit.display_name }}</a></td>
+                <td><img src="/{{ unit.unit_icon }}" style="width: 64px; height: 80px;" /></td>
                 <td><span style="display: none">{{ unit.family }}</span><img src="/{{ unit.family_icon }}" alt="{{ unit.family }}" style="width: 64px; height: 64px;" /></td>
                 <td><span style="display: none">{{ unit.role }}</span><img src="/{{ unit.role_icon }}" alt="{{ unit.role }}" style="width: 64px; height: 64px;" /></td>
                 <td><span style="display: none">{{ unit.unit_rank }}</span><img src="/{{ unit.unit_rank_icon }}" alt="{{ unit.unit_rank }}" style="width: 64px; height: 64px;" /></td>

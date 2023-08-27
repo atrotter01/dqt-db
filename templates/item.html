@@ -4,17 +4,18 @@
         var dt_options = {
             autoWidth: false,
             pagingType: 'numbers',
+            responsive: true
         };
 
         $(document).ready( function () {
-            $('#dt_item').DataTable(dt_options);
-            $('#dt_icon').DataTable(dt_options);
-            $('#dt_package').DataTable(dt_options);
+            var dt_item = $('#dt_item').DataTable(dt_options);
+            var dt_icon = $('#dt_icon').DataTable(dt_options);
+            var dt_package = $('#dt_package').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
-            $('#dt_item').columns.adjust().draw();
-            $('#dt_icon').columns.adjust().draw();
-            $('#dt_package').columns.adjust().draw();
+            dt_item.columns.adjust().responsive.recalc().draw();
+            dt_icon.columns.adjust().responsive.recalc().draw();
+            dt_package.columns.adjust().responsive.recalc().draw();
         } );
     </script>
     <h4>Consumable Items</h4>
