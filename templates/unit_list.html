@@ -41,12 +41,48 @@
                 <td>{{ unit.is_quest_reward }}</td>
                 <td>{{ unit.is_gacha_unit }}</td>
                 <td>{{ unit.stats_by_level[-1:][0].level }}</td>
-                <td>{{ unit.stats_by_level[-1:][0].hp }}</td>
-                <td>{{ unit.stats_by_level[-1:][0].mp }}</td>
-                <td>{{ unit.stats_by_level[-1:][0].attack }}</td>
-                <td>{{ unit.stats_by_level[-1:][0].defense }}</td>
-                <td>{{ unit.stats_by_level[-1:][0].agility }}</td>
-                <td>{{ unit.stats_by_level[-1:][0].intelligence }}</td>
+                <td>
+                    {% set ns = namespace(hp=unit.stats_by_level[-1:][0].hp) %}
+                    {% for rank in unit.rank_up_table %}
+                    {% set ns.hp = ns.hp + rank.stats_increase.hp %}
+                    {% endfor %}
+                    {{ ns.hp }}
+                </td>
+                <td>
+                    {% set ns = namespace(mp=unit.stats_by_level[-1:][0].mp) %}
+                    {% for rank in unit.rank_up_table %}
+                    {% set ns.mp = ns.mp + rank.stats_increase.mp %}
+                    {% endfor %}
+                    {{ ns.mp }}
+                </td>
+                <td>
+                    {% set ns = namespace(attack=unit.stats_by_level[-1:][0].attack) %}
+                    {% for rank in unit.rank_up_table %}
+                    {% set ns.attack = ns.attack + rank.stats_increase.attack %}
+                    {% endfor %}
+                    {{ ns.attack }}
+                </td>
+                <td>
+                    {% set ns = namespace(defense=unit.stats_by_level[-1:][0].defense) %}
+                    {% for rank in unit.rank_up_table %}
+                    {% set ns.defense = ns.defense + rank.stats_increase.defense %}
+                    {% endfor %}
+                    {{ ns.defense }}
+                </td>
+                <td>
+                    {% set ns = namespace(agility=unit.stats_by_level[-1:][0].agility) %}
+                    {% for rank in unit.rank_up_table %}
+                    {% set ns.agility = ns.agility + rank.stats_increase.agility %}
+                    {% endfor %}
+                    {{ ns.agility }}
+                </td>
+                <td>
+                    {% set ns = namespace(intelligence=unit.stats_by_level[-1:][0].intelligence) %}
+                    {% for rank in unit.rank_up_table %}
+                    {% set ns.intelligence = ns.intelligence + rank.stats_increase.intelligence %}
+                    {% endfor %}
+                    {{ ns.intelligence }}
+                </td>
                 <td>{{ unit.move }}</td>
                 <td>{{ unit.weight }}</td>
                 <td>{{ unit.almanac_number }}</td>
