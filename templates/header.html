@@ -31,11 +31,8 @@
                 padding-top: 35px;
                 margin-bottom: 10px;
                 box-sizing: content-box;
-            }
-            .navbar_link a {
-                text-decoration: none;
-                font-size: 1.3em;
-                color: #000;
+                font-size: 1.2em;
+                color: #fff;
             }
             a {
                 text-decoration: none;
@@ -76,20 +73,62 @@
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
-                <div class="col navbar_link">
-                    <a href="/"><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Home</div></a>
-                    <a href='/accolade/'><div class="navbar_image" style="background-image:url('/static/images/button2_2.png');">&nbsp;Accolades</div></a>
-                    <a href='/battleroad/'><div class="navbar_image" style="background-image:url('/static/images/button3_2.png');">&nbsp;Battle Roads</div></a>
-                    <a href='/equipment/'><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Equipment</div></a>
-                    <a href='/farmable/'><div class="navbar_image" style="background-image:url('/static/images/button2_2.png');">&nbsp;Farmables</div></a>
-                    <a href='/item/'><div class="navbar_image" style="background-image:url('/static/images/button3_2.png');">&nbsp;Items</div></a>
-                    <a href='/rankup_calculator/'><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Rank Up Calc</div></a>
-                    <a href='/shop/'><div class="navbar_image" style="background-image:url('/static/images/button2_2.png');">&nbsp;Shops</div></a>
-                    <a href='/skill/'><div class="navbar_image" style="background-image:url('/static/images/button3_2.png');">&nbsp;Skills</div></a>
-                    <a href='/stage/'><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Stages</div></a>
-                    <a href="/unit/"><div class="navbar_image" style="background-image:url('/static/images/button2_2.png');">&nbsp;Units</div></a>
-                    <a href="/asset_container/"><div class="navbar_image" style="background-image:url('/static/images/button3_2.png');">&nbsp;Raw Data</div></a>
-                    <a href="/imagebrowser/"><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Images</div></a>
+                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Home</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-monsters-tab" data-bs-toggle="pill" data-bs-target="#pills-monsters" type="button" role="tab" aria-controls="pills-monsters" aria-selected="false">Monsters</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-skills-tab" data-bs-toggle="pill" data-bs-target="#pills-skills" type="button" role="tab" aria-controls="pills-skills" aria-selected="false">Skills</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-items-tab" data-bs-toggle="pill" data-bs-target="#pills-items" type="button" role="tab" aria-controls="pills-items" aria-selected="false">Items</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-stages-tab" data-bs-toggle="pill" data-bs-target="#pills-stages" type="button" role="tab" aria-controls="pills-stages" aria-selected="false">Stages</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-shops-tab" data-bs-toggle="pill" data-bs-target="#pills-shops" type="button" role="tab" aria-controls="pills-shops" aria-selected="false">Shops</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-data-tab" data-bs-toggle="pill" data-bs-target="#pills-data" type="button" role="tab" aria-controls="pills-data" aria-selected="false">Data</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                        <a href="/"><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Home</div></a>
+                    </div>
+                    <div class="tab-pane fade" id="pills-monsters" role="tabpanel" aria-labelledby="pills-monsters-tab">
+                        <a href='/farmable/'><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Farmables</div></a>
+                        <a href='/rankup_calculator/'><div class="navbar_image" style="background-image:url('/static/images/button2_2.png');">&nbsp;Rank Up Calc</div></a>
+                        <a href="/unit/"><div class="navbar_image" style="background-image:url('/static/images/button3_2.png');">&nbsp;Units</div></a>
+                    </div>
+                    <div class="tab-pane fade" id="pills-skills" role="tabpanel" aria-labelledby="pills-skills-tab">
+                        <a href='/skill/active_skill/'><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Active Skills</div></a>
+                        <a href='/skill/enemy_skill/'><div class="navbar_image" style="background-image:url('/static/images/button2_2.png');">&nbsp;Enemy Skills</div></a>
+                        <a href='/skill/passive_skill/'><div class="navbar_image" style="background-image:url('/static/images/button3_2.png');">&nbsp;Passive Skills</div></a>
+                        <a href='/skill/reaction_skill/'><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Reaction Skills</div></a>
+                    </div>
+                    <div class="tab-pane fade" id="pills-items" role="tabpanel" aria-labelledby="pills-items-tab">
+                        <a href='/equipment/'><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Equipment</div></a>
+                        <a href='/item/'><div class="navbar_image" style="background-image:url('/static/images/button2_2.png');">&nbsp;Items</div></a>
+                        <a href='/icon/'><div class="navbar_image" style="background-image:url('/static/images/button3_2.png');">&nbsp;Icons</div></a>
+                        <a href='/package/'><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Packages</div></a>
+                        <a href='/accolade/'><div class="navbar_image" style="background-image:url('/static/images/button2_2.png');">&nbsp;Accolades</div></a>
+                    </div>
+                    <div class="tab-pane fade" id="pills-stages" role="tabpanel" aria-labelledby="pills-stages-tab">
+                        <a href='/battleroad/'><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Battle Roads</div></a>
+                        <a href='/stage/'><div class="navbar_image" style="background-image:url('/static/images/button2_2.png');">&nbsp;Stages</div></a>
+                    </div>
+                    <div class="tab-pane fade" id="pills-shops" role="tabpanel" aria-labelledby="pills-shops-tab">
+                        <a href='/shop/'><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Shops</div></a>
+                    </div>
+                    <div class="tab-pane fade" id="pills-data" role="tabpanel" aria-labelledby="pills-data-tab">
+                        <a href="/asset_container/"><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Raw Data</div></a>
+                        <a href="/imagebrowser/"><div class="navbar_image" style="background-image:url('/static/images/button2_2.png');">&nbsp;Images</div></a>
+                    </div>
                 </div>
             </div>
         </div>

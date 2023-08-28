@@ -1,0 +1,31 @@
+{% include 'header.html' %}
+
+    <script>
+        $(document).ready( function () {
+            var dt_passive_skills = $('#dt_passive_skills').DataTable(dt_options);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+            dt_passive_skills.columns.adjust().responsive.recalc();
+        } );
+    </script>
+    <h4>Passive Skills</h4>
+    <div>
+        <table id="dt_passive_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Description</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill in passive_skills %}
+                <tr>
+                    <td><a href='/skill/passive_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
+                    <td>{{ skill.skill_description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% include 'footer.html' %}

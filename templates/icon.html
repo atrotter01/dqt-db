@@ -1,0 +1,33 @@
+{% include 'header.html' %}
+
+    <script>
+        $(document).ready( function () {
+            var dt_icon = $('#dt_icon').DataTable(dt_options);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+            dt_icon.columns.adjust().responsive.recalc().draw();
+        } );
+    </script>
+    <h4>Profile Icons</h4>
+    <div>
+        <table id="dt_icon" class="table table-striped table-hover table-bordered align-middle" style="width:100%;">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Icon</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for icon in icons %}
+                <tr>
+                    <td>{{ icon.display_name }}</td>
+                    <td>{{ icon.short_display_name }}</td>
+                    <td><img src="/{{ icon.icon_path }}" style="width: 64px; height: 64px;" /></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% include 'footer.html' %}

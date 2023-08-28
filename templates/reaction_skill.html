@@ -1,0 +1,35 @@
+{% include 'header.html' %}
+
+    <script>
+        $(document).ready( function () {
+            var dt_reaction_skills = $('#dt_reaction_skills').DataTable(dt_options);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+            dt_reaction_skills.columns.adjust().responsive.recalc();
+        } );
+    </script>
+    <h4>Reaction Skills</h4>
+    <div>
+        <table id="dt_reaction_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Times Available</td>
+                    <td>Accuracy</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill in reaction_skills %}
+                <tr>
+                    <td><a href='/skill/reaction_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
+                    <td>{{ skill.skill_description }}</td>
+                    <td>{{ skill.skill_times_available }}</td>
+                    <td>{{ skill.skill_accuracy }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% include 'footer.html' %}

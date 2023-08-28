@@ -67,33 +67,45 @@ def unit():
 
     return render_template('unit_list.html', units=units)
 
-@app.route('/skill/')
-def skill():
+@app.route('/skill/active_skill/')
+def active_skill():
     active_skill_api_response = requests.get(url='http://localhost:5000/api/skill/active_skill')
     active_skills = []
 
     if active_skill_api_response.status_code == 200:
         active_skills = active_skill_api_response.json()
 
+    return render_template('active_skill.html', active_skills=active_skills)
+
+@app.route('/skill/enemy_skill/')
+def enemy_skill():
     enemy_skill_api_response = requests.get(url='http://localhost:5000/api/skill/enemy_skill')
     enemy_skills = []
 
     if enemy_skill_api_response.status_code == 200:
         enemy_skills = enemy_skill_api_response.json()
 
+    return render_template('enemy_skill.html', enemy_skills=enemy_skills)
+
+@app.route('/skill/passive_skill/')
+def passive_skill():
     passive_skill_api_response = requests.get(url='http://localhost:5000/api/skill/passive_skill')
     passive_skills = []
 
     if passive_skill_api_response.status_code == 200:
         passive_skills = passive_skill_api_response.json()
 
+    return render_template('passive_skill.html', passive_skills=passive_skills)
+
+@app.route('/skill/reaction_skill/')
+def reaction_skill():
     reaction_skill_api_response = requests.get(url='http://localhost:5000/api/skill/reaction_skill')
     reaction_skills = []
 
     if reaction_skill_api_response.status_code == 200:
         reaction_skills = reaction_skill_api_response.json()
 
-    return render_template('skill_list.html', active_skills=active_skills, enemy_skills=enemy_skills, passive_skills=passive_skills, reaction_skills=reaction_skills)
+    return render_template('reaction_skill.html', reaction_skills=reaction_skills)
 
 @app.route('/skill/<type_of_skill>/<skill>')
 def skill_detail(type_of_skill, skill):
@@ -112,22 +124,32 @@ def skill_detail(type_of_skill, skill):
 @app.route('/item/')
 def item():
     consumable_items = []
-    profile_icons = []
-    packages = []
 
     item_api_response = requests.get(url='http://localhost:5000/api/item/consumableitem')
     if item_api_response.status_code == 200:
         consumable_items = item_api_response.json()
 
+    return render_template('item.html', items=consumable_items)
+
+@app.route('/icon/')
+def icon():
+    profile_icons = []
+
     profile_icon_api_response = requests.get(url='http://localhost:5000/api/item/profileicon')
     if profile_icon_api_response.status_code == 200:
         profile_icons = profile_icon_api_response.json()
+
+    return render_template('icon.html', icons=profile_icons)
+
+@app.route('/package/')
+def package():
+    packages = []
 
     package_api_response = requests.get(url='http://localhost:5000/api/item/package')
     if package_api_response.status_code == 200:
         packages = package_api_response.json()
 
-    return render_template('item.html', items=consumable_items, icons=profile_icons, packages=packages)
+    return render_template('package.html', packages=packages)
 
 @app.route('/unit/<unit>')
 def unit_detail(unit):

@@ -1,0 +1,33 @@
+{% include 'header.html' %}
+
+    <script>
+        $(document).ready( function () {
+            var dt_package = $('#dt_package').DataTable(dt_options);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+            dt_package.columns.adjust().responsive.recalc().draw();
+        } );
+    </script>
+    <h4>Packages</h4>
+    <div>
+        <table id="dt_package" class="table table-striped table-hover table-bordered align-middle" style="width:100%;">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Icon</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for package in packages %}
+                <tr>
+                    <td>{{ package.display_name }}</td>
+                    <td>{{ package.description }}</td>
+                    <td><img src="/{{ package.icon_path }}" style="width: 64px; height: 64px;" /></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% include 'footer.html' %}

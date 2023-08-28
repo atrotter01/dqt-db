@@ -1,0 +1,48 @@
+{% include 'header.html' %}
+
+    <script>
+        $(document).ready( function () {
+            var dt_enemy_skills = $('#dt_enemy_skills').DataTable(dt_options);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+            dt_enemy_skills.columns.adjust().responsive.recalc();
+        } );
+    </script>
+    <h4>Enemy Skills</h4>
+    <div>
+        <table id="dt_enemy_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Rank</td>
+                    <td>Element</td>
+                    <td>Range</td>
+                    <td>Reach</td>
+                    <td>Surehit</td>
+                    <td># Hits</td>
+                    <td>MP</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill in enemy_skills %}
+                <tr>
+                    <td><a href='/skill/enemy_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
+                    <td>{{ skill.skill_description }}</td>
+                    <td>
+                        <span style="display: none">{{ skill.skill_rank }}</span>
+                        <img src="/{{ skill.skill_rank_icon }}" style="width: 64px; height: 64px;" />
+                    </td>
+                    <td><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ skill.skill_reach }}</td>
+                    <td>{{ skill.skill_surehit }}</td>
+                    <td>{{ skill.skill_num_attacks }}</td>
+                    <td>{{ skill.skill_mp_cost }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% include 'footer.html' %}
