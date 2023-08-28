@@ -167,7 +167,6 @@ class Stage:
                 })
 
         monster_drop_rates: dict = {}
-        seen_monsters: list = []
         monster_counts: dict = {
             0: 0,
             1: 0
@@ -175,13 +174,8 @@ class Stage:
 
         for enemy in stage_enemies:
             enemy_id = enemy.get('monster').get('id')
-            enemy_name = enemy.get('monster').get('enemy_display_name')
             scout_probability = enemy.get('monster').get('enemy_scout_probability')
             is_rare_scout = enemy.get('monster').get('enemy_is_rare_scout')
-
-            if not enemy_name in seen_monsters:
-                monster_counts[is_rare_scout] = monster_counts[is_rare_scout] + 1
-                seen_monsters.append(enemy_name)
 
             if monster_drop_rates.get(enemy_id) is None:
                 monster_drop_rates[enemy_id] = {}
@@ -191,15 +185,12 @@ class Stage:
             else:
                 monster_drop_rates[enemy_id]['count'] = monster_drop_rates[enemy_id]['count'] + 1
 
+            monster_counts[is_rare_scout] = monster_counts[is_rare_scout] + 1
+
         for enemy in stage_reinforcement_enemies:
             enemy_id = enemy.get('monster').get('id')
-            enemy_name = enemy.get('monster').get('enemy_display_name')
             scout_probability = enemy.get('monster').get('enemy_scout_probability')
             is_rare_scout = enemy.get('monster').get('enemy_is_rare_scout')
-
-            if not enemy_name in seen_monsters:
-                monster_counts[is_rare_scout] = monster_counts[is_rare_scout] + 1
-                seen_monsters.append(enemy_name)
 
             if monster_drop_rates.get(enemy_id) is None:
                 monster_drop_rates[enemy_id] = {}
@@ -213,13 +204,8 @@ class Stage:
 
         for enemy in stage_random_enemies:
             enemy_id = enemy.get('monster').get('id')
-            enemy_name = enemy.get('monster').get('enemy_display_name')
             scout_probability = enemy.get('monster').get('enemy_scout_probability')
             is_rare_scout = enemy.get('monster').get('enemy_is_rare_scout')
-
-            if not enemy_name in seen_monsters:
-                monster_counts[is_rare_scout] = monster_counts[is_rare_scout] + 1
-                seen_monsters.append(enemy_name)
 
             if monster_drop_rates.get(enemy_id) is None:
                 monster_drop_rates[enemy_id] = {}
