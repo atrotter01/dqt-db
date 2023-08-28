@@ -17,6 +17,7 @@
         </thead>
         <tbody>
             {% for area in stage_structure %}
+            {% if stage_structure[area].area_category == stage_category %}
             <tr>
                 <td class="align-top">
                     <ul>
@@ -32,8 +33,13 @@
                         {% endfor %}
                     </ul>
                 </td>
+                {% if stage_category == 1 %}
+                <td class="align-top"><img src="/{{ stage_structure[area].area_banner_path }}" /></td>
+                {% else %}
                 <td class="align-top"><img src="/{{ stage_structure[area].area_banner_path }}" style="width: 512px; height: 144px;" /></td>
+                {% endif %}
             </tr>
+            {% endif %}
             {% endfor %}
         </tbody>
     </table>

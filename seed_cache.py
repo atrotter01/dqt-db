@@ -33,6 +33,7 @@ def cache_stage_structure():
         area_id = area.get('id')
         area_name = area.get('area_display_name')
         area_banner_path = area.get('area_banner_path')
+        area_category = area.get('area_category')
         associated_area_group_id = area.get('area_group')
 
         if stage_structure.get(area_id) is None:
@@ -40,6 +41,7 @@ def cache_stage_structure():
 
         stage_structure[area_id]['area_group_id'] = associated_area_group_id
         stage_structure[area_id]['area_banner_path'] = area_banner_path
+        stage_structure[area_id]['area_category'] = area_category
         stage_structure[area_id]['area_name'] = area_name
         stage_structure[area_id]['stages'] = []
         stage_structure[area_id]['stage_names'] = []
