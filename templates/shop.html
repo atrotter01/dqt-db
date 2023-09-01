@@ -2,22 +2,48 @@
 
     <script>
         $(document).ready( function () {
-            var table = $('#dt_shop').DataTable(dt_options);
+            var dt_options = {
+                autoWidth: false,
+                pagingType: 'numbers',
+                pageLength: 25,
+                responsive: true,
+                searchPanes: {
+                    cascadePanes: true,
+                    columns: [1],
+                    controls: true,
+                    collapse: true,
+                    initCollapsed: true,
+                    layout: 'auto',
+                    orderable: false
+                },
+                buttons: [
+                    {
+                        text: 'Toggle Filters',
+                        className: 'spToggle showPanes',
+                        action: hideSearchPanes,
+                    },
+                ],
+                dom: 'BPfrtip'
+            };
+        
+            var table = $('#dt').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
             table.columns.adjust().responsive.recalc();
+            table.searchPanes.container().prependTo(table.table().container());
+            table.searchPanes.resizePanes();
+            hideSearchPanes(null, table, null, null);
         } );
     </script>
     <h4>Shops</h4>
     <div>
-        <table id="dt_shop" class="table table-striped table-hover table-bordered align-middle" style="width:100%;">
+        <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%;">
             <thead>
                 <tr>
                     <td>Name</td>
                     <td>Reminiscene</td>
                     <td>Banner</td>
                     <td>Category Banner</td>
-                    <td>Reminiscene Banner</td>
                 </tr>
             </thead>
             <tbody>
@@ -29,11 +55,6 @@
                     <td>
                         {% if shop.category_banner_path %}
                         <img src="/{{ shop.category_banner_path }}" />
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if shop.parent_category_banner_path %}
-                        <img src="/{{ shop.parent_category_banner_path }}" />
                         {% endif %}
                     </td>
                 </tr>

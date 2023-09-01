@@ -2,15 +2,42 @@
 
     <script>
         $(document).ready( function () {
-            var dt_item = $('#dt_item').DataTable(dt_options);
+            var dt_options = {
+                autoWidth: false,
+                pagingType: 'numbers',
+                pageLength: 25,
+                responsive: true,
+                searchPanes: {
+                    cascadePanes: true,
+                    columns: [2],
+                    controls: true,
+                    collapse: true,
+                    initCollapsed: true,
+                    layout: 'auto',
+                    orderable: false
+                },
+                buttons: [
+                    {
+                        text: 'Toggle Filters',
+                        className: 'spToggle showPanes',
+                        action: hideSearchPanes,
+                    },
+                ],
+                dom: 'BPfrtip'
+            };
+        
+            var table = $('#dt').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
-            dt_item.columns.adjust().responsive.recalc().draw();
+            table.columns.adjust().responsive.recalc();
+            table.searchPanes.container().prependTo(table.table().container());
+            table.searchPanes.resizePanes();
+            hideSearchPanes(null, table, null, null);
         } );
     </script>
     <h4>Consumable Items</h4>
     <div>
-        <table id="dt_item" class="table table-striped table-hover table-bordered align-middle" style="width:100%;">
+        <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%;">
             <thead>
                 <tr>
                     <td>Name</td>
@@ -25,7 +52,10 @@
                 <tr>
                     <td>{{ item.display_name }}</td>
                     <td>{{ item.description }}</td>
-                    <td><img src="/{{ item.rank_icon_path }}" style="width: 64px; height: 64px;" /></td>
+                    <td>
+                        <span style="display: none">{{ item.rank_icon_path }}</span>
+                        <img src="/{{ item.rank_icon_path }}" style="width: 64px; height: 64px;" />
+                    </td>
                     <td><img src="/{{ item.icon_path }}" style="width: 64px; height: 64px;" /></td>
                     <td>{{ item.possession_limit }}</td>
                 </tr>
