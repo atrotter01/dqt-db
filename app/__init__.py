@@ -1,6 +1,7 @@
+import datetime
 import json
 import requests
-from flask import Flask, Blueprint, render_template, Response
+from flask import Flask, Blueprint, render_template, request, Response
 from flask_restx import Api
 from flask_autoindex import AutoIndex
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -389,6 +390,38 @@ def farmable():
         farmable_data = api_response.json()
 
     return render_template('farmable.html', farmables=farmable_data)
+
+@app.route('/lawson/')
+def lawson():
+    condolences = util.get_redis_asset('user_data_lawson')
+
+    return render_template('lawson.html', condolences=condolences)
+
+@app.route('/lawson/save', methods=['POST'])
+def lawson_save():
+    user = request.form.get('name')
+    message = request.form.get('message')
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    condolences = util.get_redis_asset('user_data_lawson')
+    
+    if condolences is None:
+        condolences = []
+    
+    if user == '':
+        return render_template('lawson.html', condolences=condolences)
+
+    if message == '':
+        return render_template('lawson.html', condolences=condolences)
+
+    condolences.append({
+        'user': user,
+        'message': message,
+        'timestamp': timestamp,
+    })
+
+    util.save_redis_asset(cache_key='user_data_lawson', data=condolences)
+
+    return render_template('lawson.html', condolences=condolences)
 
 if __name__ == '__main__':
     app.run(debug=True)

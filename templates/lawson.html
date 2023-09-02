@@ -1,0 +1,59 @@
+{% include 'header.html' %}
+
+    <script>
+        $(document).ready( function () {
+            var table = $('#dt').DataTable(dt_options);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+            table.columns.adjust().responsive.recalc();
+        } );
+    </script>
+    <form method="post" action="/lawson/save">
+        <div class="row">
+            <p>
+                Leave comments in memory of our beloved robot, Lawson, whose time with us stolen.
+            </p>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="md-3">
+                    <label for="Name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" name="name">
+                </div>
+                <div class="md-3">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" id="message" rows="5" name="message"></textarea>
+                </div>
+                <div class="md-3">
+                    <input type="submit" />
+                </div>
+            </div>
+            <div class="col justify-content-end">
+                <img src="/static/images/lawson.png" />
+            </div>
+        </div>
+    </form>
+    <hr />
+    <h4>Condolences</h4>
+    <div>
+        <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%;">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Message</td>
+                    <td>Date</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for condolence in condolences %}
+                <tr>
+                    <td>{{ condolence.user }}</td>
+                    <td>{{ condolence.message }}</td>
+                    <td>{{ condolence.timestamp }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% include 'footer.html' %}
