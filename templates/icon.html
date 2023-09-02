@@ -21,7 +21,7 @@
             <tbody>
                 {% for icon in icons %}
                 <tr>
-                    <td>{{ icon.display_name }}</td>
+                    <td><a href='/icon/{{ icon.id }}'>{{ icon.display_name }}</a></td>
                     <td>{{ icon.short_display_name }}</td>
                     <td><img src="/{{ icon.icon_path }}" style="width: 64px; height: 64px;" /></td>
                 </tr>

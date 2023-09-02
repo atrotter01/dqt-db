@@ -6,12 +6,14 @@
             var enhancement_table = $('#dt_skill_enhancements').DataTable(dt_options);
             {% endif %}
             var learned_by_table = $('#dt_learned_by').DataTable(dt_options);
+            var equipment_table = $('#dt_equipment').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
             {% if skill.type_of_skill == 'active_skill' or skill.type_of_skill == 'enemy_skill' %}
             enhancement_table.columns.adjust().responsive.recalc();
             {% endif %}
             learned_by_table.columns.adjust().responsive.recalc();
+            equipment_table.columns.adjust().responsive.recalc();
         } );
     </script>
     <h4>Skill Details</h4>
@@ -164,6 +166,25 @@
                     </td>
                     <td><img src="/{{ unit.unit_icon }}" style="width: 64px; height: 64px;" /></td>
                     <td>{{ unit.unit_type }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <hr />
+    <h4>Equipment With Skill</h4>
+    <div>
+        <table id="dt_equipment" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <td>Name</td>
+                <td>Icon</td>
+            </thead>
+            <tbody>
+                {% for equipment in skill_equipment_cache %}
+                <tr>
+                    <td><a href='/equipment/{{ equipment.equipment_id }}'>{{ equipment.equipment_name }}</a></td>
+                    <td><img src="/{{ equipment.equipment_icon }}" style="width: 64px; height: 64px;" /></td>
                 </tr>
                 {% endfor %}
             </tbody>

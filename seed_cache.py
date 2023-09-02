@@ -276,31 +276,188 @@ def cache_skill_unit_table():
 
     util.save_redis_asset(cache_key='skill_unit_table_parsed_asset', data=skill_unit_table)
 
+def cache_equipment_skill_table():
+    skill_equipment_cache: dict = {}
+
+    for equipment in equipment_response.json():
+        equipment_id = equipment.get('id')
+        equipment_icon = equipment.get('equipment_icon')
+        equipment_name = equipment.get('equipment_display_name')
+        seen_skills: list = []
+
+        if equipment.get('equipment_passive_skill') is not None:
+            skill_id = equipment.get('equipment_passive_skill').get('id')
+
+            if skill_equipment_cache.get(skill_id) is None:
+                skill_equipment_cache[skill_id] = []
+
+            if not skill_id in seen_skills:
+                seen_skills.append(skill_id)
+                skill_equipment_cache[skill_id].append({
+                    'equipment_id': equipment_id,
+                    'equipment_icon': equipment_icon,
+                    'equipment_name': equipment_name,
+                })
+
+        if equipment.get('equipment_reaction_skill') is not None:
+            skill_id = equipment.get('equipment_reaction_skill').get('id')
+
+            if skill_equipment_cache.get(skill_id) is None:
+                skill_equipment_cache[skill_id] = []
+
+            if not skill_id in seen_skills:
+                seen_skills.append(skill_id)
+                skill_equipment_cache[skill_id].append({
+                    'equipment_id': equipment_id,
+                    'equipment_icon': equipment_icon,
+                    'equipment_name': equipment_name,
+                })
+
+        for slot in equipment.get('equipment_alchemy_slots').get('slot_1'):
+            skill_id = slot.get('passive_skill').get('id')
+
+            if skill_equipment_cache.get(skill_id) is None:
+                skill_equipment_cache[skill_id] = []
+
+            if not skill_id in seen_skills:
+                seen_skills.append(skill_id)
+                skill_equipment_cache[skill_id].append({
+                    'equipment_id': equipment_id,
+                    'equipment_icon': equipment_icon,
+                    'equipment_name': equipment_name,
+                })
+
+        for slot in equipment.get('equipment_alchemy_slots').get('slot_2'):
+            skill_id = slot.get('passive_skill').get('id')
+
+            if skill_equipment_cache.get(skill_id) is None:
+                skill_equipment_cache[skill_id] = []
+
+            if not skill_id in seen_skills:
+                seen_skills.append(skill_id)
+                skill_equipment_cache[skill_id].append({
+                    'equipment_id': equipment_id,
+                    'equipment_icon': equipment_icon,
+                    'equipment_name': equipment_name,
+                })
+
+        if equipment.get('equipment_alchemy_slots').get('slot_3') is not None:
+            for slot in equipment.get('equipment_alchemy_slots').get('slot_3'):
+                skill_id = slot.get('passive_skill').get('id')
+
+                if skill_equipment_cache.get(skill_id) is None:
+                    skill_equipment_cache[skill_id] = []
+
+                if not skill_id in seen_skills:
+                    seen_skills.append(skill_id)
+                    skill_equipment_cache[skill_id].append({
+                        'equipment_id': equipment_id,
+                        'equipment_icon': equipment_icon,
+                        'equipment_name': equipment_name,
+                    })
+
+    util.save_redis_asset('skill_equipment_parsed_asset', skill_equipment_cache)
+
+def cache_item_location_table():
+    item_location_table: dict = {}
+
+    for stage in stage_data:
+        location_id = stage.get('id')
+        location_name = stage.get('stage_display_name')
+
+        for drop in stage.get('stage_drops'):
+            for loot in drop.get('loot_group').get('loot'):
+                item_id = loot.get('path')
+
+                if item_location_table.get(item_id) is None:
+                    item_location_table[item_id] = []
+
+                item_location_table[item_id].append({
+                    'location_id': location_id,
+                    'location_name': location_name,
+                    'location_type': 'Stage'
+                })
+
+        for mission in stage.get('stage_missions'):
+            item_id = mission.get('reward_id')
+
+            if item_location_table.get(item_id) is None:
+                item_location_table[item_id] = []
+
+            item_location_table[item_id].append({
+                'location_id': location_id,
+                'location_name': location_name,
+                'location_type': 'Stage'
+            })
+
+    for shop in shop_data:
+        location_id = shop.get('id')
+        location_name = shop.get('display_name')
+
+        seen_items: list = []
+
+        for good in shop.get('shop_goods'):
+            item_id = good.get('goods_path')
+
+            if item_id in seen_items:
+                continue
+
+            seen_items.append(item_id)
+
+            if item_location_table.get(item_id) is None:
+                item_location_table[item_id] = []
+
+            item_location_table[item_id].append({
+                'location_id': location_id,
+                'location_name': location_name,
+                'location_type': 'Shop'
+            })
+
+    util.save_redis_asset('item_location_parsed_asset', item_location_table)
+
+def cache_unit_profile_map():
+    profile_unit_map: dict = {}
+
+    for path in util.get_asset_list('AllyMonster'):
+        asset = util.get_asset_by_path(path=path, deflate_data=True)
+
+        processed_document = asset.get('processed_document')
+        profile_id = processed_document.get('profile').get('linked_asset_id')
+
+        profile_unit_map[profile_id] = path
+
+    util.save_redis_asset('profile_unit_map_parsed_asset', profile_unit_map)
+
 if __name__ == '__main__':
     util: Util = Util()
 
-    unit_response = requests.get(f'http://localhost:5000/api/unit')
-    active_skill_response = requests.get(f'http://localhost:5000/api/skill/active_skill')
-    passive_skill_response = requests.get(f'http://localhost:5000/api/skill/passive_skill')
-    reaction_skill_response = requests.get(f'http://localhost:5000/api/skill/reaction_skill')
-    enemy_skill_response = requests.get(f'http://localhost:5000/api/skill/enemy_skill')
-    accolade_response = requests.get(f'http://localhost:5000/api/accolade')
-    equipment_response = requests.get(f'http://localhost:5000/api/equipment')
-    enemy_monster_response = requests.get(f'http://localhost:5000/api/enemy_monster')
+    #unit_response = requests.get(f'http://localhost:5000/api/unit')
+    #active_skill_response = requests.get(f'http://localhost:5000/api/skill/active_skill')
+    #passive_skill_response = requests.get(f'http://localhost:5000/api/skill/passive_skill')
+    #reaction_skill_response = requests.get(f'http://localhost:5000/api/skill/reaction_skill')
+    #enemy_skill_response = requests.get(f'http://localhost:5000/api/skill/enemy_skill')
+    #accolade_response = requests.get(f'http://localhost:5000/api/accolade')
+    #equipment_response = requests.get(f'http://localhost:5000/api/equipment')
+    #enemy_monster_response = requests.get(f'http://localhost:5000/api/enemy_monster')
 
-    consumable_item_response = requests.get(f'http://localhost:5000/api/item/consumableitem')
-    profile_icon_response = requests.get(f'http://localhost:5000/api/item/profileicon')
-    package_response = requests.get(f'http://localhost:5000/api/item/package')
-    shop_response = requests.get(f'http://localhost:5000/api/shop')
+    #consumable_item_response = requests.get(f'http://localhost:5000/api/item/consumableitem')
+    #profile_icon_response = requests.get(f'http://localhost:5000/api/item/profileicon')
+    #package_response = requests.get(f'http://localhost:5000/api/item/package')
+    #shop_response = requests.get(f'http://localhost:5000/api/shop')
 
-    area_response = requests.get(f'http://localhost:5000/api/area')
-    area_group_response = requests.get(f'http://localhost:5000/api/area_group')
-    stage_response = requests.get('http://localhost:5000/api/stage')
+    #area_response = requests.get(f'http://localhost:5000/api/area')
+    #area_group_response = requests.get(f'http://localhost:5000/api/area_group')
+    #stage_response = requests.get('http://localhost:5000/api/stage')
 
-    area_data = area_response.json()
-    area_group_data = area_group_response.json()
-    stage_data = stage_response.json()
+    #area_data = area_response.json()
+    #area_group_data = area_group_response.json()
+    #stage_data = stage_response.json()
+    #shop_data = shop_response.json()
+    #unit_data = unit_response.json()
 
-    cache_stage_structure()
-    cache_skill_unit_table()
-    cache_stage_monster_lookup_table()
+    #cache_stage_structure()
+    #cache_skill_unit_table()
+    #cache_stage_monster_lookup_table()
+    #cache_equipment_skill_table()
+    #cache_item_location_table()
+    #cache_unit_profile_map()

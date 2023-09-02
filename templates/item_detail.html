@@ -1,0 +1,45 @@
+{% include 'header.html' %}
+
+    <script>
+        $(document).ready( function () {
+            var table = $('#dt').DataTable(dt_options);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+            table.columns.adjust().responsive.recalc();
+        } );
+    </script>
+    <p><img src="/{{ item.icon_path }}" /></p>
+    <h4>Item Details</h4>
+    <div>
+        <p><span style="font-weight: bold;">Name: </span>{{ item.display_name }}</p>
+        <p><span style="font-weight: bold;">Description: </span>{{ item.description }}</p>
+        <p><span style="font-weight: bold;">Possession Limit: </span>{{ item.possession_limit }}</p>
+    </div>
+    <hr />
+    <h4>Acquirable From</h4>
+    <div>
+        <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Type</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in location_table %}
+                <tr>
+                    <td>
+                        {% if location.location_type == 'Stage' %}
+                        <a href="/stage/{{location.location_id}}">{{ location.location_name }}</a>
+                        {% elif location.location_type == 'Shop' %}
+                        <a href="/shop/{{location.location_id}}">{{ location.location_name }}</a>
+                        {% endif %}
+                    </td>
+                    <td>{{ location.location_type }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% include 'footer.html' %}

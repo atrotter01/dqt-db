@@ -13,6 +13,9 @@
             var dt_awakening_reaction_skills = $('#dt_awakening_reaction_skills').DataTable(dt_options);
             var dt_blossom = $('#dt_blossom_board').DataTable(dt_options);
             var dt_character_builder = $('#dt_character_builder').DataTable(dt_options);
+            {% if unit.is_quest_reward is true %}
+            var dt_farmable = $('#dt_farmable').DataTable(dt_options);
+            {% endif %}
             $('#loading_spinner').hide();
             $('#content-container').show();
             dt_stats.columns.adjust().responsive.recalc();
@@ -26,6 +29,9 @@
             dt_awakening_reaction_skills.columns.adjust().responsive.recalc();
             dt_blossom.columns.adjust().responsive.recalc();
             dt_character_builder.columns.adjust().responsive.recalc();
+            {% if unit.is_quest_reward is true %}
+            dt_farmable.columns.adjust().responsive.recalc();
+            {% endif %}
         } );
     </script>
     <p><img src="/{{ unit.unit_icon }}" /></p>
@@ -172,6 +178,40 @@
             </tbody>
         </table>
     </div>
+    {% if unit.is_quest_reward is true %}
+    <hr />
+    <h4>Farmable Stages</h4>
+    <div>
+        <table id="dt_farmable" class="table table-striped table-hover table-bordered align-middle" style="width:100%;">
+            <thead>
+                <tr>
+                    <td>Monster</td>
+                    <td>Monster Icon</td>
+                    <td>Stage Name</td>
+                    <td>Stamina</td>
+                    <td>Scout Chance</td>
+                    <td>Avg Stam</td>
+                    <td>Avg Stam (2x Drop)</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for farmable in farmables %}
+                {% if farmable.enemy_display_name == unit.display_name %}
+                <tr>
+                    <td><a href='/enemy_monster/{{ farmable.enemy_id }}'>{{ farmable.enemy_display_name }}</a></td>
+                    <td><img src="/{{ farmable.enemy_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td><a href='/stage/{{ farmable.stage_id }}'>{{ farmable.stage_display_name }}</a></td>
+                    <td>{{ farmable.stage_stamina_cost }}</td>
+                    <td>{{ farmable.scout_probability }}%</td>
+                    <td>{{ farmable.stamina_per_drop }}</td>
+                    <td>{{ farmable.stamina_per_drop_double_drop_rate }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
     <hr />
     <h4>Elemental Resistance</h4>
     <div>

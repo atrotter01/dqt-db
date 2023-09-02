@@ -246,42 +246,71 @@ class Stage:
                 if enemy_id == monster:
                     enemy.get('monster').update({'enemy_scout_probability': calculated_drop_rate})
 
+        current_loot_group_number: int = 1
+        loot_group_numbers: dict = {}
 
         for drop_candidate in data.get('fixedReward').get('dropCandidates'):
+            loot_group_id = drop_candidate.get('lootGroup').get('linked_asset_id')
             drop_percent: int = drop_candidate.get('weight')
-            loot_group: dict = self.loot_group_parser.get_data(drop_candidate.get('lootGroup').get('linked_asset_id'))
+            loot_group: dict = self.loot_group_parser.get_data(loot_group_id)
+
+            if len(loot_group.get('loot')) == 0:
+                continue
+
+            if loot_group_numbers.get(loot_group.get('id')) is None:
+                loot_group_numbers[loot_group.get('id')] = current_loot_group_number
+                current_loot_group_number = current_loot_group_number + 1
 
             stage_drops.append({
                 'loot_group': loot_group,
                 'drop_percent': drop_percent,
                 'first_clear_only': False,
                 'clear_count': None,
+                'group_number': loot_group_numbers.get(loot_group.get('id'))
             })
 
         for random_reward in data.get('randomRewards'):
             for drop_candidate in random_reward.get('dropCandidates'):
+                loot_group_id = drop_candidate.get('lootGroup').get('linked_asset_id')
                 drop_percent: int = drop_candidate.get('weight')
-                loot_group: dict = self.loot_group_parser.get_data(drop_candidate.get('lootGroup').get('linked_asset_id'))
+                loot_group: dict = self.loot_group_parser.get_data(loot_group_id)
+
+                if len(loot_group.get('loot')) == 0:
+                    continue
+
+                if loot_group_numbers.get(loot_group.get('id')) is None:
+                    loot_group_numbers[loot_group.get('id')] = current_loot_group_number
+                    current_loot_group_number = current_loot_group_number + 1
 
                 stage_drops.append({
                     'loot_group': loot_group,
                     'drop_percent': drop_percent,
                     'first_clear_only': False,
                     'clear_count': None,
+                    'group_number': loot_group_numbers.get(loot_group.get('id'))
                 })
 
         for fixed_reward in data.get('stageRewardByClearCounts'):
             clear_count = fixed_reward.get('clearCount')
 
             for drop_candidate in fixed_reward.get('lootLottery').get('dropCandidates'):
+                loot_group_id = drop_candidate.get('lootGroup').get('linked_asset_id')
                 drop_percent: int = drop_candidate.get('weight')
-                loot_group: dict = self.loot_group_parser.get_data(drop_candidate.get('lootGroup').get('linked_asset_id'))
+                loot_group: dict = self.loot_group_parser.get_data(loot_group_id)
+
+                if len(loot_group.get('loot')) == 0:
+                    continue
+
+                if loot_group_numbers.get(loot_group.get('id')) is None:
+                    loot_group_numbers[loot_group.get('id')] = current_loot_group_number
+                    current_loot_group_number = current_loot_group_number + 1
 
                 stage_drops.append({
                     'loot_group': loot_group,
                     'drop_percent': drop_percent,
                     'first_clear_only': True,
                     'clear_count': clear_count,
+                    'group_number': loot_group_numbers.get(loot_group.get('id'))
                 })
 
         for stage_mission_key in data.get('stageMissionList').get('stageMissions'):
@@ -304,19 +333,23 @@ class Stage:
                 reward_quantity = stage_mission_key.get('reward').get('quantity')
                 reward_display_name = None
                 reward_icon = None
+                reward_id = None
 
                 if stage_mission_key.get('reward').get('item').get('m_PathID') is None:
                     reward_icon = self.util.get_image_path(stage_mission_key.get('reward').get('item').get('iconPath'))
                     reward_display_name = stage_mission_key.get('reward').get('item').get('displayName_translation').get('gbl') or stage_mission_key.get('reward').get('item').get('displayName_translation').get('ja')
+                    reward_id = stage_mission_key.get('reward').get('item').get('linked_asset_id')
                 elif stage_mission_key.get('reward').get('profileIcon').get('m_PathID') is None:
                     reward_icon = self.util.get_image_path(stage_mission_key.get('reward').get('profileIcon').get('iconPath'))
                     reward_display_name = stage_mission_key.get('reward').get('profileIcon').get('displayName_translation').get('gbl') or stage_mission_key.get('reward').get('profileIcon').get('displayName_translation').get('ja')
+                    reward_id = stage_mission_key.get('reward').get('item').get('linked_asset_id')
 
                 stage_missions.append({
                     'stage_mission_conditions': stage_mission_conditions,
                     'reward_quantity': reward_quantity,
                     'reward_display_name': reward_display_name,
-                    'reward_icon': reward_icon
+                    'reward_icon': reward_icon,
+                    'reward_id': reward_id
                 })
 
         stage: dict = {

@@ -50,7 +50,7 @@
             <tbody>
                 {% for item in items %}
                 <tr>
-                    <td>{{ item.display_name }}</td>
+                    <td><a href='/item/{{ item.id }}'>{{ item.display_name }}</a></td>
                     <td>{{ item.description }}</td>
                     <td>
                         <span style="display: none">{{ item.rank_icon_path }}</span>

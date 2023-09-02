@@ -3,9 +3,11 @@
     <script>
         $(document).ready( function () {
             var table = $('#dt').DataTable(dt_options);
+            var table_acquirable = $('#dt_acquirable').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
             table.columns.adjust().responsive.recalc();
+            table_acquirable.columns.adjust().responsive.recalc();
         } );
     </script>
     <p><img src="/{{ equipment.equipment_icon }}" /></p>
@@ -41,6 +43,32 @@
         {% endif %}
     </div>
     <hr />
+    <h4>Acquirable From</h4>
+    <div>
+        <table id="dt_acquirable" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Type</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in location_table %}
+                <tr>
+                    <td>
+                        {% if location.location_type == 'Stage' %}
+                        <a href="/stage/{{location.location_id}}">{{ location.location_name }}</a>
+                        {% elif location.location_type == 'Shop' %}
+                        <a href="/shop/{{location.location_id}}">{{ location.location_name }}</a>
+                        {% endif %}
+                    </td>
+                    <td>{{ location.location_type }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
     <h4>Alchemy Rolls</h4>
     <div>
         <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
@@ -63,16 +91,16 @@
             <tbody>
                 {% for x in range(0, equipment.equipment_alchemy_slots.slot_1|length) %}
                 <tr>
-                    <td>{{ equipment.equipment_alchemy_slots.slot_1[x].passive_skill.skill_name }}</td>
+                    <td><a href='/skill/passive_skill/{{ equipment.equipment_alchemy_slots.slot_1[x].passive_skill.id }}'>{{ equipment.equipment_alchemy_slots.slot_1[x].passive_skill.skill_name }}</a></td>
                     <td>{{ equipment.equipment_alchemy_slots.slot_1[x].passive_skill.skill_description }}</td>
                     <td>{{ equipment.equipment_alchemy_slots.slot_1[x].roll_probability }}%</td>
                     <td><img src="/{{ equipment.equipment_alchemy_slots.slot_1[x].passive_skill.skill_icon }}" style="width: 64px; height: 64px;" /></td>
-                    <td>{{ equipment.equipment_alchemy_slots.slot_2[x].passive_skill.skill_name }}</td>
+                    <td><a href='/skill/passive_skill/{{ equipment.equipment_alchemy_slots.slot_2[x].passive_skill.id }}'>{{ equipment.equipment_alchemy_slots.slot_2[x].passive_skill.skill_name }}</a></td>
                     <td>{{ equipment.equipment_alchemy_slots.slot_2[x].passive_skill.skill_description }}</td>
                     <td>{{ equipment.equipment_alchemy_slots.slot_2[x].roll_probability }}%</td>
                     <td><img src="/{{ equipment.equipment_alchemy_slots.slot_2[x].passive_skill.skill_icon }}" style="width: 64px; height: 64px;" /></td>
                     {% if equipment.equipment_alchemy_slots.slot_3 is defined %}
-                    <td>{{ equipment.equipment_alchemy_slots.slot_3[x].passive_skill.skill_name }}</td>
+                    <td><a href='/skill/passive_skill/{{ equipment.equipment_alchemy_slots.slot_3[x].passive_skill.id }}'>{{ equipment.equipment_alchemy_slots.slot_3[x].passive_skill.skill_name }}</a></td>
                     <td>{{ equipment.equipment_alchemy_slots.slot_3[x].passive_skill.skill_description }}</td>
                     <td>{{ equipment.equipment_alchemy_slots.slot_3[x].roll_probability }}%</td>
                     <td><img src="/{{ equipment.equipment_alchemy_slots.slot_3[x].passive_skill.skill_icon }}" style="width: 64px; height: 64px;" /></td>

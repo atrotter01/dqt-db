@@ -63,6 +63,11 @@ class Asset(Resource):
         self.units = []
 
         if path is not None:
+            profile_map: dict = self.util.get_redis_asset('profile_unit_map_parsed_asset')
+
+            if profile_map.get(path) is not None:
+                path = profile_map.get(path)
+
             self.units.append(self.unit_parser.get_data(path=path))
 
             return self.units

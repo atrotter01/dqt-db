@@ -1,3 +1,4 @@
+import requests
 from flask_restx import Namespace, Resource, fields
 from app.util import Util
 
@@ -10,16 +11,21 @@ shop_model = api.model('shop', {
     'banner_path': fields.String,
     'category_banner_path': fields.String,
     'parent_category_banner_path': fields.String,
+    'shop_goods': fields.Raw,
 })
 
 shop_goods_model = api.model('shop_goods', {
+    'shop_id': fields.String,
+    'shop_name': fields.String,
     'list_order': fields.Integer,
     'purchasable_count': fields.Integer,
     'quantity': fields.Integer,
+    'goods_path': fields.String,
     'goods_cost': fields.Integer,
     'goods_name': fields.String,
     'goods_image': fields.String,
-    'goods_description': fields.String
+    'goods_description': fields.String,
+    'goods_category': fields.String,
 })
 
 @api.route("/")
@@ -88,13 +94,16 @@ class Shop(Resource):
                 if parent_category_banner is not None:
                     available_in_reminiscene = True
 
+            shop_goods = requests.get(f'http://localhost:5000/api/shop/{shop_id}').json()
+
             self.shops.append({
                 'id': shop_id,
                 'display_name': shop_name,
                 'available_in_reminiscene': available_in_reminiscene,
                 'banner_path': shop_banner,
                 'category_banner_path': category_banner,
-                'parent_category_banner_path': parent_category_banner
+                'parent_category_banner_path': parent_category_banner,
+                'shop_goods': shop_goods,
             })
 
         self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.shops, key=lambda d: d['display_name']))
@@ -154,6 +163,7 @@ class ShopGoods(Resource):
             goods_name: str = None
             goods_image: str = None
             goods_description: str = None
+            goods_category: str = None
 
             if goods_type == 1:
                 goods_path = codelist.get('ConsumableItemMasterDataStoreSource').get(code)[0]
@@ -161,6 +171,7 @@ class ShopGoods(Resource):
                 goods_name = goods_asset.get('display_name')
                 goods_description = goods_asset.get('processed_document').get('description_translation').get('gbl') or goods_asset.get('processed_document').get('description_translation').get('ja')
                 goods_image = self.util.get_image_path(goods_asset.get('processed_document').get('iconPath'))
+                goods_category = 'item'
 
             elif goods_type == 2:
                 goods_path = codelist.get('MonsterProfileMasterDataStoreSource').get(code)[0]
@@ -168,6 +179,7 @@ class ShopGoods(Resource):
                 goods_name = goods_asset.get('processed_document').get('displayName_translation').get('gbl') or goods_asset.get('processed_document').get('displayName_translation').get('ja')
                 goods_description = ''
                 goods_image = self.util.get_image_path(goods_asset.get('processed_document').get('iconPath'))
+                goods_category = 'monster'
 
             elif goods_type == 3:
                 goods_path = codelist.get('EquipmentMasterDataStoreSource').get(code)[0]
@@ -175,6 +187,7 @@ class ShopGoods(Resource):
                 goods_name = goods_asset.get('processed_document').get('profile').get('displayName_translation').get('gbl') or goods_asset.get('processed_document').get('profile').get('displayName_translation').get('ja')
                 goods_description = goods_asset.get('processed_document').get('profile').get('description_translation').get('gbl') or goods_asset.get('processed_document').get('profile').get('description_translation').get('ja')
                 goods_image = self.util.get_image_path(goods_asset.get('processed_document').get('profile').get('iconPath'))
+                goods_category = 'equipment'
 
             elif goods_type == 6:
                 goods_path = codelist.get('PackageMasterDataStoreSource').get(code)[0]
@@ -182,6 +195,7 @@ class ShopGoods(Resource):
                 goods_name = goods_asset.get('display_name')
                 goods_description = ''
                 goods_image = self.util.get_image_path(goods_asset.get('processed_document').get('iconPath'))
+                goods_category = 'package'
 
             elif goods_type == 7:
                 goods_path = codelist.get('ProfileItemMasterDataStoreSource').get(code)[0]
@@ -189,6 +203,7 @@ class ShopGoods(Resource):
                 goods_name = goods_asset.get('processed_document').get('displayName_translation').get('gbl') or goods_asset.get('processed_document').get('displayName_translation').get('ja')
                 goods_description = goods_asset.get('processed_document').get('shortDisplayName_translation').get('gbl') or goods_asset.get('processed_document').get('shortDisplayName_translation').get('ja')
                 goods_image = self.util.get_image_path(goods_asset.get('processed_document').get('iconPath'))
+                goods_category = 'profile_icon'
 
             else:
                 for gtype in codelist.keys():
@@ -196,13 +211,17 @@ class ShopGoods(Resource):
                         raise AttributeError(f'{gtype}: {goods_type}')
 
             self.goods.append({
+                'shop_id': shop_document.get('linked_asset_id'),
+                'shop_name': shop_document.get('displayName_translation').get('gbl') or shop_document.get('displayName_translation').get('ja'),
                 'list_order': list_order,
                 'purchasable_count': purchasable_count,
                 'quantity': quantity,
+                'goods_path': goods_path,
                 'goods_cost': goods_cost,
                 'goods_name': goods_name,
                 'goods_image': goods_image,
-                'goods_description': goods_description
+                'goods_description': goods_description,
+                'goods_category': goods_category
             })
 
         self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.goods, key=lambda d: d['list_order']))

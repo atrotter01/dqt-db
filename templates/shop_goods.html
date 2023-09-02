@@ -26,7 +26,21 @@
                 {% for shop_good in shop_goods %}
                 <tr>
                     <td>{{ shop_good.list_order }}</td>
-                    <td>{{ shop_good.goods_name }}</td>
+                    <td>
+                        {% if shop_good.goods_category == 'item' %}
+                        <a href="/item/{{ shop_good.goods_path }}">
+                        {% elif shop_good.goods_category == 'monster' %}
+                        <a href="/unit/{{ shop_good.goods_path }}">
+                        {% elif shop_good.goods_category == 'equipment' %}
+                        <a href="/equipment/{{ shop_good.goods_path }}">
+                        {% elif shop_good.goods_category == 'package' %}
+                        <a href="/package/{{ shop_good.goods_path }}">
+                        {% elif shop_good.goods_category == 'profile_icon' %}
+                        <a href="/icon/{{ shop_good.goods_path }}">
+                        {% endif %}
+                        {{ shop_good.goods_name }}
+                        </a>
+                    </td>
                     <td>{{ shop_good.goods_description }}</td>
                     <td>{{ shop_good.quantity }}</td>
                     <td>{{ shop_good.purchasable_count }}</td>

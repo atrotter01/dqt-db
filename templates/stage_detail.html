@@ -39,6 +39,7 @@
             <thead>
                 <tr>
                     <td>Name</td>
+                    <td>Loot Group #</td>
                     <td>Quantity</td>
                     <td>Drop %</td>
                     <td>First Clear Only</td>
@@ -51,6 +52,7 @@
                 {% for loot in stage_drop.loot_group.loot %}
                 <tr>
                     <td>{{ loot.display_name }}</td>
+                    <td>{{ stage_drop.group_number }}</td>
                     <td>{{ loot.quantity }}</td>
                     <td>{{ stage_drop.drop_percent }}%</td>
                     <td>{{ stage_drop.first_clear_only }}</td>
@@ -69,6 +71,7 @@
                 {% for loot in enemy_drop.loot_group.loot %}
                 <tr>
                     <td>{{ loot.display_name }}</td>
+                    <td>{{ enemy_drop.group_number }}</td>
                     <td>{{ loot.quantity }}</td>
                     <td>{{ enemy_drop.drop_percent }}%</td>
                     <td>{{ enemy_drop.first_clear_only }}</td>
@@ -88,6 +91,7 @@
                 {% for loot in enemy_drop.loot_group.loot %}
                 <tr>
                     <td>{{ loot.display_name }}</td>
+                    <td>{{ enemy_drop.group_number }}</td>
                     <td>{{ loot.quantity }}</td>
                     <td>{{ enemy_drop.drop_percent }}%</td>
                     <td>{{ enemy_drop.first_clear_only }}</td>
@@ -107,6 +111,7 @@
                 {% for loot in enemy_drop.loot_group.loot %}
                 <tr>
                     <td>{{ loot.display_name }}</td>
+                    <td>{{ enemy_drop.group_number }}</td>
                     <td>{{ loot.quantity }}</td>
                     <td>{{ enemy_drop.drop_percent }}%</td>
                     <td>{{ enemy_drop.first_clear_only }}</td>

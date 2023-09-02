@@ -112,6 +112,7 @@ def skill_detail(type_of_skill, skill):
     api_response = requests.get(url=f'http://localhost:5000/api/skill/{type_of_skill}/{skill}')
     skill_data = []
     skill_learned_by = []
+    skill_equipment_cache = util.get_redis_asset('skill_equipment_parsed_asset')
     
     if util.get_redis_asset('skill_unit_table_parsed_asset').get(skill) is not None:
         skill_learned_by.extend(util.get_redis_asset('skill_unit_table_parsed_asset').get(skill))
@@ -119,7 +120,7 @@ def skill_detail(type_of_skill, skill):
     if api_response.status_code == 200:
         skill_data = api_response.json()
 
-    return render_template('skill_detail.html', skill=skill_data[0], skill_learned_by=skill_learned_by)
+    return render_template('skill_detail.html', skill=skill_data[0], skill_learned_by=skill_learned_by, skill_equipment_cache=skill_equipment_cache.get(skill))
 
 @app.route('/item/')
 def item():
@@ -131,6 +132,20 @@ def item():
 
     return render_template('item.html', items=consumable_items)
 
+@app.route('/item/<item>')
+def item_detail(item):
+    api_response = requests.get(url=f'http://localhost:5000/api/item/consumableitem/{item}')
+    item_data = []
+    location_table = []
+
+    if api_response.status_code == 200:
+        item_data = api_response.json()
+
+    if util.get_redis_asset('item_location_parsed_asset').get(item) is not None:
+        location_table = util.get_redis_asset('item_location_parsed_asset').get(item)
+
+    return render_template('item_detail.html', item=item_data[0], location_table=location_table)
+
 @app.route('/icon/')
 def icon():
     profile_icons = []
@@ -140,6 +155,20 @@ def icon():
         profile_icons = profile_icon_api_response.json()
 
     return render_template('icon.html', icons=profile_icons)
+
+@app.route('/icon/<icon>')
+def icon_detail(icon):
+    api_response = requests.get(url=f'http://localhost:5000/api/item/profileicon/{icon}')
+    icon_data = []
+    location_table = []
+
+    if api_response.status_code == 200:
+        icon_data = api_response.json()
+
+    if util.get_redis_asset('item_location_parsed_asset').get(icon) is not None:
+        location_table = util.get_redis_asset('item_location_parsed_asset').get(icon)
+
+    return render_template('icon_detail.html', icon=icon_data[0], location_table=location_table)
 
 @app.route('/package/')
 def package():
@@ -154,12 +183,18 @@ def package():
 @app.route('/unit/<unit>')
 def unit_detail(unit):
     api_response = requests.get(url=f'http://localhost:5000/api/unit/{unit}')
+    farmable_api_response = requests.get(url='http://localhost:5000/api/farmable/')
+
     unit = []
+    farmables = []
 
     if api_response.status_code == 200:
         unit = api_response.json()
 
-    return render_template('unit_detail.html', unit=unit[0])
+    if farmable_api_response.status_code == 200:
+        farmables = farmable_api_response.json()
+
+    return render_template('unit_detail.html', unit=unit[0], farmables=farmables)
 
 @app.route('/equipment/')
 def equipment():
@@ -174,12 +209,16 @@ def equipment():
 @app.route('/equipment/<equipment>')
 def equipment_detail(equipment):
     api_response = requests.get(url=f'http://localhost:5000/api/equipment/{equipment}')
-    equipment = []
+    equipment_data = []
+    location_table = []
 
     if api_response.status_code == 200:
-        equipment = api_response.json()
+        equipment_data = api_response.json()
 
-    return render_template('equipment_detail.html', equipment=equipment[0])
+    if util.get_redis_asset('item_location_parsed_asset').get(equipment) is not None:
+        location_table = util.get_redis_asset('item_location_parsed_asset').get(equipment)
+
+    return render_template('equipment_detail.html', equipment=equipment_data[0], location_table=location_table)
 
 @app.route('/accolade/')
 def accolade():
