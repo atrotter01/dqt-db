@@ -60,7 +60,16 @@
                     <a href="/equipment/{{ equipment.id }}">{{ equipment.equipment_display_name }}</a>
                 </td>
                 <td><img src="/{{ equipment.equipment_icon }}" style="width: 64px; height: 80px;" /></td>
-                <td><span style="display: none">{{ equipment.equipment_rank }}</span><img src="/{{ equipment.equipment_rank_icon }}" alt="{{ equipment.equipment_rank }}" style="width: 64px; height: 64px;" /></td>
+                <td>
+                    <span style="display: none">
+                        {% if equipment.equipment_rank == 'S' %}
+                        1
+                        {% else %}
+                        {{ equipment.equipment_rank }}
+                        {% endif %}
+                    </span>
+                    <img src="/{{ equipment.equipment_rank_icon }}" alt="{{ equipment.equipment_rank }}" style="width: 64px; height: 64px;" />
+                </td>
                 <td>{{ equipment.equipment_category }}</td>
                 <td>{{ equipment.equipment_type }}</td>
                 <td>{{ equipment.equipment_status_increase.hp }}</td>
