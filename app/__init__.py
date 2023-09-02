@@ -112,15 +112,18 @@ def skill_detail(type_of_skill, skill):
     api_response = requests.get(url=f'http://localhost:5000/api/skill/{type_of_skill}/{skill}')
     skill_data = []
     skill_learned_by = []
-    skill_equipment_cache = util.get_redis_asset('skill_equipment_parsed_asset')
-    
+    skill_equipment_cache = []
+
+    if util.get_redis_asset('skill_equipment_parsed_asset').get(skill) is not None:
+        skill_equipment_cache = util.get_redis_asset('skill_equipment_parsed_asset').get(skill)
+
     if util.get_redis_asset('skill_unit_table_parsed_asset').get(skill) is not None:
         skill_learned_by.extend(util.get_redis_asset('skill_unit_table_parsed_asset').get(skill))
 
     if api_response.status_code == 200:
         skill_data = api_response.json()
 
-    return render_template('skill_detail.html', skill=skill_data[0], skill_learned_by=skill_learned_by, skill_equipment_cache=skill_equipment_cache.get(skill))
+    return render_template('skill_detail.html', skill=skill_data[0], skill_learned_by=skill_learned_by, skill_equipment_cache=skill_equipment_cache)
 
 @app.route('/item/')
 def item():
