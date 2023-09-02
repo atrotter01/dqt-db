@@ -64,7 +64,16 @@
             <tr>
                 <td><a href="/unit/{{ unit.id }}">{{ unit.display_name }}</a></td>
                 <td><img src="/{{ unit.unit_icon }}" style="width: 64px; height: 80px;" /></td>
-                <td><span style="display: none">{{ unit.unit_rank }}</span><img src="/{{ unit.unit_rank_icon }}" alt="{{ unit.unit_rank }}" style="width: 64px; height: 64px;" /></td>
+                <td>
+                    <span style="display: none">
+                        {% if unit.unit_rank == 'S' %}
+                        1
+                        {% else %}
+                        {{ unit.unit_rank }}
+                        {% endif %}
+                    </span>
+                    <img src="/{{ unit.unit_rank_icon }}" alt="{{ unit.unit_rank }}" style="width: 64px; height: 64px;" />
+                </td>
                 <td><span style="display: none">{{ unit.family }}</span><img src="/{{ unit.family_icon }}" alt="{{ unit.family }}" style="width: 64px; height: 64px;" /></td>
                 <td><span style="display: none">{{ unit.role }}</span><img src="/{{ unit.role_icon }}" alt="{{ unit.role }}" style="width: 64px; height: 64px;" /></td>
                 <td>{{ unit.is_quest_reward }}</td>
