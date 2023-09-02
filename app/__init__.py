@@ -395,6 +395,9 @@ def farmable():
 def lawson():
     condolences = util.get_redis_asset('user_data_lawson')
 
+    if condolences is None:
+        condolences = []
+    
     return render_template('lawson.html', condolences=condolences)
 
 @app.route('/lawson/save', methods=['POST'])
