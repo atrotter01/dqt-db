@@ -53,6 +53,13 @@
                     <td><a href='/item/{{ item.id }}'>{{ item.display_name }}</a></td>
                     <td>{{ item.description }}</td>
                     <td>
+                        <span style="display: none">
+                            {% if item.rank_icon_path== 'static/dqt_images/assets/aiming/textures/gui/general/icon/monstericon/monstericonparts/MonsterRankIcon_S.png' %}
+                            1
+                            {% else %}
+                            {{ item.rank_icon_path }}
+                            {% endif %}
+                        </span>
                         <span style="display: none">{{ item.rank_icon_path }}</span>
                         <img src="/{{ item.rank_icon_path }}" style="width: 64px; height: 64px;" />
                     </td>

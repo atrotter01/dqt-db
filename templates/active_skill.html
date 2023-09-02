@@ -57,7 +57,13 @@
                     <td><a href='/skill/active_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
                     <td>{{ skill.skill_description }}</td>
                     <td>
-                        <span style="display: none">{{ skill.skill_rank }}</span>
+                        <span style="display: none">
+                            {% if skill.skill_rank == 'S' %}
+                            1
+                            {% else %}
+                            {{ skill.skill_rank }}
+                            {% endif %}
+                        </span>
                         <img src="/{{ skill.skill_rank_icon }}" style="width: 64px; height: 64px;" />
                     </td>
                     <td>
