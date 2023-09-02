@@ -51,7 +51,19 @@
                 {% for stage_drop in stage.stage_drops %}
                 {% for loot in stage_drop.loot_group.loot %}
                 <tr>
-                    <td>{{ loot.display_name }}</td>
+                    <td>
+                        {% if loot.loot_type == 'consumable_item' %}
+                        <a href="/item/{{ loot.path }}">
+                        {% elif loot.loot_type == 'monster' %}
+                        <a href="/unit/{{ loot.path }}">
+                        {% elif loot.loot_type == 'equipment' %}
+                        <a href="/equipment/{{ loot.path }}">
+                        {% elif loot.loot_type == 'profile_icon' %}
+                        <a href="/icon/{{ loot.path }}">
+                        {% endif %}
+                        {{ loot.display_name }}
+                        </a>
+                    </td>
                     <td>{{ stage_drop.group_number }}</td>
                     <td>{{ loot.quantity }}</td>
                     <td>{{ stage_drop.drop_percent }}%</td>
@@ -70,7 +82,19 @@
                 {% for enemy_drop in enemy.monster.enemy_drops %}
                 {% for loot in enemy_drop.loot_group.loot %}
                 <tr>
-                    <td>{{ loot.display_name }}</td>
+                    <td>
+                        {% if loot.loot_type == 'consumable_item' %}
+                        <a href="/item/{{ loot.path }}">
+                        {% elif loot.loot_type == 'monster' %}
+                        <a href="/unit/{{ loot.path }}">
+                        {% elif loot.loot_type == 'equipment' %}
+                        <a href="/equipment/{{ loot.path }}">
+                        {% elif loot.loot_type == 'profile_icon' %}
+                        <a href="/icon/{{ loot.path }}">
+                        {% endif %}
+                        {{ loot.display_name }}
+                        </a>
+                    </td>
                     <td>{{ enemy_drop.group_number }}</td>
                     <td>{{ loot.quantity }}</td>
                     <td>{{ enemy_drop.drop_percent }}%</td>
@@ -90,7 +114,19 @@
                 {% for enemy_drop in enemy.monster.enemy_drops %}
                 {% for loot in enemy_drop.loot_group.loot %}
                 <tr>
-                    <td>{{ loot.display_name }}</td>
+                    <td>
+                        {% if loot.loot_type == 'consumable_item' %}
+                        <a href="/item/{{ loot.path }}">
+                        {% elif loot.loot_type == 'monster' %}
+                        <a href="/unit/{{ loot.path }}">
+                        {% elif loot.loot_type == 'equipment' %}
+                        <a href="/equipment/{{ loot.path }}">
+                        {% elif loot.loot_type == 'profile_icon' %}
+                        <a href="/icon/{{ loot.path }}">
+                        {% endif %}
+                        {{ loot.display_name }}
+                        </a>
+                    </td>
                     <td>{{ enemy_drop.group_number }}</td>
                     <td>{{ loot.quantity }}</td>
                     <td>{{ enemy_drop.drop_percent }}%</td>
@@ -110,7 +146,27 @@
                 {% for enemy_drop in enemy.monster.enemy_drops %}
                 {% for loot in enemy_drop.loot_group.loot %}
                 <tr>
-                    <td>{{ loot.display_name }}</td>
+                    <td>
+                        {% if loot.loot_type == 'consumable_item' %}
+                        <a href="/item/{{ loot.path }}">
+                        {% elif loot.loot_type == 'monster' %}
+                        <a href="/unit/{{ loot.path }}">
+                        {% elif loot.loot_type == 'equipment' %}
+                        <a href="/equipment/{{ loot.path }}">
+                        {% elif loot.loot_type == 'profile_icon' %}
+                        <a href="/icon/{{ loot.path }}">
+                        {% endif %}
+                        {{ loot.display_name }}
+                        {% if loot.loot_type == 'consumable_item' %}
+                        </a>
+                        {% elif loot.loot_type == 'monster' %}
+                        </a>
+                        {% elif loot.loot_type == 'equipment' %}
+                        </a>
+                        {% elif loot.loot_type == 'profile_icon' %}
+                        </a>
+                        {% endif %}
+                    </td>
                     <td>{{ enemy_drop.group_number }}</td>
                     <td>{{ loot.quantity }}</td>
                     <td>{{ enemy_drop.drop_percent }}%</td>
@@ -143,7 +199,19 @@
             <tbody>
                 {% for stage_mission in stage.stage_missions %}
                 <tr>
-                    <td>{{ stage_mission.reward_display_name }}</td>
+                    <td>
+                        {% if stage_mission.reward_type == 'consumable_item' %}
+                        <a href="/item/{{ stage_mission.reward_id }}">
+                        {% elif stage_mission.reward_type == 'profile_icon' %}
+                        <a href="/icon/{{ stage_mission.reward_id }}">
+                        {% endif %}
+                        {{ stage_mission.reward_display_name }}
+                        {% if stage_mission.reward_type == 'consumable_item' %}
+                        </a>
+                        {% elif stage_mission.reward_type == 'profile_icon' %}
+                        </a>
+                        {% endif %}
+                    </td>
                     <td>{{ stage_mission.reward_quantity }}</td>
                     <td>
                         {% for condition in stage_mission.stage_mission_conditions %}

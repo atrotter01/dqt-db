@@ -334,22 +334,26 @@ class Stage:
                 reward_display_name = None
                 reward_icon = None
                 reward_id = None
+                reward_type = None
 
                 if stage_mission_key.get('reward').get('item').get('m_PathID') is None:
                     reward_icon = self.util.get_image_path(stage_mission_key.get('reward').get('item').get('iconPath'))
                     reward_display_name = stage_mission_key.get('reward').get('item').get('displayName_translation').get('gbl') or stage_mission_key.get('reward').get('item').get('displayName_translation').get('ja')
                     reward_id = stage_mission_key.get('reward').get('item').get('linked_asset_id')
+                    reward_type = 'consumable_item'
                 elif stage_mission_key.get('reward').get('profileIcon').get('m_PathID') is None:
                     reward_icon = self.util.get_image_path(stage_mission_key.get('reward').get('profileIcon').get('iconPath'))
                     reward_display_name = stage_mission_key.get('reward').get('profileIcon').get('displayName_translation').get('gbl') or stage_mission_key.get('reward').get('profileIcon').get('displayName_translation').get('ja')
                     reward_id = stage_mission_key.get('reward').get('item').get('linked_asset_id')
+                    reward_type = 'profile_icon'
 
                 stage_missions.append({
                     'stage_mission_conditions': stage_mission_conditions,
                     'reward_quantity': reward_quantity,
                     'reward_display_name': reward_display_name,
                     'reward_icon': reward_icon,
-                    'reward_id': reward_id
+                    'reward_id': reward_id,
+                    'reward_type': reward_type
                 })
 
         stage: dict = {

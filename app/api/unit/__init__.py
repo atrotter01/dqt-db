@@ -33,6 +33,9 @@ unit_model = api.model('unit', {
     'awakening_passive_skills': fields.List(fields.Raw),
     'reaction_passive_skills': fields.List(fields.Raw),
     'awakening_reaction_passive_skills': fields.List(fields.Raw),
+    'has_battleroad': fields.Boolean,
+    'has_blossom': fields.Boolean,
+    'has_character_builder': fields.Boolean,
     'blossoms': fields.List(fields.Raw),
     'character_builder_blossoms': fields.List(fields.Raw)
 })

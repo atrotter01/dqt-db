@@ -1,3 +1,4 @@
+import requests
 from app.util import Util
 from app.data.resistance import Resistance
 from app.data.skill import Skill
@@ -50,6 +51,9 @@ class Unit:
         reaction_passive_skills: list = []
         awakening_passive_skills: list = []
         awakening_reaction_passive_skills: list = []
+        has_battleroad: bool = False
+        has_blossom: bool = False
+        has_character_builder: bool = False
         blossoms: list = []
         character_builder_blossoms: list = []
 
@@ -129,10 +133,25 @@ class Unit:
             awakening_reaction_passive_skills.append(awakening_reaction_passive_skill)
 
         if blossom_board.get('panels') is not None:
+            has_blossom = True
             blossoms = self.blossom_parser.parse_skill_board(blossom_board=blossom_board)
 
         if character_builder_board.get('panels') is not None:
+            has_character_builder = True
             character_builder_blossoms = self.blossom_parser.parse_skill_board(blossom_board=character_builder_board)
+
+        api_response = requests.get(url=f'http://localhost:5000/api/area')
+        area_data = []
+
+        if api_response.status_code == 200:
+            area_data = api_response.json()
+
+        for area in area_data:
+            if area.get('area_category') == 4:
+                for available_monster in area.get('area_available_monsters'):
+                    if available_monster.get('monster_name') == display_name:
+                        has_battleroad = True
+                        break
 
         unit: dict = {
             'id': path,
@@ -159,6 +178,9 @@ class Unit:
             'awakening_passive_skills': awakening_passive_skills,
             'reaction_passive_skills': reaction_passive_skills,
             'awakening_reaction_passive_skills': awakening_reaction_passive_skills,
+            'has_battleroad': has_battleroad,
+            'has_blossom': has_blossom,
+            'has_character_builder': has_character_builder,
             'blossoms': blossoms,
             'character_builder_blossoms': character_builder_blossoms
         }
