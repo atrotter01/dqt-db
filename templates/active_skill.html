@@ -46,9 +46,12 @@
                     <td>Element</td>
                     <td>Range</td>
                     <td>Reach</td>
-                    <td>Surehit</td>
                     <td># Hits</td>
                     <td>MP</td>
+                    <td>Base</td>
+                    <td>Min</td>
+                    <td>Max</td>
+                    <td>Multi</td>
                 </tr>
             </thead>
             <tbody>
@@ -75,9 +78,12 @@
                         <img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" />
                     </td>
                     <td>{{ skill.skill_reach }}</td>
-                    <td>{{ skill.skill_surehit }}</td>
                     <td>{{ skill.skill_num_attacks }}</td>
                     <td>{{ skill.skill_mp_cost }}</td>
+                    <td>{{ skill.skill_base_damage }}</td>
+                    <td>{{ skill.skill_min_damage }}</td>
+                    <td>{{ skill.skill_max_damage }}</td>
+                    <td>{{ skill.skill_multiplier }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

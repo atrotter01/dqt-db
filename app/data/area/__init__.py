@@ -50,7 +50,7 @@ class Area:
         for available_monster in data.get('availableMonsters'):
             monster_is_required = available_monster.get('isRequired')
             monster_path = available_monster.get('monster').get('linked_asset_id')
-            unit = self.unit_parser.get_data(monster_path)
+            unit = self.unit_parser.get_data(path=monster_path, skip_area_enumeration=True)
             monster_name = unit.get('display_name')
             monster_icon = unit.get('unit_icon')
 

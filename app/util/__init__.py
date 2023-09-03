@@ -125,7 +125,7 @@ class Util:
             filetype = asset.get('filetype')
             processed = asset.get('processed')
 
-            if processed_filter is not None and processed != processed_filter:
+            if processed_filter is not None and processed is not processed_filter:
                 continue
 
             if containers.get(container) is None:

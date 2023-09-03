@@ -19,7 +19,7 @@ class Unit:
 
         return
 
-    def parse_unit(self, path):
+    def parse_unit(self, path, skip_area_enumeration: bool = False):
         asset = self.util.get_asset_by_path(path=path, deflate_data=True)
         data: dict = asset.get('processed_document')
         display_name: str = data.get('profile').get('displayName_translation').get('gbl') or data.get('profile').get('displayName_translation').get('ja')
@@ -140,18 +140,19 @@ class Unit:
             has_character_builder = True
             character_builder_blossoms = self.blossom_parser.parse_skill_board(blossom_board=character_builder_board)
 
-        api_response = requests.get(url=f'http://localhost:5000/api/area')
-        area_data = []
+        if skip_area_enumeration is False:
+            area_api_response = requests.get(url=f'http://localhost:5000/api/area')
+            area_data = []
 
-        if api_response.status_code == 200:
-            area_data = api_response.json()
+            if area_api_response.status_code == 200:
+                area_data = area_api_response.json()
 
-        for area in area_data:
-            if area.get('area_category') == 4:
-                for available_monster in area.get('area_available_monsters'):
-                    if available_monster.get('monster_name') == display_name:
-                        has_battleroad = True
-                        break
+            for area in area_data:
+                if area.get('area_category') == 4:
+                    for available_monster in area.get('area_available_monsters'):
+                        if available_monster.get('monster_name') == display_name:
+                            has_battleroad = True
+                            break
 
         unit: dict = {
             'id': path,
@@ -192,14 +193,16 @@ class Unit:
 
         return unit
 
-    def get_data(self, path):
+    def get_data(self, path, skip_area_enumeration: bool = False):
         cache_key: str = f'{path}_parsed_asset'
         cached_asset: dict = self.util.get_redis_asset(cache_key=cache_key)
 
         if cached_asset is not None:
             return cached_asset
         
-        asset: dict = self.parse_unit(path)
-        self.util.save_redis_asset(cache_key=cache_key, data=asset)
+        asset: dict = self.parse_unit(path, skip_area_enumeration)
+
+        if skip_area_enumeration is False:
+            self.util.save_redis_asset(cache_key=cache_key, data=asset)
         
         return asset

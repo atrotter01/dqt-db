@@ -28,7 +28,6 @@ class Skill:
         else:
             skill_description = skill.get('description')
 
-        skill_potency = self.util.float_to_str(skill.get('attackMagnificationPermil') / 10)
         skill_button_icon = self.util.get_image_path(skill.get('buttonBasePath'))
         skill_rank = skill.get('originRarity').get('displayName_translation').get('gbl') or skill.get('originRarity').get('displayName_translation').get('ja')
         skill_rank_icon = self.util.get_image_path(f'Assets/Aiming/Textures/GUI/General/Icon/MonsterIcon/MonsterIconParts/MonsterRankIcon_{skill_rank}.png')
@@ -57,6 +56,8 @@ class Skill:
         skill_mp_ratio = self.util.float_to_str(skill.get('remainingMpRatio'))
         skill_num_attacks = self.util.float_to_str(skill.get('numberOfAttacks'))
         skill_is_random_target = self.util.float_to_str(skill.get('isRandomTarget'))
+        skill_multiplier = self.util.float_to_str(skill.get('attackMagnificationPermil') / 10)
+        skill_base_damage = self.util.float_to_str(skill.get('baseDamage'))
         skill_min_damage = self.util.float_to_str(skill.get('minDamage'))
         skill_max_damage = self.util.float_to_str(skill.get('maxDamage'))
         skill_action_type = self.util.float_to_str(skill.get('activeSkillActionType'))
@@ -104,7 +105,7 @@ class Skill:
                 'enhancement_status_change_duration_increase': enhancement_status_change_duration_increase
             })
 
-        skill_description = self.util.replace_string_variable(skill_description, 'damagePhysics', skill_potency)
+        skill_description = self.util.replace_string_variable(skill_description, 'damagePhysics', skill_multiplier)
         skill_description = self.util.replace_string_variable(skill_description, 'specialCoolTurn', skill_turns_needed)
         skill_description = self.util.replace_string_variable(skill_description, 'consumeMPRatio', skill_mp_ratio)
         change_parameter_counter = 0
@@ -138,12 +139,13 @@ class Skill:
             'skill_threshold_of_attack': skill_threshold_of_attack,
             'skill_mp_cost': skill_mp_cost,
             'skill_is_swap_skill': skill_is_swap_skill,
-            'skill_potency': skill_potency,
+            'skill_multiplier': skill_multiplier,
             'skill_is_special': skill_is_special,
             'skill_times_available': skill_times_available,
             'skill_turns_needed': skill_turns_needed,
             'skill_num_attacks': skill_num_attacks,
             'skill_is_random_target': skill_is_random_target,
+            'skill_base_damage': skill_base_damage,
             'skill_min_damage': skill_min_damage,
             'skill_max_damage': skill_max_damage,
             'skill_action_type': skill_action_type,

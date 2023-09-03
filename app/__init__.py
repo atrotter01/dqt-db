@@ -361,7 +361,7 @@ def stage(stage_id):
     # 12: TnT Board
 
 @app.route('/stage/category/<stage_category>')
-def area(stage_category):
+def stage_category(stage_category):
     stage_structure = util.get_redis_asset('stage_structure_parsed_asset')
 
     return render_template('stage_list.html', stage_structure=stage_structure, stage_category=int(stage_category))

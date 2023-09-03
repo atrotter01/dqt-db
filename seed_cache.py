@@ -431,6 +431,9 @@ def cache_unit_profile_map():
 if __name__ == '__main__':
     util: Util = Util()
 
+    area_response = requests.get(f'http://localhost:5000/api/area/')
+    area_group_response = requests.get(f'http://localhost:5000/api/area_group')
+
     unit_response = requests.get(f'http://localhost:5000/api/unit')
     active_skill_response = requests.get(f'http://localhost:5000/api/skill/active_skill')
     passive_skill_response = requests.get(f'http://localhost:5000/api/skill/passive_skill')
@@ -445,8 +448,6 @@ if __name__ == '__main__':
     package_response = requests.get(f'http://localhost:5000/api/item/package')
     shop_response = requests.get(f'http://localhost:5000/api/shop')
 
-    area_response = requests.get(f'http://localhost:5000/api/area')
-    area_group_response = requests.get(f'http://localhost:5000/api/area_group')
     stage_response = requests.get('http://localhost:5000/api/stage')
 
     area_data = area_response.json()
