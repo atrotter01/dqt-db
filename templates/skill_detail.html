@@ -112,6 +112,12 @@
     <div>
         <p><span style="font-weight: bold;">Name: </span>{{ skill.skill_name }}</p>
         <p><span style="font-weight: bold;">Description: </span>{{ skill.skill_description }}</p>
+        {% if skill.skill_related_active_skill_id != None %}
+        <p>
+            <span style="font-weight: bold;">Related Skill: </span>
+            <a href='/skill/active_skill/{{ skill.skill_related_active_skill_id }}'>{{ skill.skill_related_active_skill_name }}</a>
+        </p>
+        {% endif %}
         <p><span style="font-weight: bold;">Is Invisible: </span>{{ skill.skill_is_invisible }}</p>
         <p><span style="font-weight: bold;">Is PVE Only: </span>{{ skill.skill_is_pve_only }}</p>
         <p><span style="font-weight: bold;">Times Available: </span>{{ skill.skill_times_available }}</p>

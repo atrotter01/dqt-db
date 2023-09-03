@@ -187,6 +187,19 @@ def cache_skill_unit_table():
                 'unit_type': 'Unit'
             })
 
+            if skill.get('skill_related_active_skill_id') is not None:
+                skill_id = skill.get('skill_related_active_skill_id')
+
+                if skill_unit_table.get(skill_id) is None:
+                    skill_unit_table[skill_id] = []
+            
+                skill_unit_table[skill_id].append({
+                    'unit_id': unit_id,
+                    'unit_name': unit_name,
+                    'unit_icon': unit_icon,
+                    'unit_type': 'Unit'
+                })
+
         for skill in unit.get('awakening_reaction_passive_skills'):
             skill_id = skill.get('id')
 
@@ -200,8 +213,21 @@ def cache_skill_unit_table():
                 'unit_type': 'Unit'
             })
 
+            if skill.get('skill_related_active_skill_id') is not None:
+                skill_id = skill.get('skill_related_active_skill_id')
+
+                if skill_unit_table.get(skill_id) is None:
+                    skill_unit_table[skill_id] = []
+            
+                skill_unit_table[skill_id].append({
+                    'unit_id': unit_id,
+                    'unit_name': unit_name,
+                    'unit_icon': unit_icon,
+                    'unit_type': 'Unit'
+                })
+
         for panel in unit.get('blossoms'):
-            if panel.get('type') == 'Passive Skill' or panel.get('type') == 'Active Skill':
+            if panel.get('type') == 'Passive Skill' or panel.get('type') == 'Active Skill' or panel.get('type') == 'Reaction Skill':
                 skill = panel.get('data')
                 skill_id = skill.get('id')
 
@@ -214,9 +240,25 @@ def cache_skill_unit_table():
                     'unit_icon': unit_icon,
                     'unit_type': 'Unit'
                 })
+
+            if panel.get('type') == 'Reaction Skill':
+                skill = panel.get('data')
+
+                if skill.get('skill_related_active_skill_id') is not None:
+                    skill_id = skill.get('skill_related_active_skill_id')
+
+                    if skill_unit_table.get(skill_id) is None:
+                        skill_unit_table[skill_id] = []
+                
+                    skill_unit_table[skill_id].append({
+                        'unit_id': unit_id,
+                        'unit_name': unit_name,
+                        'unit_icon': unit_icon,
+                        'unit_type': 'Unit'
+                    })
 
         for panel in unit.get('character_builder_blossoms'):
-            if panel.get('type') == 'Passive Skill' or panel.get('type') == 'Active Skill':
+            if panel.get('type') == 'Passive Skill' or panel.get('type') == 'Active Skill' or panel.get('type') == 'Reaction Skill':
                 skill = panel.get('data')
                 skill_id = skill.get('id')
 
@@ -229,6 +271,22 @@ def cache_skill_unit_table():
                     'unit_icon': unit_icon,
                     'unit_type': 'Unit'
                 })
+
+            if panel.get('type') == 'Reaction Skill':
+                skill = panel.get('data')
+
+                if skill.get('skill_related_active_skill_id') is not None:
+                    skill_id = skill.get('skill_related_active_skill_id')
+
+                    if skill_unit_table.get(skill_id) is None:
+                        skill_unit_table[skill_id] = []
+                
+                    skill_unit_table[skill_id].append({
+                        'unit_id': unit_id,
+                        'unit_name': unit_name,
+                        'unit_icon': unit_icon,
+                        'unit_type': 'Unit'
+                    })
 
     for enemy_monster in enemy_monster_data:
         enemy_monster_id: str = enemy_monster.get('id')
@@ -446,9 +504,9 @@ if __name__ == '__main__':
     consumable_item_response = requests.get(f'http://localhost:5000/api/item/consumableitem')
     profile_icon_response = requests.get(f'http://localhost:5000/api/item/profileicon')
     package_response = requests.get(f'http://localhost:5000/api/item/package')
-    shop_response = requests.get(f'http://localhost:5000/api/shop')
 
     stage_response = requests.get('http://localhost:5000/api/stage')
+    shop_response = requests.get(f'http://localhost:5000/api/shop')
 
     area_data = area_response.json()
     area_group_data = area_group_response.json()

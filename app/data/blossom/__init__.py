@@ -1,3 +1,4 @@
+import json
 import math
 from app.util import Util
 from app.data.resistance import Resistance
@@ -52,7 +53,7 @@ class Blossom:
 
             if panel_type == 0:
                 skill = panel_effects[0].get('activeSkill')
-                active_skill = self.skill_parser.parse_active_skill(skill=skill, level_learned='0')
+                active_skill = self.skill_parser.parse_active_skill(skill=skill, level_learned='0', path=skill.get('linked_asset_id'))
                 blossoms.append({
                     'panel_code': panel_code,
                     'panel_display_name': panel_display_name,
@@ -64,12 +65,24 @@ class Blossom:
 
             elif panel_type == 1:
                 skill = panel_effects[len(panel_effects)-1].get('passiveSkill')
-                passive_skill = self.skill_parser.parse_passive_skill(skill=skill, level_learned='0')
+                passive_skill = self.skill_parser.parse_passive_skill(skill=skill, level_learned='0', path=skill.get('linked_asset_id'))
                 blossoms.append({
                     'panel_code': panel_code,
                     'panel_display_name': panel_display_name,
                     'panel_description': panel_description,
                     'type': 'Passive Skill',
+                    'data': passive_skill,
+                    'unlock_costs': panel_unlock_items
+                })
+
+            elif panel_type == 2:
+                skill = panel_effects[len(panel_effects)-1].get('reactionPassiveSkill')
+                passive_skill = self.skill_parser.parse_reaction_passive_skill(skill=skill, level_learned='0', path=skill.get('linked_asset_id'))
+                blossoms.append({
+                    'panel_code': panel_code,
+                    'panel_display_name': panel_display_name,
+                    'panel_description': panel_description,
+                    'type': 'Reaction Skill',
                     'data': passive_skill,
                     'unlock_costs': panel_unlock_items
                 })
@@ -117,5 +130,8 @@ class Blossom:
                     'type': 'Abnormity Resistance',
                     'unlock_costs': panel_unlock_items
                 })
+
+            else:
+                raise Exception(panel_contents)
 
         return blossoms

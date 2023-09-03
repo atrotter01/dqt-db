@@ -238,6 +238,14 @@ class Skill:
         skill_multiple_activation_to_same_target: bool = skill.get('isMultipleInvokableToSameReactionTarget')
         skill_is_re_reactionable: bool = skill.get('isReReactionable')
         skill_applicable_abnormity_types: list = []
+        skill_related_active_skill: dict = None
+        skill_related_active_skill_id: str = None
+        skill_related_active_skill_name: str = None
+
+        if skill.get('activeSkill').get('linked_asset_id') is not None:
+            skill_related_active_skill = self.get_active_skill(path=skill.get('activeSkill').get('linked_asset_id'))
+            skill_related_active_skill_name = skill_related_active_skill.get('skill_name')
+            skill_related_active_skill_id = skill_related_active_skill.get('id')
 
         for abnormity in skill.get('refineAbnormityTypes'):
             skill_applicable_abnormity_types.append(abnormity_status_table.get(abnormity))
@@ -272,6 +280,8 @@ class Skill:
             'skill_multiple_activation_to_same_target': skill_multiple_activation_to_same_target,
             'skill_is_re_reactionable': skill_is_re_reactionable,
             'skill_applicable_abnormity_types': sorted(skill_applicable_abnormity_types),
+            'skill_related_active_skill_name': skill_related_active_skill_name,
+            'skill_related_active_skill_id': skill_related_active_skill_id,
             'type_of_skill': 'reaction_skill'
         }
 

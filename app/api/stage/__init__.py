@@ -60,16 +60,19 @@ class Asset(Resource):
             return cached_asset
 
         asset_list: list = self.util.get_asset_list('Stage')
+        failure: bool = False
 
         for path in asset_list:
             try:
                 stage = self.stage_parser.get_data(path)
             except Exception as ex:
                 print(f'Failed to process {path}.')
-                raise ex
+                failure = True
+                #raise ex
 
             self.stages.append(stage)
 
+        assert failure is False, 'Failed to process stages.'
         self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.stages, key=lambda d: d['stage_display_name']))
 
         return sorted(self.stages, key=lambda d: d['stage_display_name'])

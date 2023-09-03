@@ -78,6 +78,8 @@ reaction_skill_model = api.model('reaction_skill', {
     'skill_multiple_activation_to_same_target': fields.Boolean,
     'skill_is_re_reactionable': fields.Boolean,
     'skill_applicable_abnormity_types': fields.List(fields.Raw),
+    'skill_related_active_skill_name': fields.String,
+    'skill_related_active_skill_id': fields.String,
     'type_of_skill': fields.String
 })
 

@@ -118,7 +118,8 @@ class Util:
     def get_assets_by_container(self, processed_filter: bool = None):
         containers: dict = {}
 
-        for asset in self.get_asset_by_path('metadata_cache', deflate_data=False):
+        for path in self.get_asset_list():
+            asset = self.get_asset_by_path(path=path, deflate_data=False)
             path = asset.get('path')
             container = asset.get('container')
             display_name = asset.get('display_name')

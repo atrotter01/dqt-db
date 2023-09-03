@@ -275,8 +275,12 @@
                 {% for panel in unit.blossoms %}
                 <tr>
                     <td>
-                        {% if panel.type == "Passive Skill" or panel.type == "Active Skill" %}
-                        {{ panel.data.skill_name }}
+                        {% if panel.type == "Passive Skill" %}
+                        <a href='/skill/passive_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
+                        {% elif panel.type == "Active Skill" %}
+                        <a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
+                        {% elif panel.type == "Reaction Skill" %}
+                        <a href='/skill/reaction_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
                         {% else %}
                         {{ panel.panel_display_name }}
                         {% endif %}
@@ -320,9 +324,25 @@
             <tbody>
                 {% for panel in unit.character_builder_blossoms %}
                 <tr>
-                    <td>{% if panel.type == "Passive Skill" or panel.type == "Active Skill" %} {{ panel.data.skill_name }} {% else %} {{ panel.panel_display_name }} {% endif %}</td>
+                    <td>
+                        {% if panel.type == "Passive Skill" %}
+                        <a href='/skill/passive_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
+                        {% elif panel.type == "Active Skill" %}
+                        <a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
+                        {% elif panel.type == "Reaction Skill" %}
+                        <a href='/skill/reaction_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
+                        {% else %}
+                        {{ panel.panel_display_name }}
+                        {% endif %}
+                    </td>
                     <td>{{ panel.type }}</td>
-                    <td>{% if panel.type == "Passive Skill" or panel.type == "Active Skill" %} {{ panel.data.skill_description }} {% else %} {{ panel.panel_description }} {% endif %}</td>
+                    <td>
+                        {% if panel.type == "Passive Skill" or panel.type == "Active Skill" %} 
+                        {{ panel.data.skill_description }} 
+                        {% else %} 
+                        {{ panel.panel_description }} 
+                        {% endif %}
+                    </td>
                     {% for unlock_item in panel.unlock_costs %}
                     <td>{{ unlock_item.consumption_item_display_name }}</td>
                     <td><img src="/{{ unlock_item.consumption_item_icon_path }}" style="width: 64px; height: 64px;" /></td>
