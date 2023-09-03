@@ -108,12 +108,14 @@ class Skill:
         skill_description = self.util.replace_string_variable(skill_description, 'damagePhysics', skill_multiplier)
         skill_description = self.util.replace_string_variable(skill_description, 'specialCoolTurn', skill_turns_needed)
         skill_description = self.util.replace_string_variable(skill_description, 'consumeMPRatio', skill_mp_ratio)
+        skill_status_effect_parameter_name: str = None
         change_parameter_counter = 0
 
         for change_parameter in skill.get('changeParameters'):
             change_parameter_counter = change_parameter_counter + 1
             duration = self.util.float_to_str(change_parameter.get('duration'))
             skill_wave_immune = change_parameter.get('effect').get('disruptiveWaveImmune')
+            skill_status_effect_parameter_name = change_parameter.get('effect').get('effectStatusName_translation').get('gbl') or change_parameter.get('effect').get('effectStatusName_translation').get('ja')
 
             skill_description = self.util.replace_string_variable(skill_description, f'Turn{change_parameter_counter}', duration)
 
@@ -153,6 +155,7 @@ class Skill:
             'skill_target_type': skill_target_type, 
             'skill_damage_calculation_type': skill_damage_calculation_type,
             'skill_ignores_damage_reduction': skill_ignores_damage_reduction,
+            'skill_status_effect_parameter_name': skill_status_effect_parameter_name,
             'skill_wave_immune': skill_wave_immune,
             'skill_enhancements': skill_enhancements,
             'type_of_skill': 'active_skill'
