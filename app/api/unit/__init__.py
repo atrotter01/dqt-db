@@ -48,6 +48,30 @@ rank_up_calculator_model = api.model('rank_up_calculator', {
     'rank_up_table': fields.List(fields.Raw),
 })
 
+resistance_model = api.model('resistance_model', {
+    'display_name': fields.String,
+    'Frizz': fields.Integer,
+    'Sizz': fields.Integer,
+    'Crack': fields.Integer,
+    'Woosh': fields.Integer,
+    'Bang': fields.Integer,
+    'Zap': fields.Integer,
+    'Zam': fields.Integer,
+    'Sleep': fields.Integer,
+    'Stun': fields.Integer,
+    'Paralysis': fields.Integer,
+    'Poison': fields.Integer,
+    'Slow': fields.Integer,
+    'Curse': fields.Integer,
+    'Blind': fields.Integer,
+    'Physical Lock': fields.Integer,
+    'Martial Lock': fields.Integer,
+    'Spell Lock': fields.Integer,
+    'Breath Lock': fields.Integer,
+    'Confusion': fields.Integer,
+    'Charm': fields.Integer,
+})
+
 @api.param("path", "Path")
 @api.route("/")
 @api.route("/<path>")
@@ -118,3 +142,47 @@ class RankUpCalculator(Resource):
             })
 
         return sorted(self.units, key=lambda d: d['almanac_number'])
+
+@api.route("/resist_table")
+class RankUpCalculator(Resource):
+
+    util: Util
+    unit_parser: Unit
+    units: list
+
+    @api.marshal_list_with(resistance_model)
+    def get(self, path = None):
+        '''Fetch a given Unit'''
+        self.util = Util()
+        self.unit_parser = Unit(util=self.util)
+        self.units = []
+
+        asset_list: list = self.util.get_asset_list('AllyMonster')
+
+        for path in asset_list:
+            unit = self.unit_parser.get_data(path=path)
+            self.units.append({
+                'display_name': unit.get('display_name'),
+                'Frizz': unit.get('element_resistances').get('1').get('rate'),
+                'Sizz': unit.get('element_resistances').get('2').get('rate'),
+                'Crack': unit.get('element_resistances').get('3').get('rate'),
+                'Woosh': unit.get('element_resistances').get('4').get('rate'),
+                'Bang': unit.get('element_resistances').get('5').get('rate'),
+                'Zap': unit.get('element_resistances').get('6').get('rate'),
+                'Zam': unit.get('element_resistances').get('7').get('rate'),
+                'Sleep': unit.get('abnormity_resistances').get('1').get('rate'),
+                'Stun': unit.get('abnormity_resistances').get('2').get('rate'),
+                'Paralysis': unit.get('abnormity_resistances').get('3').get('rate'),
+                'Poison': unit.get('abnormity_resistances').get('4').get('rate'),
+                'Slow': unit.get('abnormity_resistances').get('5').get('rate'),
+                'Curse': unit.get('abnormity_resistances').get('6').get('rate'),
+                'Blind': unit.get('abnormity_resistances').get('7').get('rate'),
+                'Physical Lock': unit.get('abnormity_resistances').get('8').get('rate'),
+                'Martial Lock': unit.get('abnormity_resistances').get('9').get('rate'),
+                'Spell Lock': unit.get('abnormity_resistances').get('10').get('rate'),
+                'Breath Lock': unit.get('abnormity_resistances').get('11').get('rate'),
+                'Confusion': unit.get('abnormity_resistances').get('12').get('rate'),
+                'Charm': unit.get('abnormity_resistances').get('13').get('rate'),
+            })
+
+        return sorted(self.units, key=lambda d: d['display_name'])
