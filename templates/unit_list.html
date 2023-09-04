@@ -82,6 +82,10 @@
                                     value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Curse'] > 0; }} return false; }
                                 },
                                 {
+                                    label: 'Hobble',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Slow'] > 0; }} return false; }
+                                },
+                                {
                                     label: 'Martial Lock',
                                     value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Martial Lock'] > 0; }} return false; }
                                 },
@@ -99,10 +103,6 @@
                                 },
                                 {
                                     label: 'Sleep',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Slow'] > 0; }} return false; }
-                                },
-                                {
-                                    label: 'Slow',
                                     value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Slow'] > 0; }} return false; }
                                 },
                                 {
@@ -172,6 +172,10 @@
                                     value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Curse'] < 0; }} return false; }
                                 },
                                 {
+                                    label: 'Hobble',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Slow'] < 0; }} return false; }
+                                },
+                                {
                                     label: 'Martial Lock',
                                     value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Martial Lock'] < 0; }} return false; }
                                 },
@@ -189,10 +193,6 @@
                                 },
                                 {
                                     label: 'Sleep',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Slow'] < 0; }} return false; }
-                                },
-                                {
-                                    label: 'Slow',
                                     value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Slow'] < 0; }} return false; }
                                 },
                                 {
