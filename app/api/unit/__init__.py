@@ -121,6 +121,7 @@ class RankUpCalculator(Resource):
     util: Util
     unit_parser: Unit
     units: list
+    cache_key: str
 
     @api.marshal_list_with(rank_up_calculator_model)
     def get(self, path = None):
@@ -128,6 +129,12 @@ class RankUpCalculator(Resource):
         self.util = Util()
         self.unit_parser = Unit(util=self.util)
         self.units = []
+
+        self.cache_key = f'rankup_calculator_parsed_asset'
+        cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
+
+        if cached_asset is not None:
+            return cached_asset
 
         asset_list: list = self.util.get_asset_list('AllyMonster')
 
@@ -144,11 +151,12 @@ class RankUpCalculator(Resource):
         return sorted(self.units, key=lambda d: d['almanac_number'])
 
 @api.route("/resist_table")
-class RankUpCalculator(Resource):
+class UnitResistFilter(Resource):
 
     util: Util
     unit_parser: Unit
     units: list
+    cache_key: str
 
     @api.marshal_list_with(resistance_model)
     def get(self, path = None):
@@ -156,6 +164,12 @@ class RankUpCalculator(Resource):
         self.util = Util()
         self.unit_parser = Unit(util=self.util)
         self.units = []
+
+        self.cache_key = f'unit_resist_filter_parsed_asset'
+        cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
+
+        if cached_asset is not None:
+            return cached_asset
 
         asset_list: list = self.util.get_asset_list('AllyMonster')
 
