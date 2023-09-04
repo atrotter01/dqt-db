@@ -56,8 +56,8 @@ class Asset(Resource):
 
                 if unit_key in seen_units:
                     continue
-                else:
-                    seen_units.append(unit_key)
+
+                seen_units.append(unit_key)
 
                 if scout_probability > 0:
                     self.farmables.append({
@@ -82,8 +82,8 @@ class Asset(Resource):
 
                 if unit_key in seen_units:
                     continue
-                else:
-                    seen_units.append(unit_key)
+
+                seen_units.append(unit_key)
 
                 if scout_probability > 0:
                     self.farmables.append({
@@ -108,8 +108,8 @@ class Asset(Resource):
 
                 if unit_key in seen_units:
                     continue
-                else:
-                    seen_units.append(unit_key)
+
+                seen_units.append(unit_key)
 
                 if scout_probability > 0:
                     self.farmables.append({
