@@ -99,7 +99,7 @@ class Asset(Resource):
 
             return self.units
 
-        self.cache_key = f'unit_parsed_asset'
+        self.cache_key = 'unit_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -130,7 +130,7 @@ class RankUpCalculator(Resource):
         self.unit_parser = Unit(util=self.util)
         self.units = []
 
-        self.cache_key = f'rankup_calculator_parsed_asset'
+        self.cache_key = 'rankup_calculator_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -165,7 +165,7 @@ class UnitResistFilter(Resource):
         self.unit_parser = Unit(util=self.util)
         self.units = []
 
-        self.cache_key = f'unit_resist_filter_parsed_asset'
+        self.cache_key = 'unit_resist_filter_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:

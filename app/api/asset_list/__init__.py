@@ -24,6 +24,6 @@ class Asset(Resource):
                 'id': asset.get('path'),
                 'display_name': asset.get('display_name')
             })
-        
+
         return asset_list
-        #return sorted(asset_list, key=lambda d: d['display_name']) 
+        #return sorted(asset_list, key=lambda d: d['display_name'])

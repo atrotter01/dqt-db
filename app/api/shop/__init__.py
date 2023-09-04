@@ -33,6 +33,7 @@ class Shop(Resource):
 
     util: Util
     shops: list
+    sub_shops: list
     cache_key: str
 
     @api.marshal_list_with(shop_model)
@@ -42,7 +43,7 @@ class Shop(Resource):
         self.shops = []
         self.sub_shops = {}
 
-        self.cache_key = f'exchange_shop_parsed_asset'
+        self.cache_key = 'exchange_shop_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -94,7 +95,7 @@ class Shop(Resource):
                 if parent_category_banner is not None:
                     available_in_reminiscene = True
 
-            shop_goods = requests.get(f'http://localhost:5000/api/shop/{shop_id}').json()
+            shop_goods = requests.get(f'http://localhost:5000/api/shop/{shop_id}', timeout=300).json()
 
             self.shops.append({
                 'id': shop_id,
@@ -140,7 +141,7 @@ class ShopGoods(Resource):
 
             for path in shop_asset_list:
                 temp_shop_asset = self.util.get_asset_by_path(path)
-                
+
                 if 'Megaminokazitu' in temp_shop_asset.get('document').get('m_Name') and temp_shop_asset.get('document').get('shop') is not None:
                     asset_list.append(path)
 

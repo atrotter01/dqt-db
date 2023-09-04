@@ -14,10 +14,10 @@ util = Util()
 @api.param("id", "Asset ID")
 class Asset(Resource):
     @api.marshal_with(asset_model)
-    def get(self, id):
+    def get(self, path):
         '''Fetch a given Asset'''
         asset_list = []
-        asset = util.get_asset_by_path(path=id, deflate_data=True)
+        asset = util.get_asset_by_path(path=path, deflate_data=True)
 
         display_name: str = asset.get('display_name')
         document: dict = asset.get('processed_document')
@@ -29,5 +29,5 @@ class Asset(Resource):
             'display_name': display_name,
             'data': document,
         })
-        
-        return sorted(asset_list, key=lambda d: d['display_name']) 
+
+        return sorted(asset_list, key=lambda d: d['display_name'])

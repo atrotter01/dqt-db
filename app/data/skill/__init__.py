@@ -34,7 +34,7 @@ class Skill:
         skill_range_icon = self.util.get_image_path(skill.get('rangeShape').get('iconPath'))
         skill_reach = skill.get('reachShape').get('description_translation').get('gbl') or skill.get('reachShape').get('description_translation').get('ja')
         skill_element = 'Typeless'
-        
+
         if skill.get('element').get('displayName_translation'):
             skill_element = skill.get('element').get('displayName_translation').get('gbl') or skill.get('element').get('displayName_translation').get('ja')
 
@@ -167,7 +167,7 @@ class Skill:
         skill_id = path
         skill_name = None
         skill_description = None
-        
+
         if skill.get('passiveSkillName_translation'):
             skill_name = skill.get('passiveSkillName_translation').get('gbl') or skill.get('passiveSkillName_translation').get('ja')
         else:
@@ -338,7 +338,7 @@ class Skill:
             if passive_skill_status_effect_path != 0:
                 passive_skill_status_effect_asset = self.util.get_asset_by_path(passive_skill_status_effect_path)
                 passive_skill_status_effect_document = passive_skill_status_effect_asset.get('processed_document')
-                
+
                 status_increase_data = self.resistance_parser.parse_status_increase_data(status_increase_data=passive_skill_status_effect_document, display_name=skill_name, description=skill_description)
                 skill_name = status_increase_data.get('display_name')
                 skill_description = status_increase_data.get('description')
@@ -351,7 +351,7 @@ class Skill:
             if abnormity_accuracy_path != 0:
                 abnormity_accuracy_asset = self.util.get_asset_by_path(abnormity_accuracy_path)
                 abnormity_accuracy_document = abnormity_accuracy_asset.get('processed_document')
-                
+
                 for key in abnormity_accuracy_keys:
                     value: str = None
 
@@ -369,7 +369,7 @@ class Skill:
             if critical_correction_path != 0:
                 critical_correction_asset = self.util.get_asset_by_path(critical_correction_path)
                 critical_correction_document = critical_correction_asset.get('processed_document')
-                
+
                 for key in critical_correction_keys:
                     value: str = None
 
@@ -525,7 +525,7 @@ class Skill:
         asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
         skill: dict = self.parse_active_skill(skill=asset.get('processed_document'), level_learned=None, path=path)
         self.util.save_redis_asset(cache_key=cache_key, data=skill)
-        
+
         return skill
 
     def get_passive_skill(self, path):
@@ -538,7 +538,7 @@ class Skill:
         asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
         skill: dict = self.parse_passive_skill(skill=asset.get('processed_document'), level_learned=None, path=path)
         self.util.save_redis_asset(cache_key=cache_key, data=skill)
-        
+
         return skill
 
     def get_reaction_skill(self, path):
@@ -551,5 +551,5 @@ class Skill:
         asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
         skill: dict = self.parse_reaction_passive_skill(skill=asset.get('processed_document'), level_learned=None, path=path)
         self.util.save_redis_asset(cache_key=cache_key, data=skill)
-        
+
         return skill

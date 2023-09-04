@@ -51,7 +51,7 @@ class ConsumableItem(Resource):
                 display_name = processed_document.get('displayName_translation').get('gbl') or processed_document.get('displayName_translation').get('ja')
             else:
                 display_name = processed_document.get('displayName')
-            
+
             if processed_document.get('description_translation') is not None:
                 description = processed_document.get('description_translation').get('gbl') or processed_document.get('description_translation').get('ja')
             else:
@@ -70,7 +70,7 @@ class ConsumableItem(Resource):
 
             return self.items
 
-        self.cache_key = f'consumable_item_parsed_asset'
+        self.cache_key = 'consumable_item_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -91,7 +91,7 @@ class ConsumableItem(Resource):
                 display_name = processed_document.get('displayName_translation').get('gbl') or processed_document.get('displayName_translation').get('ja')
             else:
                 display_name = processed_document.get('displayName')
-            
+
             if processed_document.get('description_translation') is not None:
                 description = processed_document.get('description_translation').get('gbl') or processed_document.get('description_translation').get('ja')
             else:
@@ -138,7 +138,7 @@ class ProfileIcon(Resource):
                 display_name = processed_document.get('displayName_translation').get('gbl') or processed_document.get('displayName_translation').get('ja')
             else:
                 display_name = processed_document.get('displayName')
-            
+
             if processed_document.get('shortDisplayName_translation') is not None:
                 short_display_name = processed_document.get('shortDisplayName_translation').get('gbl') or processed_document.get('shortDisplayName_translation').get('ja')
             else:
@@ -155,7 +155,7 @@ class ProfileIcon(Resource):
 
             return self.profile_icons
 
-        self.cache_key = f'profile_icon_parsed_asset'
+        self.cache_key = 'profile_icon_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -174,7 +174,7 @@ class ProfileIcon(Resource):
                 display_name = processed_document.get('displayName_translation').get('gbl') or processed_document.get('displayName_translation').get('ja')
             else:
                 display_name = processed_document.get('displayName')
-            
+
             if processed_document.get('shortDisplayName_translation') is not None:
                 short_display_name = processed_document.get('shortDisplayName_translation').get('gbl') or processed_document.get('shortDisplayName_translation').get('ja')
             else:
@@ -218,7 +218,7 @@ class Package(Resource):
                 display_name = processed_document.get('displayName_translation').get('gbl') or processed_document.get('displayName_translation').get('ja')
             else:
                 display_name = processed_document.get('displayName')
-            
+
             package = {
                 'id': path,
                 'display_name': display_name,
@@ -229,7 +229,7 @@ class Package(Resource):
 
             return self.packages
 
-        self.cache_key = f'package_parsed_asset'
+        self.cache_key = 'package_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -247,7 +247,7 @@ class Package(Resource):
                 display_name = processed_document.get('displayName_translation').get('gbl') or processed_document.get('displayName_translation').get('ja')
             else:
                 display_name = processed_document.get('displayName')
-            
+
             package = {
                 'id': path,
                 'display_name': display_name,

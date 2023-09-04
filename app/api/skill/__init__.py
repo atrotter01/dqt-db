@@ -106,7 +106,7 @@ class ActiveSkill(Resource):
 
             return self.skills
 
-        self.cache_key = f'active_skills_parsed_asset'
+        self.cache_key = 'active_skills_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -149,7 +149,7 @@ class PassiveSkill(Resource):
 
             return self.skills
 
-        self.cache_key = f'passive_skills_parsed_asset'
+        self.cache_key = 'passive_skills_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -163,19 +163,19 @@ class PassiveSkill(Resource):
 
         for path in self.util.get_asset_list('PS'):
             asset = self.util.get_asset_by_path(path)
-            
+
             if asset.get('processed_document').get('passiveSkillName') is not None:
                 asset_list.append(path)
 
         for path in self.util.get_asset_list('EquipmentPassive'):
             asset = self.util.get_asset_by_path(path)
-            
+
             if asset.get('processed_document').get('passiveSkillName') is not None:
                 asset_list.append(path)
 
         for path in self.util.get_asset_list('MS'):
             asset = self.util.get_asset_by_path(path)
-            
+
             if asset.get('processed_document').get('passiveSkillName') is not None:
                 asset_list.append(path)
 
@@ -211,7 +211,7 @@ class ReactionSkill(Resource):
 
             return self.skills
 
-        self.cache_key = f'reaction_skills_parsed_asset'
+        self.cache_key = 'reaction_skills_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -252,7 +252,7 @@ class EnemySkill(Resource):
 
             return self.skills
 
-        self.cache_key = f'enemy_skills_parsed_asset'
+        self.cache_key = 'enemy_skills_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:

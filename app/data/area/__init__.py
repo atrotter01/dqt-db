@@ -97,8 +97,8 @@ class Area:
 
         if cached_asset is not None:
             return cached_asset
-        
+
         asset: dict = self.parse_area(path)
         self.util.save_redis_asset(cache_key=cache_key, data=asset)
-        
+
         return asset

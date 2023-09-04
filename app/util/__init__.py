@@ -1,10 +1,10 @@
+import math
+from pathlib import Path
 import json
 import re
 from typing import Union
 import redis
 import brotli
-import math
-from pathlib import Path
 
 class Util:
     asset_list: list = []
@@ -30,7 +30,7 @@ class Util:
                 return cached_asset_list
 
         valid_keys: list = []
-        
+
         for key in self.redis_client.keys():
             key = str(key.decode())
 
@@ -69,10 +69,10 @@ class Util:
         if path not in self.cache_keys and not str(path).endswith('_cache') and not str(path).endswith('_parsed_asset'):
             assert isinstance(asset, dict), type(asset)
 
-        if deflate_data == True and self.redis_client.get(f'{path}_data') is not None:
+        if deflate_data is True and self.redis_client.get(f'{path}_data') is not None:
             asset.update({'document': self.inflate_asset(self.redis_client.get(f'{path}_data'))})
 
-        if deflate_data == True and self.redis_client.get(f'{path}_processed_data') is not None:
+        if deflate_data is True and self.redis_client.get(f'{path}_processed_data') is not None:
             asset.update({'processed_document': self.inflate_asset(self.redis_client.get(f'{path}_processed_data'))})
 
         return asset
@@ -106,7 +106,7 @@ class Util:
         }
 
         data_saved: bool = self.redis_client.set(f'{path}_data', self.deflate_asset(document))
-        
+
         if data_saved is True:
             return self.redis_client.set(path, json.dumps(asset))
         else:
@@ -264,7 +264,7 @@ class Util:
             #deflated_lookup_cache = self.deflate_asset(lookup_cache)
             #self.redis_client.set('lookup_cache', deflated_lookup_cache)
             self.redis_client.set('lookup_cache', json.dumps(lookup_cache))
-            
+
             print('Saving unprocessed counts.')
             self.redis_client.set('unprocessed_asset_counts', json.dumps(unprocessed_asset_counts))
 
@@ -278,7 +278,7 @@ class Util:
 
     def map_asset_file_to_path(self, asset_file):
         asset_cache: dict = self.get_asset_by_path(path='metadata_cache', deflate_data=False)
-        
+
         for asset in asset_cache:
             if asset.get('display_name') == asset_file:
                 return asset.get('path')
@@ -346,7 +346,7 @@ class Util:
         if lang == 'en':
             if Path(*filepath_en).absolute().exists():
                 return str(Path(*filepath_en))
-        
+
         return str(Path(*filepath_ja))
 
     def clean_text_string(self, str_to_clean: str, unit: str):
@@ -384,7 +384,7 @@ class Util:
         str_to_clean = str_to_clean.replace('{' + str(key) + '}', value)
 
         return str_to_clean
-    
+
     def float_to_str(self, value):
         if math.trunc(value) == value:
             return str(math.trunc(value)).replace('-', '')

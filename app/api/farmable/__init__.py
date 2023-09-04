@@ -31,7 +31,7 @@ class Asset(Resource):
         self.stage_parser = Stage(util=self.util)
         self.farmables = []
 
-        self.cache_key = f'farmable_parsed_asset'
+        self.cache_key = 'farmable_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:

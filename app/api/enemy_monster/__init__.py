@@ -57,7 +57,7 @@ class Asset(Resource):
 
             return self.enemy_monsters
 
-        self.cache_key = f'enemy_monster_parsed_asset'
+        self.cache_key = 'enemy_monster_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:

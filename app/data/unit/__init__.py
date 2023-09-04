@@ -141,7 +141,7 @@ class Unit:
             character_builder_blossoms = self.blossom_parser.parse_skill_board(blossom_board=character_builder_board)
 
         if skip_area_enumeration is False:
-            area_api_response = requests.get(url=f'http://localhost:5000/api/area')
+            area_api_response = requests.get(url='http://localhost:5000/api/area')
             area_data = []
 
             if area_api_response.status_code == 200:
@@ -199,10 +199,10 @@ class Unit:
 
         if cached_asset is not None:
             return cached_asset
-        
+
         asset: dict = self.parse_unit(path, skip_area_enumeration)
 
         if skip_area_enumeration is False:
             self.util.save_redis_asset(cache_key=cache_key, data=asset)
-        
+
         return asset

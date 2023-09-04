@@ -20,7 +20,7 @@ class LootGroup:
             display_name = loot.get('drop').get('profile').get('displayName_translation').get('gbl') or loot.get('drop').get('profile').get('displayName_translation').get('ja')
             icon = self.util.get_image_path(loot.get('drop').get('profile').get('iconPath'))
             path = loot.get('drop').get('linked_asset_id')
-            
+
             loot: dict = {
                 'quantity': quantity,
                 'loot_type': loot_type,
@@ -37,7 +37,7 @@ class LootGroup:
             display_name = loot.get('drop').get('displayName_translation').get('gbl') or loot.get('drop').get('displayName_translation').get('ja')
             icon = self.util.get_image_path(loot.get('drop').get('iconPath'))
             path = loot.get('drop').get('linked_asset_id')
-            
+
             loot: dict = {
                 'quantity': quantity,
                 'loot_type': loot_type,
@@ -54,7 +54,7 @@ class LootGroup:
             display_name = loot.get('drop').get('profile').get('displayName_translation').get('gbl') or loot.get('drop').get('profile').get('displayName_translation').get('ja')
             icon = self.util.get_image_path(loot.get('drop').get('profile').get('iconPath'))
             path = loot.get('drop').get('linked_asset_id')
-            
+
             loot: dict = {
                 'quantity': quantity,
                 'loot_type': loot_type,
@@ -71,7 +71,7 @@ class LootGroup:
             display_name = loot.get('drop').get('displayName_translation').get('gbl') or loot.get('drop').get('displayName_translation').get('ja')
             icon = self.util.get_image_path(loot.get('drop').get('iconPath'))
             path = loot.get('drop').get('linked_asset_id')
-            
+
             loot: dict = {
                 'quantity': quantity,
                 'loot_type': loot_type,
@@ -88,7 +88,7 @@ class LootGroup:
             display_name = 'Experience'
             icon = None
             path = None
-            
+
             loot: dict = {
                 'quantity': quantity,
                 'loot_type': loot_type,
@@ -112,8 +112,8 @@ class LootGroup:
 
         if cached_asset is not None:
             return cached_asset
-        
+
         asset: dict = self.parse_loot_group(path)
         self.util.save_redis_asset(cache_key=cache_key, data=asset)
-        
+
         return asset

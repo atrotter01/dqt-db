@@ -314,47 +314,47 @@ class Stage:
                 })
 
         for stage_mission_key in data.get('stageMissionList').get('stageMissions'):
-                stage_mission_conditions: list = []
-                
-                for condition in stage_mission_key.get('conditions'):
-                    condition_code = '0'#condition.get('code')
-                    condition_amount = str(condition.get('amount'))
-                    condition_description: str = None
+            stage_mission_conditions: list = []
 
-                    if stage_mission_key.get('description_translation') is not None:
-                        condition_description = stage_mission_key.get('description_translation').get('gbl') or stage_mission_key.get('description_translation').get('ja')
-                    else:
-                        condition_description = condition.get('typeMaster').get('description_translation').get('gbl') or condition.get('typeMaster').get('description_translation').get('ja')
+            for condition in stage_mission_key.get('conditions'):
+                condition_code = '0'#condition.get('code')
+                condition_amount = str(condition.get('amount'))
+                condition_description: str = None
 
-                    condition_description = self.util.clean_text_string(str_to_clean=self.util.replace_string_variable(str_to_clean=condition_description, key=condition_code, value=condition_amount), unit='+')
+                if stage_mission_key.get('description_translation') is not None:
+                    condition_description = stage_mission_key.get('description_translation').get('gbl') or stage_mission_key.get('description_translation').get('ja')
+                else:
+                    condition_description = condition.get('typeMaster').get('description_translation').get('gbl') or condition.get('typeMaster').get('description_translation').get('ja')
 
-                    stage_mission_conditions.append(condition_description)
+                condition_description = self.util.clean_text_string(str_to_clean=self.util.replace_string_variable(str_to_clean=condition_description, key=condition_code, value=condition_amount), unit='+')
 
-                reward_quantity = stage_mission_key.get('reward').get('quantity')
-                reward_display_name = None
-                reward_icon = None
-                reward_id = None
-                reward_type = None
+                stage_mission_conditions.append(condition_description)
 
-                if stage_mission_key.get('reward').get('item').get('m_PathID') is None:
-                    reward_icon = self.util.get_image_path(stage_mission_key.get('reward').get('item').get('iconPath'))
-                    reward_display_name = stage_mission_key.get('reward').get('item').get('displayName_translation').get('gbl') or stage_mission_key.get('reward').get('item').get('displayName_translation').get('ja')
-                    reward_id = stage_mission_key.get('reward').get('item').get('linked_asset_id')
-                    reward_type = 'consumable_item'
-                elif stage_mission_key.get('reward').get('profileIcon').get('m_PathID') is None:
-                    reward_icon = self.util.get_image_path(stage_mission_key.get('reward').get('profileIcon').get('iconPath'))
-                    reward_display_name = stage_mission_key.get('reward').get('profileIcon').get('displayName_translation').get('gbl') or stage_mission_key.get('reward').get('profileIcon').get('displayName_translation').get('ja')
-                    reward_id = stage_mission_key.get('reward').get('item').get('linked_asset_id')
-                    reward_type = 'profile_icon'
+            reward_quantity = stage_mission_key.get('reward').get('quantity')
+            reward_display_name = None
+            reward_icon = None
+            reward_id = None
+            reward_type = None
 
-                stage_missions.append({
-                    'stage_mission_conditions': stage_mission_conditions,
-                    'reward_quantity': reward_quantity,
-                    'reward_display_name': reward_display_name,
-                    'reward_icon': reward_icon,
-                    'reward_id': reward_id,
-                    'reward_type': reward_type
-                })
+            if stage_mission_key.get('reward').get('item').get('m_PathID') is None:
+                reward_icon = self.util.get_image_path(stage_mission_key.get('reward').get('item').get('iconPath'))
+                reward_display_name = stage_mission_key.get('reward').get('item').get('displayName_translation').get('gbl') or stage_mission_key.get('reward').get('item').get('displayName_translation').get('ja')
+                reward_id = stage_mission_key.get('reward').get('item').get('linked_asset_id')
+                reward_type = 'consumable_item'
+            elif stage_mission_key.get('reward').get('profileIcon').get('m_PathID') is None:
+                reward_icon = self.util.get_image_path(stage_mission_key.get('reward').get('profileIcon').get('iconPath'))
+                reward_display_name = stage_mission_key.get('reward').get('profileIcon').get('displayName_translation').get('gbl') or stage_mission_key.get('reward').get('profileIcon').get('displayName_translation').get('ja')
+                reward_id = stage_mission_key.get('reward').get('item').get('linked_asset_id')
+                reward_type = 'profile_icon'
+
+            stage_missions.append({
+                'stage_mission_conditions': stage_mission_conditions,
+                'reward_quantity': reward_quantity,
+                'reward_display_name': reward_display_name,
+                'reward_icon': reward_icon,
+                'reward_id': reward_id,
+                'reward_type': reward_type
+            })
 
         stage: dict = {
             'id': path,
@@ -391,8 +391,8 @@ class Stage:
 
         if cached_asset is not None:
             return cached_asset
-        
+
         asset: dict = self.parse_stage(path)
         self.util.save_redis_asset(cache_key=cache_key, data=asset)
-        
+
         return asset

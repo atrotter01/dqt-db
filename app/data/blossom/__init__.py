@@ -26,12 +26,12 @@ class Blossom:
             panel_unlock_costs = blossom_panel.get('unlockCosts')
             panel_display_name = None
             panel_description = None
-            
+
             if panel_contents.get('displayName_translation'):
                 panel_display_name = panel_contents.get('displayName_translation').get('gbl') or panel_contents.get('displayName_translation').get('ja')
             else:
                 panel_display_name = panel_contents.get('displayName')
-            
+
             if panel_contents.get('description_translation'):
                 panel_description = panel_contents.get('description_translation').get('gbl') or panel_contents.get('description_translation').get('ja')
             else:

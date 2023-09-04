@@ -1,8 +1,8 @@
 import os
-import json
-import xmltodict
 import concurrent
 from pathlib import Path
+import json
+import xmltodict
 from app.util import Util
 
 asset_importer_instance = None
@@ -27,7 +27,7 @@ class AssetImport:
             xml = fh.read()
             xmldict = xmltodict.parse(xml, process_namespaces=True)
             assets = xmldict.get('Assets').get('Asset')
-            
+
             for asset in assets:
                 key = asset.get('PathID')
                 asset_map.update({key: asset})
@@ -76,7 +76,7 @@ def process_and_save_asset(path):
         if os.path.exists(filepath):
             with open(filepath) as fh:
                 document = json.load(fh)
-            
+
                 if asset_importer_instance.util.save_asset(path=path, filepath=filepath, container=container, filetype=filetype, document=document, display_name=asset_name):
                     print(f'Saved {path}')
                     #os.unlink(filepath)

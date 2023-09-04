@@ -7,4 +7,3 @@ keys = [x for x in util.redis_client.keys() if x.decode().endswith('_parsed_asse
 for key in keys:
     print(f'Deleting {key}.')
     util.redis_client.delete(key)
-

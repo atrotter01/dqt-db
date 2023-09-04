@@ -38,7 +38,7 @@ class Asset(Resource):
 
             return self.area_groups
 
-        self.cache_key = f'area_group_parsed_asset'
+        self.cache_key = 'area_group_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:

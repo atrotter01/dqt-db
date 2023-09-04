@@ -59,7 +59,7 @@ class Equipment:
                     'roll_probability': weight / 1000,
                     'passive_skill': passive_skill
                 })
-            
+
             equipment_alchemy_slot_counter = equipment_alchemy_slot_counter + 1
 
         equipment: dict = {
@@ -90,8 +90,8 @@ class Equipment:
 
         if cached_asset is not None:
             return cached_asset
-        
+
         asset: dict = self.parse_equipment(path)
         self.util.save_redis_asset(cache_key=cache_key, data=asset)
-        
+
         return asset

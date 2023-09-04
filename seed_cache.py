@@ -1,5 +1,5 @@
-import requests
 import json
+import requests
 from app.util import Util
 
 def cache_stage_structure():
@@ -87,7 +87,7 @@ def cache_stage_monster_lookup_table():
     for stage in stage_data:
         stage_id = stage.get('id')
         stage_name = stage.get('stage_display_name')
-        stage_area_id = stage.get('stage_area_id')
+        #stage_area_id = stage.get('stage_area_id')
 
         for enemy in stage.get('stage_enemies'):
             monster_id: str = enemy.get('monster').get('id')
@@ -125,7 +125,6 @@ def cache_stage_monster_lookup_table():
     util.save_redis_asset(cache_key='stage_monster_lookup_parsed_asset', data=stage_monster_lookup_parsed_asset)
 
 def cache_skill_unit_table():
-    unit_data = unit_response.json()
     enemy_monster_data = enemy_monster_response.json()
 
     skill_unit_table: dict = {}
@@ -140,7 +139,7 @@ def cache_skill_unit_table():
 
             if skill_unit_table.get(skill_id) is None:
                 skill_unit_table[skill_id] = []
-            
+
             skill_unit_table[skill_id].append({
                 'unit_id': unit_id,
                 'unit_name': unit_name,
@@ -153,7 +152,7 @@ def cache_skill_unit_table():
 
             if skill_unit_table.get(skill_id) is None:
                 skill_unit_table[skill_id] = []
-            
+
             skill_unit_table[skill_id].append({
                 'unit_id': unit_id,
                 'unit_name': unit_name,
@@ -166,7 +165,7 @@ def cache_skill_unit_table():
 
             if skill_unit_table.get(skill_id) is None:
                 skill_unit_table[skill_id] = []
-            
+
             skill_unit_table[skill_id].append({
                 'unit_id': unit_id,
                 'unit_name': unit_name,
@@ -179,7 +178,7 @@ def cache_skill_unit_table():
 
             if skill_unit_table.get(skill_id) is None:
                 skill_unit_table[skill_id] = []
-            
+
             skill_unit_table[skill_id].append({
                 'unit_id': unit_id,
                 'unit_name': unit_name,
@@ -192,7 +191,7 @@ def cache_skill_unit_table():
 
                 if skill_unit_table.get(skill_id) is None:
                     skill_unit_table[skill_id] = []
-            
+
                 skill_unit_table[skill_id].append({
                     'unit_id': unit_id,
                     'unit_name': unit_name,
@@ -205,7 +204,7 @@ def cache_skill_unit_table():
 
             if skill_unit_table.get(skill_id) is None:
                 skill_unit_table[skill_id] = []
-            
+
             skill_unit_table[skill_id].append({
                 'unit_id': unit_id,
                 'unit_name': unit_name,
@@ -218,7 +217,7 @@ def cache_skill_unit_table():
 
                 if skill_unit_table.get(skill_id) is None:
                     skill_unit_table[skill_id] = []
-            
+
                 skill_unit_table[skill_id].append({
                     'unit_id': unit_id,
                     'unit_name': unit_name,
@@ -233,7 +232,7 @@ def cache_skill_unit_table():
 
                 if skill_unit_table.get(skill_id) is None:
                     skill_unit_table[skill_id] = []
-            
+
                 skill_unit_table[skill_id].append({
                     'unit_id': unit_id,
                     'unit_name': unit_name,
@@ -249,7 +248,7 @@ def cache_skill_unit_table():
 
                     if skill_unit_table.get(skill_id) is None:
                         skill_unit_table[skill_id] = []
-                
+
                     skill_unit_table[skill_id].append({
                         'unit_id': unit_id,
                         'unit_name': unit_name,
@@ -264,7 +263,7 @@ def cache_skill_unit_table():
 
                 if skill_unit_table.get(skill_id) is None:
                     skill_unit_table[skill_id] = []
-            
+
                 skill_unit_table[skill_id].append({
                     'unit_id': unit_id,
                     'unit_name': unit_name,
@@ -280,7 +279,7 @@ def cache_skill_unit_table():
 
                     if skill_unit_table.get(skill_id) is None:
                         skill_unit_table[skill_id] = []
-                
+
                     skill_unit_table[skill_id].append({
                         'unit_id': unit_id,
                         'unit_name': unit_name,
@@ -298,7 +297,7 @@ def cache_skill_unit_table():
 
             if skill_unit_table.get(skill_id) is None:
                 skill_unit_table[skill_id] = []
-            
+
             skill_unit_table[skill_id].append({
                 'unit_id': enemy_monster_id,
                 'unit_name': enemy_monster_name,
@@ -311,7 +310,7 @@ def cache_skill_unit_table():
 
             if skill_unit_table.get(skill_id) is None:
                 skill_unit_table[skill_id] = []
-            
+
             skill_unit_table[skill_id].append({
                 'unit_id': enemy_monster_id,
                 'unit_name': enemy_monster_name,
@@ -324,7 +323,7 @@ def cache_skill_unit_table():
 
             if skill_unit_table.get(skill_id) is None:
                 skill_unit_table[skill_id] = []
-            
+
             skill_unit_table[skill_id].append({
                 'unit_id': enemy_monster_id,
                 'unit_name': enemy_monster_name,
@@ -489,24 +488,24 @@ def cache_unit_profile_map():
 if __name__ == '__main__':
     util: Util = Util()
 
-    area_response = requests.get(f'http://localhost:5000/api/area/')
-    area_group_response = requests.get(f'http://localhost:5000/api/area_group')
+    area_response = requests.get('http://localhost:5000/api/area/', timeout=600)
+    area_group_response = requests.get('http://localhost:5000/api/area_group', timeout=600)
 
-    unit_response = requests.get(f'http://localhost:5000/api/unit')
-    active_skill_response = requests.get(f'http://localhost:5000/api/skill/active_skill')
-    passive_skill_response = requests.get(f'http://localhost:5000/api/skill/passive_skill')
-    reaction_skill_response = requests.get(f'http://localhost:5000/api/skill/reaction_skill')
-    enemy_skill_response = requests.get(f'http://localhost:5000/api/skill/enemy_skill')
-    accolade_response = requests.get(f'http://localhost:5000/api/accolade')
-    equipment_response = requests.get(f'http://localhost:5000/api/equipment')
-    enemy_monster_response = requests.get(f'http://localhost:5000/api/enemy_monster')
+    unit_response = requests.get('http://localhost:5000/api/unit', timeout=600)
+    active_skill_response = requests.get('http://localhost:5000/api/skill/active_skill', timeout=600)
+    passive_skill_response = requests.get('http://localhost:5000/api/skill/passive_skill', timeout=600)
+    reaction_skill_response = requests.get('http://localhost:5000/api/skill/reaction_skill', timeout=600)
+    enemy_skill_response = requests.get('http://localhost:5000/api/skill/enemy_skill', timeout=600)
+    accolade_response = requests.get('http://localhost:5000/api/accolade', timeout=600)
+    equipment_response = requests.get('http://localhost:5000/api/equipment', timeout=600)
+    enemy_monster_response = requests.get('http://localhost:5000/api/enemy_monster', timeout=600)
 
-    consumable_item_response = requests.get(f'http://localhost:5000/api/item/consumableitem')
-    profile_icon_response = requests.get(f'http://localhost:5000/api/item/profileicon')
-    package_response = requests.get(f'http://localhost:5000/api/item/package')
+    consumable_item_response = requests.get('http://localhost:5000/api/item/consumableitem', timeout=600)
+    profile_icon_response = requests.get('http://localhost:5000/api/item/profileicon', timeout=600)
+    package_response = requests.get('http://localhost:5000/api/item/package', timeout=600)
 
-    stage_response = requests.get('http://localhost:5000/api/stage')
-    shop_response = requests.get(f'http://localhost:5000/api/shop')
+    stage_response = requests.get('http://localhost:5000/api/stage', timeout=600)
+    shop_response = requests.get('http://localhost:5000/api/shop', timeout=600)
 
     area_data = area_response.json()
     area_group_data = area_group_response.json()

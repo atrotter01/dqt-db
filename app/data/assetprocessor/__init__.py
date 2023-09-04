@@ -96,7 +96,7 @@ class AssetProcessor:
             return display_name
 
         display_name: str = None
-        
+
         if document.get('displayName_translation') is not None:
             display_name = document.get('displayName_translation').get('gbl') or document.get('displayName_translation').get('ja')
         else:
@@ -104,7 +104,7 @@ class AssetProcessor:
 
         if isinstance(display_name, dict):
             display_path: str = display_name.get('m_PathID')
-            
+
             if display_path is not None:
                 display_asset = self.util.get_asset_by_path(display_path)
 

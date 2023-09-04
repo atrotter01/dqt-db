@@ -1,6 +1,6 @@
+from pathlib import Path
 from copy import deepcopy
 from app.util import Util
-from pathlib import Path
 
 class DataProcessor:
 
@@ -115,7 +115,7 @@ class DataProcessor:
                 #print(f'Skipping {key} in stack {key_stack}')
                 continue
 
-            if type(item) is dict:
+            if isinstance(item, dict):
                 if 'm_PathID' in item.keys():
                     path: str = str(item.get('m_PathID'))
                     assert isinstance(path, str), path
@@ -144,11 +144,11 @@ class DataProcessor:
 
                     dictionary_copy.update({key: processed_dict})
 
-            elif type(item) is list:
+            elif isinstance(item, list):
                 exploded_list: list = []
 
                 for element in item:
-                    if type(element) is dict:
+                    if isinstance(element, dict):
                         if 'm_PathID' in element.keys():
                             element_path: str = str(element.get('m_PathID'))
                             assert isinstance(element_path, str), element_path
@@ -184,7 +184,7 @@ class DataProcessor:
 
                 dictionary_copy.update({key: exploded_list})
 
-            elif type(item) is str:
+            elif isinstance(item, str):
                 translations: dict = self.get_translated_string(item)
 
                 if translations is not None:
@@ -244,7 +244,7 @@ class DataProcessor:
         for asset in assets:
             linked_list.push(asset)
 
-        return linked_list.detectLoop()
+        return linked_list.detect_loop()
 
 class Node:
     data: str
@@ -253,19 +253,19 @@ class Node:
     def __init__(self, data: str):
         self.data = data
         self.next = None
-  
+
 class LinkedList:
     head: Node
 
     def __init__(self):
         self.head = None
- 
+
     def push(self, new_data: str):
         new_node: Node = Node(new_data)
         new_node.next = self.head
         self.head = new_node
 
-    def detectLoop(self):
+    def detect_loop(self):
         slow_p: Node = self.head
         fast_p: Node = self.head
 
