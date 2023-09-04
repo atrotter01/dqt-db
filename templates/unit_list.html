@@ -59,63 +59,6 @@
                             ]
                         },
                         {
-                            header: 'Status Resistance',
-                            options: [
-                                {
-                                    label: 'Blind',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Blind'] > 0; }} return false; }
-                                },
-                                {
-                                    label: 'Breath Lock',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Breath Lock'] > 0; }} return false; }
-                                },
-                                {
-                                    label: 'Charm',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Charm'] > 0; }} return false; }
-                                },
-                                {
-                                    label: 'Confusion',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Confusion'] > 0; }} return false; }
-                                },
-                                {
-                                    label: 'Curse',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Curse'] > 0; }} return false; }
-                                },
-                                {
-                                    label: 'Hobble',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Slow'] > 0; }} return false; }
-                                },
-                                {
-                                    label: 'Martial Lock',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Martial Lock'] > 0; }} return false; }
-                                },
-                                {
-                                    label: 'Paralysis',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Paralysis'] > 0; }} return false; }
-                                },
-                                {
-                                    label: 'Physical Lock',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Physical Lock'] > 0; }} return false; }
-                                },
-                                {
-                                    label: 'Poison',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Poison'] > 0; }} return false; }
-                                },
-                                {
-                                    label: 'Sleep',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Slow'] > 0; }} return false; }
-                                },
-                                {
-                                    label: 'Spell Lock',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Spell Lock'] > 0; }} return false; }
-                                },
-                                {
-                                    label: 'Stun',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Stun'] > 0; }} return false; }
-                                },
-                            ]
-                        },
-                        {
                             header: 'Element Weakness',
                             options: [
                             {
@@ -149,6 +92,120 @@
                             ]
                         },
                         {
+                            header: 'Status Resistance',
+                            options: [
+                                {
+                                    label: 'Blind',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Blind'] == 50; }} return false; }
+                                },
+                                {
+                                    label: 'Breath Lock',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Breath Lock'] == 50; }} return false; }
+                                },
+                                {
+                                    label: 'Charm',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Charm'] == 50; }} return false; }
+                                },
+                                {
+                                    label: 'Confusion',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Confusion'] == 50; }} return false; }
+                                },
+                                {
+                                    label: 'Curse',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Curse'] == 50; }} return false; }
+                                },
+                                {
+                                    label: 'Hobble',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Hobble'] == 50; }} return false; }
+                                },
+                                {
+                                    label: 'Martial Lock',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Martial Lock'] == 50; }} return false; }
+                                },
+                                {
+                                    label: 'Paralysis',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Paralysis'] == 50; }} return false; }
+                                },
+                                {
+                                    label: 'Physical Lock',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Physical Lock'] == 50; }} return false; }
+                                },
+                                {
+                                    label: 'Poison',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Poison'] == 50; }} return false; }
+                                },
+                                {
+                                    label: 'Sleep',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Sleep'] == 50; }} return false; }
+                                },
+                                {
+                                    label: 'Spell Lock',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Spell Lock'] == 50; }} return false; }
+                                },
+                                {
+                                    label: 'Stun',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Stun'] == 50; }} return false; }
+                                },
+                            ]
+                        },
+                        {
+                            header: 'Status Immunity',
+                            options: [
+                                {
+                                    label: 'Blind',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Blind'] == 100; }} return false; }
+                                },
+                                {
+                                    label: 'Breath Lock',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Breath Lock'] == 100; }} return false; }
+                                },
+                                {
+                                    label: 'Charm',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Charm'] == 100; }} return false; }
+                                },
+                                {
+                                    label: 'Confusion',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Confusion'] == 100; }} return false; }
+                                },
+                                {
+                                    label: 'Curse',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Curse'] == 100; }} return false; }
+                                },
+                                {
+                                    label: 'Hobble',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Hobble'] == 100; }} return false; }
+                                },
+                                {
+                                    label: 'Martial Lock',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Martial Lock'] == 100; }} return false; }
+                                },
+                                {
+                                    label: 'Paralysis',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Paralysis'] == 100; }} return false; }
+                                },
+                                {
+                                    label: 'Physical Lock',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Physical Lock'] == 100; }} return false; }
+                                },
+                                {
+                                    label: 'Poison',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Poison'] == 100; }} return false; }
+                                },
+                                {
+                                    label: 'Sleep',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Sleep'] == 100; }} return false; }
+                                },
+                                {
+                                    label: 'Spell Lock',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Spell Lock'] == 100; }} return false; }
+                                },
+                                {
+                                    label: 'Stun',
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Stun'] == 100; }} return false; }
+                                },
+                            ]
+                        },
+                        {
                             header: 'Status Weakness',
                             options: [
                                 {
@@ -173,7 +230,7 @@
                                 },
                                 {
                                     label: 'Hobble',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Slow'] < 0; }} return false; }
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Hobble'] < 0; }} return false; }
                                 },
                                 {
                                     label: 'Martial Lock',
@@ -193,7 +250,7 @@
                                 },
                                 {
                                     label: 'Sleep',
-                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Slow'] < 0; }} return false; }
+                                    value: function(rowData, rowIdx) { for(var unit in unit_data) { if(unit_data[unit].display_name === rowData[20]) { return unit_data[unit]['Sleep'] < 0; }} return false; }
                                 },
                                 {
                                     label: 'Spell Lock',
