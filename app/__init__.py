@@ -304,7 +304,7 @@ def asset_route(path_id):
     if api_response.status_code == 200:
         asset = api_response.json()[0]
 
-    return Response(json.dumps(asset, indent=2), mimetype='text/json')
+    return Response(json.dumps(asset, indent=2), mimetype='text/plain')
 
 @app.route('/shop/')
 def shop_route():
