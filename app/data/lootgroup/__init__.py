@@ -17,7 +17,7 @@ class LootGroup:
         for loot in data.get('equipmentLoots'):
             quantity = loot.get('quantity')
             loot_type = 'equipment'
-            display_name = loot.get('drop').get('profile').get('displayName_translation').get('gbl') or loot.get('drop').get('profile').get('displayName_translation').get('ja')
+            display_name = self.util.get_localized_string(loot.get('drop').get('profile'), key='displayName_translation', path=path)
             icon = self.util.get_image_path(loot.get('drop').get('profile').get('iconPath'))
             path = loot.get('drop').get('linked_asset_id')
 
@@ -34,7 +34,7 @@ class LootGroup:
         for loot in data.get('consumableItemLoots'):
             quantity = loot.get('quantity')
             loot_type = 'consumable_item'
-            display_name = loot.get('drop').get('displayName_translation').get('gbl') or loot.get('drop').get('displayName_translation').get('ja')
+            display_name = self.util.get_localized_string(loot.get('drop'), key='displayName_translation', path=path)
             icon = self.util.get_image_path(loot.get('drop').get('iconPath'))
             path = loot.get('drop').get('linked_asset_id')
 
@@ -51,7 +51,7 @@ class LootGroup:
         for loot in data.get('monsterLoots'):
             quantity = loot.get('quantity')
             loot_type = 'monster'
-            display_name = loot.get('drop').get('profile').get('displayName_translation').get('gbl') or loot.get('drop').get('profile').get('displayName_translation').get('ja')
+            display_name = self.util.get_localized_string(loot.get('drop').get('profile'), key='displayName_translation', path=path)
             icon = self.util.get_image_path(loot.get('drop').get('profile').get('iconPath'))
             path = loot.get('drop').get('linked_asset_id')
 
@@ -68,7 +68,7 @@ class LootGroup:
         for loot in data.get('profileIconLoots'):
             quantity = loot.get('quantity')
             loot_type = 'profile_icon'
-            display_name = loot.get('drop').get('displayName_translation').get('gbl') or loot.get('drop').get('displayName_translation').get('ja')
+            display_name = self.util.get_localized_string(loot.get('drop'), key='displayName_translation', path=path)
             icon = self.util.get_image_path(loot.get('drop').get('iconPath'))
             path = loot.get('drop').get('linked_asset_id')
 
@@ -107,7 +107,7 @@ class LootGroup:
         return loot_group
 
     def get_data(self, path):
-        cache_key: str = f'{path}_parsed_asset'
+        cache_key: str = f'{self.util.get_language_setting()}_{path}_parsed_asset'
         cached_asset: dict = self.util.get_redis_asset(cache_key=cache_key)
 
         if cached_asset is not None:

@@ -1,3 +1,4 @@
+import argparse
 import json
 import requests
 from app.util import Util
@@ -486,26 +487,30 @@ def cache_unit_profile_map():
     util.save_redis_asset('profile_unit_map_parsed_asset', profile_unit_map)
 
 if __name__ == '__main__':
-    util: Util = Util()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--lang')
+    args = parser.parse_args()
 
-    area_response = requests.get('http://localhost:5000/api/area/', timeout=600)
-    area_group_response = requests.get('http://localhost:5000/api/area_group', timeout=600)
+    util: Util = Util(lang=args.lang)
 
-    unit_response = requests.get('http://localhost:5000/api/unit', timeout=600)
-    active_skill_response = requests.get('http://localhost:5000/api/skill/active_skill', timeout=600)
-    passive_skill_response = requests.get('http://localhost:5000/api/skill/passive_skill', timeout=600)
-    reaction_skill_response = requests.get('http://localhost:5000/api/skill/reaction_skill', timeout=600)
-    enemy_skill_response = requests.get('http://localhost:5000/api/skill/enemy_skill', timeout=600)
-    accolade_response = requests.get('http://localhost:5000/api/accolade', timeout=600)
-    equipment_response = requests.get('http://localhost:5000/api/equipment', timeout=600)
-    enemy_monster_response = requests.get('http://localhost:5000/api/enemy_monster', timeout=600)
+    area_response = requests.get('http://localhost:5000/api/area/', timeout=3600, params=dict(lang=util.get_language_setting()))
+    area_group_response = requests.get('http://localhost:5000/api/area_group', timeout=3600, params=dict(lang=util.get_language_setting()))
 
-    consumable_item_response = requests.get('http://localhost:5000/api/item/consumableitem', timeout=600)
-    profile_icon_response = requests.get('http://localhost:5000/api/item/profileicon', timeout=600)
-    package_response = requests.get('http://localhost:5000/api/item/package', timeout=600)
+    unit_response = requests.get('http://localhost:5000/api/unit', timeout=3600, params=dict(lang=util.get_language_setting()))
+    active_skill_response = requests.get('http://localhost:5000/api/skill/active_skill', timeout=3600, params=dict(lang=util.get_language_setting()))
+    passive_skill_response = requests.get('http://localhost:5000/api/skill/passive_skill', timeout=3600, params=dict(lang=util.get_language_setting()))
+    reaction_skill_response = requests.get('http://localhost:5000/api/skill/reaction_skill', timeout=3600, params=dict(lang=util.get_language_setting()))
+    enemy_skill_response = requests.get('http://localhost:5000/api/skill/enemy_skill', timeout=3600, params=dict(lang=util.get_language_setting()))
+    accolade_response = requests.get('http://localhost:5000/api/accolade', timeout=3600, params=dict(lang=util.get_language_setting()))
+    equipment_response = requests.get('http://localhost:5000/api/equipment', timeout=3600, params=dict(lang=util.get_language_setting()))
+    enemy_monster_response = requests.get('http://localhost:5000/api/enemy_monster', timeout=3600, params=dict(lang=util.get_language_setting()))
 
-    stage_response = requests.get('http://localhost:5000/api/stage', timeout=600)
-    shop_response = requests.get('http://localhost:5000/api/shop', timeout=600)
+    consumable_item_response = requests.get('http://localhost:5000/api/item/consumableitem', timeout=3600, params=dict(lang=util.get_language_setting()))
+    profile_icon_response = requests.get('http://localhost:5000/api/item/profileicon', timeout=3600, params=dict(lang=util.get_language_setting()))
+    package_response = requests.get('http://localhost:5000/api/item/package', timeout=3600, params=dict(lang=util.get_language_setting()))
+
+    stage_response = requests.get('http://localhost:5000/api/stage', timeout=3600, params=dict(lang=util.get_language_setting()))
+    shop_response = requests.get('http://localhost:5000/api/shop', timeout=3600, params=dict(lang=util.get_language_setting()))
 
     area_data = area_response.json()
     area_group_data = area_group_response.json()

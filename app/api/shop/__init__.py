@@ -1,3 +1,4 @@
+from flask import request
 import requests
 from flask_restx import Namespace, Resource, fields
 from app.util import Util
@@ -39,11 +40,11 @@ class Shop(Resource):
     @api.marshal_list_with(shop_model)
     def get(self, path = None):
         '''Fetch a given Shop'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.shops = []
         self.sub_shops = {}
 
-        self.cache_key = 'exchange_shop_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_exchange_shop_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -82,7 +83,7 @@ class Shop(Resource):
                 continue
 
             shop_id = document.get('linked_asset_id')
-            shop_name = document.get('displayName_translation').get('gbl') or document.get('displayName_translation').get('ja')
+            shop_name = self.util.get_localized_string(data=document, key='displayName_translation', path=shop_id)
             shop_banner = self.util.get_image_path(document.get('bannerPath'))
             category_banner: str = None
             parent_category_banner: str = None
@@ -95,7 +96,7 @@ class Shop(Resource):
                 if parent_category_banner is not None:
                     available_in_reminiscene = True
 
-            shop_goods = requests.get(f'http://localhost:5000/api/shop/{shop_id}', timeout=300).json()
+            shop_goods = requests.get(f'http://localhost:5000/api/shop/{shop_id}', timeout=3600, params=dict(lang=self.util.get_language_setting())).json()
 
             self.shops.append({
                 'id': shop_id,
@@ -122,9 +123,9 @@ class ShopGoods(Resource):
     @api.marshal_list_with(shop_goods_model)
     def get(self, shop_path):
         '''Fetch a given Shop'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.goods = []
-        self.cache_key = f'{shop_path}_shop_goods_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_{shop_path}_shop_goods_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -169,15 +170,15 @@ class ShopGoods(Resource):
             if goods_type == 1:
                 goods_path = codelist.get('ConsumableItemMasterDataStoreSource').get(code)[0]
                 goods_asset = self.util.get_asset_by_path(goods_path)
-                goods_name = goods_asset.get('display_name')
-                goods_description = goods_asset.get('processed_document').get('description_translation').get('gbl') or goods_asset.get('processed_document').get('description_translation').get('ja')
+                goods_name = self.util.get_localized_string(data=goods_asset.get('processed_document'), key='displayName_translation', path=goods_path)
+                goods_description = self.util.get_localized_string(data=goods_asset.get('processed_document'), key='description_translation', path=goods_path)
                 goods_image = self.util.get_image_path(goods_asset.get('processed_document').get('iconPath'))
                 goods_category = 'item'
 
             elif goods_type == 2:
                 goods_path = codelist.get('MonsterProfileMasterDataStoreSource').get(code)[0]
                 goods_asset = self.util.get_asset_by_path(goods_path)
-                goods_name = goods_asset.get('processed_document').get('displayName_translation').get('gbl') or goods_asset.get('processed_document').get('displayName_translation').get('ja')
+                goods_name = self.util.get_localized_string(data=goods_asset.get('processed_document'), key='displayName_translation', path=goods_path)
                 goods_description = ''
                 goods_image = self.util.get_image_path(goods_asset.get('processed_document').get('iconPath'))
                 goods_category = 'monster'
@@ -185,15 +186,15 @@ class ShopGoods(Resource):
             elif goods_type == 3:
                 goods_path = codelist.get('EquipmentMasterDataStoreSource').get(code)[0]
                 goods_asset = self.util.get_asset_by_path(goods_path)
-                goods_name = goods_asset.get('processed_document').get('profile').get('displayName_translation').get('gbl') or goods_asset.get('processed_document').get('profile').get('displayName_translation').get('ja')
-                goods_description = goods_asset.get('processed_document').get('profile').get('description_translation').get('gbl') or goods_asset.get('processed_document').get('profile').get('description_translation').get('ja')
+                goods_name = self.util.get_localized_string(data=goods_asset.get('processed_document').get('profile'), key='displayName_translation', path=goods_path)
+                goods_description = self.util.get_localized_string(data=goods_asset.get('processed_document').get('profile'), key='description_translation', path=goods_path)
                 goods_image = self.util.get_image_path(goods_asset.get('processed_document').get('profile').get('iconPath'))
                 goods_category = 'equipment'
 
             elif goods_type == 6:
                 goods_path = codelist.get('PackageMasterDataStoreSource').get(code)[0]
                 goods_asset = self.util.get_asset_by_path(goods_path)
-                goods_name = goods_asset.get('display_name')
+                goods_name = self.util.get_localized_string(data=goods_asset.get('processed_document'), key='displayName_translation', path=goods_path)
                 goods_description = ''
                 goods_image = self.util.get_image_path(goods_asset.get('processed_document').get('iconPath'))
                 goods_category = 'package'
@@ -201,8 +202,8 @@ class ShopGoods(Resource):
             elif goods_type == 7:
                 goods_path = codelist.get('ProfileItemMasterDataStoreSource').get(code)[0]
                 goods_asset = self.util.get_asset_by_path(goods_path)
-                goods_name = goods_asset.get('processed_document').get('displayName_translation').get('gbl') or goods_asset.get('processed_document').get('displayName_translation').get('ja')
-                goods_description = goods_asset.get('processed_document').get('shortDisplayName_translation').get('gbl') or goods_asset.get('processed_document').get('shortDisplayName_translation').get('ja')
+                goods_name = self.util.get_localized_string(data=goods_asset.get('processed_document'), key='displayName_translation', path=goods_path)
+                goods_description = self.util.get_localized_string(data=goods_asset.get('processed_document'), key='shortDisplayName_translation', path=goods_path)
                 goods_image = self.util.get_image_path(goods_asset.get('processed_document').get('iconPath'))
                 goods_category = 'profile_icon'
 
@@ -213,7 +214,7 @@ class ShopGoods(Resource):
 
             self.goods.append({
                 'shop_id': shop_document.get('linked_asset_id'),
-                'shop_name': shop_document.get('displayName_translation').get('gbl') or shop_document.get('displayName_translation').get('ja'),
+                'shop_name': self.util.get_localized_string(data=shop_document, key='displayName_translation', path=shop_document.get('linked_asset_id')),
                 'list_order': list_order,
                 'purchasable_count': purchasable_count,
                 'quantity': quantity,

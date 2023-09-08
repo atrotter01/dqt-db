@@ -22,7 +22,7 @@ class Unit:
     def parse_unit(self, path, skip_area_enumeration: bool = False):
         asset = self.util.get_asset_by_path(path=path, deflate_data=True)
         data: dict = asset.get('processed_document')
-        display_name: str = data.get('profile').get('displayName_translation').get('gbl') or data.get('profile').get('displayName_translation').get('ja')
+        display_name: str = self.util.get_localized_string(data=data.get('profile'), key='displayName_translation', path=path)
         flavor_text: str = None
         allow_nicknaming = data.get('allowedNicknaming')
         almanac_visible = data.get('monsterCollectionDisplayed')
@@ -33,13 +33,13 @@ class Unit:
         rank_up_table_list: list = []
         abnormity_resistance_table: dict = self.resistance_parser.parse_abnormity_resistance_table(abnormity_resistance_data=data.get('abnormityResistance'))
         element_resistance_table: dict = self.resistance_parser.parse_elemental_resistance_table(element_resistance_data=data.get('elementResistance'))
-        unit_rank = data.get('originRankRarity').get('displayName_translation').get('gbl') or data.get('originRankRarity').get('displayName_translation').get('ja')
+        unit_rank = self.util.get_localized_string(data=data.get('originRankRarity'), key='displayName_translation', path=path)
         unit_rank_icon = data.get('originRankRarity').get('iconPath')
         movement = data.get('mobility')
         weight = data.get('weight')
-        family = data.get('profile').get('family').get('abbrevDisplayName_translation').get('gbl') or data.get('profile').get('family').get('abbrevDisplayName_translation').get('ja')
+        family = self.util.get_localized_string(data=data.get('profile').get('family'), key='abbrevDisplayName_translation', path=path)
         family_icon = data.get('profile').get('family').get('largeIconPath')
-        role = data.get('profile').get('role').get('abbrevDisplayName_translation').get('gbl') or data.get('profile').get('role').get('abbrevDisplayName_translation').get('ja')
+        role = self.util.get_localized_string(data=data.get('profile').get('role'), key='abbrevDisplayName_translation', path=path)
         role_icon = data.get('profile').get('role').get('iconPath')
         unit_icon = data.get('profile').get('iconPath')
         transformed_unit_icon = data.get('profile').get('transformedIconPath')
@@ -58,7 +58,7 @@ class Unit:
         character_builder_blossoms: list = []
 
         if data.get('profile').get('flavorText_translation') is not None:
-            flavor_text = data.get('profile').get('flavorText_translation').get('gbl') or data.get('profile').get('flavorText_translation').get('ja')
+            flavor_text = self.util.get_localized_string(data=data.get('profile'), key='flavorText_translation', path=path)
 
         for rank_up_table in data.get('rankUpTable').get('monsterRankUpList'):
             rank: dict = rank_up_table.get('rank')
@@ -79,7 +79,7 @@ class Unit:
 
             for slot in recipe.get('slots'):
                 item = slot.get('item')
-                item_name: str = item.get('displayName_translation').get('gbl') or item.get('displayName_translation').get('ja')
+                item_name: str = self.util.get_localized_string(data=item, key='displayName_translation', path=path)
                 item_icon: str = item.get('iconPath')
                 quantity: str = slot.get('quantity')
 
@@ -141,7 +141,7 @@ class Unit:
             character_builder_blossoms = self.blossom_parser.parse_skill_board(blossom_board=character_builder_board)
 
         if skip_area_enumeration is False:
-            area_api_response = requests.get(url='http://localhost:5000/api/area')
+            area_api_response = requests.get(url='http://localhost:5000/api/area', params=dict(lang=self.util.get_language_setting()))
             area_data = []
 
             if area_api_response.status_code == 200:
@@ -194,7 +194,7 @@ class Unit:
         return unit
 
     def get_data(self, path, skip_area_enumeration: bool = False):
-        cache_key: str = f'{path}_parsed_asset'
+        cache_key: str = f'{self.util.get_language_setting()}_{path}_parsed_asset'
         cached_asset: dict = self.util.get_redis_asset(cache_key=cache_key)
 
         if cached_asset is not None:

@@ -16,21 +16,21 @@ class Equipment:
         asset = self.util.get_asset_by_path(path=path, deflate_data=True)
         data: dict = asset.get('processed_document')
 
-        equipment_display_name = data.get('profile').get('displayName_translation').get('gbl') or data.get('profile').get('displayName_translation').get('ja')
-        equipment_description = data.get('profile').get('description_translation').get('gbl') or data.get('profile').get('description_translation').get('ja')
+        equipment_display_name = self.util.get_localized_string(data=data.get('profile'), key='displayName_translation', path=path)
+        equipment_description = self.util.get_localized_string(data=data.get('profile'), key='description_translation', path=path)
         equipment_icon = self.util.get_image_path(data.get('profile').get('iconPath'))
         equipment_rank_icon = self.util.get_image_path(data.get('rank').get('rankIconPath'))
-        equipment_rank = data.get('rank').get('displayName_translation').get('gbl') or data.get('rank').get('displayName_translation').get('ja')
+        equipment_rank = self.util.get_localized_string(data=data.get('rank'), key='displayName_translation', path=path)
         equipment_alchemy_cost = data.get('rank').get('alchemyCost')
         equipment_type_icon = self.util.get_image_path(data.get('category').get('typeMaster').get('iconPath'))
-        equipment_type = data.get('category').get('typeMaster').get('displayName_translation').get('gbl') or data.get('category').get('typeMaster').get('displayName_translation').get('ja')
+        equipment_type = self.util.get_localized_string(data=data.get('category').get('typeMaster'), key='displayName_translation', path=path)
         equipment_category_icon = self.util.get_image_path(data.get('category').get('iconPath'))
-        equipment_category = data.get('category').get('displayName_translation').get('gbl') or data.get('category').get('displayName_translation').get('ja')
+        equipment_category = self.util.get_localized_string(data=data.get('category'), key='displayName_translation', path=path)
         equipment_is_free_alchemy = data.get('isFreeAlchemyCost')
         equipment_equipable_roles = []
 
         for role in data.get('limitation').get('limitedMonsterRoles'):
-            equipment_equipable_roles.append(role.get('abbrevDisplayName_translation').get('gbl') or role.get('abbrevDisplayName_translation').get('ja'))
+            equipment_equipable_roles.append(self.util.get_localized_string(data=role, key='abbrevDisplayName_translation', path=path))
 
         base_passive_skill = data.get('basePassiveSkill')
         stat_increase_path = base_passive_skill.get('passiveSkillStatusAddEffectMasterData').get('m_PathID')
@@ -85,7 +85,7 @@ class Equipment:
         return equipment
 
     def get_data(self, path):
-        cache_key: str = f'{path}_parsed_asset'
+        cache_key: str = f'{self.util.get_language_setting()}_{path}_parsed_asset'
         cached_asset: dict = self.util.get_redis_asset(cache_key=cache_key)
 
         if cached_asset is not None:

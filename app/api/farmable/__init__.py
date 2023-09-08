@@ -1,3 +1,4 @@
+from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.data.stage import Stage
 from app.util import Util
@@ -27,11 +28,11 @@ class Asset(Resource):
     @api.marshal_list_with(farmable_model)
     def get(self, path = None):
         '''Fetch farmable units'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.stage_parser = Stage(util=self.util)
         self.farmables = []
 
-        self.cache_key = 'farmable_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_farmable_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:

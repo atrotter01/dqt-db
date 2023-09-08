@@ -28,12 +28,12 @@ class Blossom:
             panel_description = None
 
             if panel_contents.get('displayName_translation'):
-                panel_display_name = panel_contents.get('displayName_translation').get('gbl') or panel_contents.get('displayName_translation').get('ja')
+                panel_display_name = self.util.get_localized_string(panel_contents, key='displayName_translation', path=panel_contents.get('linked_asset_id'))
             else:
                 panel_display_name = panel_contents.get('displayName')
 
             if panel_contents.get('description_translation'):
-                panel_description = panel_contents.get('description_translation').get('gbl') or panel_contents.get('description_translation').get('ja')
+                panel_description = self.util.get_localized_string(panel_contents, key='description_translation', path=panel_contents.get('linked_asset_id'))
             else:
                 panel_description = panel_contents.get('description')
 
@@ -43,7 +43,7 @@ class Blossom:
 
             for consumption_item in panel_unlock_costs.get('consumptionItems'):
                 consumption_item_quantity = consumption_item.get('quantity')
-                consumption_item_display_name = consumption_item.get('consumableItem').get('displayName_translation').get('gbl') or consumption_item.get('consumableItem').get('displayName_translation').get('ja')
+                consumption_item_display_name = self.util.get_localized_string(consumption_item.get('consumableItem'), key='displayName_translation', path=consumption_item.get('consumableItem').get('linked_asset_id'))
                 consumption_item_icon_path = self.util.get_image_path(consumption_item.get('consumableItem').get('iconPath'))
                 panel_unlock_items.append({
                     'consumption_item_display_name': consumption_item_display_name,

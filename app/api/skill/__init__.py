@@ -1,3 +1,4 @@
+from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.util import Util
 from app.data.skill import Skill
@@ -97,7 +98,7 @@ class ActiveSkill(Resource):
     @api.marshal_list_with(active_skill_model)
     def get(self, path = None):
         '''Fetch a given Skill'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.skill_parser = Skill(util=self.util)
         self.skills = []
 
@@ -106,7 +107,7 @@ class ActiveSkill(Resource):
 
             return self.skills
 
-        self.cache_key = 'active_skills_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_active_skills_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -140,7 +141,7 @@ class PassiveSkill(Resource):
     @api.marshal_list_with(passive_skill_model)
     def get(self, path = None):
         '''Fetch a given Skill'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.skill_parser = Skill(util=self.util)
         self.skills = []
 
@@ -149,7 +150,7 @@ class PassiveSkill(Resource):
 
             return self.skills
 
-        self.cache_key = 'passive_skills_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_passive_skills_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -202,7 +203,7 @@ class ReactionSkill(Resource):
     @api.marshal_list_with(reaction_skill_model)
     def get(self, path = None):
         '''Fetch a given Skill'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.skill_parser = Skill(util=self.util)
         self.skills = []
 
@@ -211,7 +212,7 @@ class ReactionSkill(Resource):
 
             return self.skills
 
-        self.cache_key = 'reaction_skills_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_reaction_skills_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -243,7 +244,7 @@ class EnemySkill(Resource):
     @api.marshal_list_with(active_skill_model)
     def get(self, path = None):
         '''Fetch a given Skill'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.skill_parser = Skill(util=self.util)
         self.skills = []
 
@@ -252,7 +253,7 @@ class EnemySkill(Resource):
 
             return self.skills
 
-        self.cache_key = 'enemy_skills_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_enemy_skills_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:

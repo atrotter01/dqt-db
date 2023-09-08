@@ -1,3 +1,4 @@
+from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.util import Util
 
@@ -8,16 +9,18 @@ asset_model = api.model('asset', {
     'data': fields.Raw(),
 })
 
-util = Util()
-
-@api.route("/<id>")
-@api.param("id", "Asset ID")
+@api.route("/<path>")
+@api.param("path", "Asset ID")
 class Asset(Resource):
+
+    util: Util
+
     @api.marshal_with(asset_model)
     def get(self, path):
         '''Fetch a given Asset'''
+        self.util = Util(lang=request.args.get('lang'))
         asset_list = []
-        asset = util.get_asset_by_path(path=path, deflate_data=True)
+        asset = self.util.get_asset_by_path(path=path, deflate_data=True)
 
         display_name: str = asset.get('display_name')
         document: dict = asset.get('processed_document')

@@ -5,6 +5,7 @@ import re
 from typing import Union
 import redis
 import brotli
+from flask import current_app as app
 
 class Util:
     asset_list: list = []
@@ -15,12 +16,18 @@ class Util:
     redis_client: redis
     lookup_cache: dict = {}
     possible_circular_references: list = []
+    lang: str
 
-    def __init__(self, force_rebuild: bool = False):
+    def __init__(self, force_rebuild: bool = False, lang: str = 'en'):
         self.redis_client = redis.Redis(host='localhost', port=6379, decode_responses=False)
 
         self.asset_list = self.build_asset_list(force_rebuild=force_rebuild)
         self.lookup_cache = self.cache_lookup_table(force_rebuild=force_rebuild)
+
+        if lang is None:
+            lang = 'en'
+
+        self.lang = lang
 
     def build_asset_list(self, force_rebuild: bool = False):
         if force_rebuild is False:
@@ -118,8 +125,7 @@ class Util:
     def get_assets_by_container(self, processed_filter: bool = None):
         containers: dict = {}
 
-        for path in self.get_asset_list():
-            asset = self.get_asset_by_path(path=path, deflate_data=False)
+        for asset in self.get_asset_by_path(path='metadata_cache', deflate_data=False):
             path = asset.get('path')
             container = asset.get('container')
             display_name = asset.get('display_name')
@@ -321,7 +327,10 @@ class Util:
         self.redis_client.set(path, json.dumps(asset))
         print(f'Reset {path}')
 
-    def get_image_path(self, image_path, lang='en'):
+    def get_image_path(self, image_path, lang=None):
+        if lang is None:
+            lang = self.get_language_setting()
+
         if image_path == '' or image_path is None:
             return None
 
@@ -442,3 +451,35 @@ class Util:
         self.save_redis_asset(cache_key='codelist_cache', data=codelist)
 
         return codelist
+
+    def get_localized_string(self, data: dict, key: str, path: str, lang: str = None):
+        untranslated_strings: dict = {}
+
+        if lang is None:
+            lang = self.get_language_setting()
+
+        if lang == 'en':
+            if data.get(key).get('gbl') is not None:
+                return data.get(key).get('gbl')
+            else:
+                asset_id: str = data.get('linked_asset_id')
+                translate_key: str = f'{path}_{asset_id}_{key}'
+
+                if self.get_redis_asset('user_data_untranslated_strings') is not None:
+                    untranslated_strings = self.get_redis_asset('user_data_untranslated_strings')
+
+                if untranslated_strings.get(translate_key) is None:
+                    untranslated_strings[translate_key] = {
+                        'key': key,
+                        'path': path,
+                        'asset_id': asset_id
+                    }
+
+                    self.save_redis_asset('user_data_untranslated_strings', untranslated_strings)
+
+                return data.get(key).get('ja')
+        else:
+            return data.get(key).get('ja')
+
+    def get_language_setting(self):
+        return self.lang

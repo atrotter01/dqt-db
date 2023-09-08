@@ -2,7 +2,7 @@ import argparse
 from app.util import Util
 
 #parser = argparse.ArgumentParser()
-#parser.add_argument('type')
+#parser.add_argument('--type')
 #args = parser.parse_args()
 
 util = Util()

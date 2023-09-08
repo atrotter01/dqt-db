@@ -1,3 +1,4 @@
+from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.util import Util
 
@@ -21,7 +22,7 @@ class Asset(Resource):
     @api.marshal_list_with(accolade_model)
     def get(self, path = None):
         '''Fetch a given Accolade'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.accolades = []
 
         asset_list: list = self.util.get_asset_list('HonoraryTitle')
@@ -29,11 +30,12 @@ class Asset(Resource):
         for path in asset_list:
             asset = self.util.get_asset_by_path(path, deflate_data=True)
             document = asset.get('processed_document')
-            banner_path: str = self.util.get_image_path(document.get('bannerIconPath'), lang='en')
-            display_name: str = document.get('displayName_translation').get('gbl') or document.get('displayName_translation').get('ja')
-            content: str = document.get('content_translation').get('gbl') or document.get('content_translation').get('ja')
+            banner_path: str = self.util.get_image_path(document.get('bannerIconPath'))
+            display_name: str = self.util.get_localized_string(data=document, key='displayName_translation', path=path)
+            content: str = self.util.get_localized_string(data=document, key='content_translation', path=path)
             self.accolades.append(
                 {
+                    'id': path,
                     'display_name': display_name,
                     'banner_path': banner_path,
                     'content': content

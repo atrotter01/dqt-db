@@ -288,11 +288,18 @@
                     <td>{{ panel.type }}</td>
                     <td>{% if panel.type == "Passive Skill" or panel.type == "Active Skill" %} {{ panel.data.skill_description }} {% else %} {{ panel.panel_description }} {% endif %}</td>
                     {% for unlock_item in panel.unlock_costs %}
-                    <td>{{ unlock_item.consumption_item_display_name }}</td>
                     <td><img src="/{{ unlock_item.consumption_item_icon_path }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ unlock_item.consumption_item_display_name }}</td>
                     <td>{{ unlock_item.consumption_item_quantity }}</td>
                     {% endfor %}
                     {% if panel.unlock_costs|length == 2 %}
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    {% elif panel.unlock_costs|length == 1 %}
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -344,11 +351,18 @@
                         {% endif %}
                     </td>
                     {% for unlock_item in panel.unlock_costs %}
-                    <td>{{ unlock_item.consumption_item_display_name }}</td>
                     <td><img src="/{{ unlock_item.consumption_item_icon_path }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ unlock_item.consumption_item_display_name }}</td>
                     <td>{{ unlock_item.consumption_item_quantity }}</td>
                     {% endfor %}
                     {% if panel.unlock_costs|length == 2 %}
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    {% elif panel.unlock_costs|length == 1 %}
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>

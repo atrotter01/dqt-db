@@ -1,3 +1,4 @@
+from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.util import Util
 from app.data.unit import Unit
@@ -85,7 +86,7 @@ class Asset(Resource):
     @api.marshal_list_with(unit_model)
     def get(self, path = None):
         '''Fetch a given Unit'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.unit_parser = Unit(util=self.util)
         self.units = []
 
@@ -99,7 +100,7 @@ class Asset(Resource):
 
             return self.units
 
-        self.cache_key = 'unit_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_unit_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -126,11 +127,11 @@ class RankUpCalculator(Resource):
     @api.marshal_list_with(rank_up_calculator_model)
     def get(self, path = None):
         '''Fetch a given Unit'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.unit_parser = Unit(util=self.util)
         self.units = []
 
-        self.cache_key = 'rankup_calculator_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_rankup_calculator_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -161,11 +162,11 @@ class UnitResistFilter(Resource):
     @api.marshal_list_with(resistance_model)
     def get(self, path = None):
         '''Fetch a given Unit'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.unit_parser = Unit(util=self.util)
         self.units = []
 
-        self.cache_key = 'unit_resist_filter_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_unit_resist_filter_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:

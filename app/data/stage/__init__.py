@@ -19,7 +19,7 @@ class Stage:
         asset = self.util.get_asset_by_path(path=path, deflate_data=True)
         data: dict = asset.get('processed_document')
 
-        stage_name = data.get('displayName_translation').get('gbl') or data.get('displayName_translation').get('ja')
+        stage_name = self.util.get_localized_string(data=data, key='displayName_translation', path=path)
         stage_area_id = data.get('area').get('linked_asset_id')
         stage_list_order = data.get('listOrder')
         stage_difficulty = data.get('difficulty')
@@ -63,7 +63,7 @@ class Stage:
         #abnormityStatusWeaknesses
 
         if data.get('subDisplayName_translation') is not None:
-            stage_sub_display_name = data.get('subDisplayName_translation').get('gbl') or data.get('subDisplayName_translation').get('ja')
+            stage_sub_display_name = self.util.get_localized_string(data, key='subDisplayName_translation', path=path)
 
         for enemy in data.get('enemies'):
             enemy_monster: dict = self.enemy_monster_parser.get_data(enemy.get('monster').get('linked_asset_id'))
@@ -322,9 +322,9 @@ class Stage:
                 condition_description: str = None
 
                 if stage_mission_key.get('description_translation') is not None:
-                    condition_description = stage_mission_key.get('description_translation').get('gbl') or stage_mission_key.get('description_translation').get('ja')
+                    condition_description = self.util.get_localized_string(stage_mission_key, key='description_translation', path=path)
                 else:
-                    condition_description = condition.get('typeMaster').get('description_translation').get('gbl') or condition.get('typeMaster').get('description_translation').get('ja')
+                    condition_description = self.util.get_localized_string(condition.get('typeMaster'), key='description_translation', path=path)
 
                 condition_description = self.util.clean_text_string(str_to_clean=self.util.replace_string_variable(str_to_clean=condition_description, key=condition_code, value=condition_amount), unit='+')
 
@@ -338,12 +338,12 @@ class Stage:
 
             if stage_mission_key.get('reward').get('item').get('m_PathID') is None:
                 reward_icon = self.util.get_image_path(stage_mission_key.get('reward').get('item').get('iconPath'))
-                reward_display_name = stage_mission_key.get('reward').get('item').get('displayName_translation').get('gbl') or stage_mission_key.get('reward').get('item').get('displayName_translation').get('ja')
+                reward_display_name = self.util.get_localized_string(stage_mission_key.get('reward').get('item'), key='displayName_translation', path=path)
                 reward_id = stage_mission_key.get('reward').get('item').get('linked_asset_id')
                 reward_type = 'consumable_item'
             elif stage_mission_key.get('reward').get('profileIcon').get('m_PathID') is None:
                 reward_icon = self.util.get_image_path(stage_mission_key.get('reward').get('profileIcon').get('iconPath'))
-                reward_display_name = stage_mission_key.get('reward').get('profileIcon').get('displayName_translation').get('gbl') or stage_mission_key.get('reward').get('profileIcon').get('displayName_translation').get('ja')
+                reward_display_name = self.util.get_localized_string(stage_mission_key.get('reward').get('profileIcon'), key='displayName_translation', path=path)
                 reward_id = stage_mission_key.get('reward').get('item').get('linked_asset_id')
                 reward_type = 'profile_icon'
 
@@ -386,7 +386,7 @@ class Stage:
         return stage
 
     def get_data(self, path):
-        cache_key: str = f'{path}_parsed_asset'
+        cache_key: str = f'{self.util.get_language_setting()}_{path}_parsed_asset'
         cached_asset: dict = self.util.get_redis_asset(cache_key=cache_key)
 
         if cached_asset is not None:

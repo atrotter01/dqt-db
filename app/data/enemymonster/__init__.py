@@ -22,7 +22,7 @@ class EnemyMonster:
         asset = self.util.get_asset_by_path(path=path, deflate_data=True)
         data: dict = asset.get('processed_document')
 
-        enemy_display_name: str = data.get('profile').get('displayName_translation').get('gbl') or data.get('profile').get('displayName_translation').get('ja')
+        enemy_display_name: str = self.util.get_localized_string(data.get('profile'), key='displayName_translation', path=path)
         enemy_level = data.get('level')
         enemy_hp = data.get('hp')
         enemy_mp = data.get('mp')
@@ -37,15 +37,15 @@ class EnemyMonster:
         enemy_scout_probability = data.get('scoutProbabilityPermyriad')
         enemy_is_rare_scout = data.get('isRareScout')
         enemy_flavor_text: str = None
-        enemy_family = data.get('profile').get('family').get('abbrevDisplayName_translation').get('gbl') or data.get('profile').get('family').get('abbrevDisplayName_translation').get('ja')
+        enemy_family = self.util.get_localized_string(data.get('profile').get('family'), key='abbrevDisplayName_translation', path=path)
         enemy_family_icon = self.util.get_image_path(data.get('profile').get('family').get('largeIconPath'))
-        enemy_role = data.get('profile').get('role').get('abbrevDisplayName_translation').get('gbl') or data.get('profile').get('role').get('abbrevDisplayName_translation').get('ja')
+        enemy_role = self.util.get_localized_string(data.get('profile').get('role'), key='abbrevDisplayName_translation', path=path)
         enemy_role_icon = self.util.get_image_path(data.get('profile').get('role').get('iconPath'))
         enemy_unit_icon = self.util.get_image_path(data.get('profile').get('iconPath'))
         enemy_transformed_unit_icon = self.util.get_image_path(data.get('profile').get('transformedIconPath'))
 
         if data.get('profile').get('flavorText_translation') is not None:
-            enemy_flavor_text = data.get('profile').get('flavorText_translation').get('gbl') or data.get('profile').get('flavorText_translation').get('ja')
+            enemy_flavor_text = self.util.get_localized_string(data.get('profile'), key='flavorText_translation', path=path)
 
         enemy_active_skills: list = []
         enemy_passive_skills: list = []
@@ -116,7 +116,7 @@ class EnemyMonster:
         return enemy_monster
 
     def get_data(self, path):
-        cache_key: str = f'{path}_parsed_asset'
+        cache_key: str = f'{self.util.get_language_setting()}_{path}_parsed_asset'
         cached_asset: dict = self.util.get_redis_asset(cache_key=cache_key)
 
         if cached_asset is not None:

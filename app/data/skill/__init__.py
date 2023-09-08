@@ -19,24 +19,24 @@ class Skill:
         skill_description = None
 
         if skill.get('displayName_translation'):
-            skill_name = skill.get('displayName_translation').get('gbl') or skill.get('displayName_translation').get('ja')
+            skill_name = self.util.get_localized_string(data=skill, key='displayName_translation', path=path)
         else:
             skill_name = skill.get('displayName')
 
         if skill.get('description_translation') is not None:
-            skill_description = skill.get('description_translation').get('gbl') or skill.get('description_translation').get('ja')
+            skill_description = self.util.get_localized_string(data=skill, key='description_translation', path=path)
         else:
             skill_description = skill.get('description')
 
         skill_button_icon = self.util.get_image_path(skill.get('buttonBasePath'))
-        skill_rank = skill.get('originRarity').get('displayName_translation').get('gbl') or skill.get('originRarity').get('displayName_translation').get('ja')
+        skill_rank = self.util.get_localized_string(data=skill.get('originRarity'), key='displayName_translation', path=path)
         skill_rank_icon = self.util.get_image_path(f'Assets/Aiming/Textures/GUI/General/Icon/MonsterIcon/MonsterIconParts/MonsterRankIcon_{skill_rank}.png')
         skill_range_icon = self.util.get_image_path(skill.get('rangeShape').get('iconPath'))
-        skill_reach = skill.get('reachShape').get('description_translation').get('gbl') or skill.get('reachShape').get('description_translation').get('ja')
+        skill_reach = self.util.get_localized_string(data=skill.get('reachShape'), key='description_translation', path=path)
         skill_element = 'Typeless'
 
         if skill.get('element').get('displayName_translation'):
-            skill_element = skill.get('element').get('displayName_translation').get('gbl') or skill.get('element').get('displayName_translation').get('ja')
+            skill_element = self.util.get_localized_string(data=skill.get('element'), key='displayName_translation', path=path)
 
         skill_element_icon = self.util.get_image_path(skill.get('element').get('iconPath'))
         if skill_element_icon is None:
@@ -115,7 +115,7 @@ class Skill:
             change_parameter_counter = change_parameter_counter + 1
             duration = self.util.float_to_str(change_parameter.get('duration'))
             skill_wave_immune = change_parameter.get('effect').get('disruptiveWaveImmune')
-            skill_status_effect_parameter_name = change_parameter.get('effect').get('effectStatusName_translation').get('gbl') or change_parameter.get('effect').get('effectStatusName_translation').get('ja')
+            skill_status_effect_parameter_name = self.util.get_localized_string(data=change_parameter.get('effect'), key='effectStatusName_translation', path=path)
 
             skill_description = self.util.replace_string_variable(skill_description, f'Turn{change_parameter_counter}', duration)
 
@@ -169,12 +169,12 @@ class Skill:
         skill_description = None
 
         if skill.get('passiveSkillName_translation'):
-            skill_name = skill.get('passiveSkillName_translation').get('gbl') or skill.get('passiveSkillName_translation').get('ja')
+            skill_name = self.util.get_localized_string(data=skill, key='passiveSkillName_translation', path=path)
         else:
             skill_name = skill.get('passiveSkillName')
 
         if skill.get('description_translation') is not None:
-            skill_description = skill.get('description_translation').get('gbl') or skill.get('description_translation').get('ja')
+            skill_description = self.util.get_localized_string(data=skill, key='description_translation', path=path)
         else:
             skill_description = skill.get('description')
 
@@ -214,12 +214,12 @@ class Skill:
         skill_description = None
 
         if skill.get('displayName_translation'):
-            skill_name = skill.get('displayName_translation').get('gbl') or skill.get('displayName_translation').get('ja')
+            skill_name = self.util.get_localized_string(data=skill, key='displayName_translation', path=path)
         else:
             skill_name = skill.get('displayName')
 
         if skill.get('description_translation') is not None:
-            skill_description = skill.get('description_translation').get('gbl') or skill.get('description_translation').get('ja')
+            skill_description = self.util.get_localized_string(data=skill, key='description_translation', path=path)
         else:
             skill_description = skill.get('description')
 
@@ -516,7 +516,7 @@ class Skill:
         }
 
     def get_active_skill(self, path):
-        cache_key: str = f'{path}_parsed_asset'
+        cache_key: str = f'{self.util.get_language_setting()}_{path}_parsed_asset'
         cached_asset: dict = self.util.get_redis_asset(cache_key=cache_key)
 
         if cached_asset is not None:
@@ -529,7 +529,7 @@ class Skill:
         return skill
 
     def get_passive_skill(self, path):
-        cache_key: str = f'{path}_parsed_asset'
+        cache_key: str = f'{self.util.get_language_setting()}_{path}_parsed_asset'
         cached_asset: dict = self.util.get_redis_asset(cache_key=cache_key)
 
         if cached_asset is not None:
@@ -542,7 +542,7 @@ class Skill:
         return skill
 
     def get_reaction_skill(self, path):
-        cache_key: str = f'{path}_parsed_asset'
+        cache_key: str = f'{self.util.get_language_setting()}_{path}_parsed_asset'
         cached_asset: dict = self.util.get_redis_asset(cache_key=cache_key)
 
         if cached_asset is not None:

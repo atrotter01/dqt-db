@@ -11,7 +11,7 @@ class AssetProcessor:
         self.data_processor = _data_processor
 
     def process_assets(self):
-        unprocessed_containers: dict = self.util.get_assets_by_container(processed_filter=False)
+        unprocessed_containers: dict = self.util.get_uncached_assets_by_container(processed_filter=False)
 
         for container in sorted(unprocessed_containers):
             if 'scriptabledata' not in container:
@@ -56,16 +56,16 @@ class AssetProcessor:
 
     def get_asset_name(self, document, asset_type):
         if asset_type == 'LoginBonus':
-            return document.get('loginBonusName_translation').get('gbl') or document.get('loginBonusName_translation').get('ja')
+            return self.util.get_localized_string(data=document, key='loginBonusName_translation', path=document.get('linked_asset_id'))
 
         if asset_type == 'PCPP':
-            return document.get('itemName_translation').get('gbl') or document.get('itemName_translation').get('ja')
+            return self.util.get_localized_string(data=document, key='itemName_translation', path=document.get('linked_asset_id'))
 
         if asset_type == 'EnemyMonster':
-            return document.get('profile').get('displayName_translation').get('gbl') or document.get('profile').get('displayName_translation').get('ja')
+            return self.util.get_localized_string(data=document.get('profile'), key='displayName_translation', path=document.get('linked_asset_id'))
 
         if asset_type == 'AllyMonster':
-            return document.get('profile').get('displayName_translation').get('gbl') or document.get('profile').get('displayName_translation').get('ja')
+            return self.util.get_localized_string(data=document.get('profile'), key='displayName_translation', path=document.get('linked_asset_id'))
 
         if asset_type == 'Stage':
             achievement_target_name: str = None
@@ -73,14 +73,14 @@ class AssetProcessor:
 
             if document.get('area').get('achievementTarget') is not None:
                 if document.get('area').get('achievementTarget').get('displayName_translation') is not None:
-                    achievement_target_name = document.get('area').get('achievementTarget').get('displayName_translation').get('gbl') or document.get('area').get('achievementTarget').get('displayName_translation').get('ja')
+                    achievement_target_name = self.util.get_localized_string(data=document.get('area').get('achievementTarget'), key='displayName_translation', path=document.get('linked_asset_id'))
 
             if document.get('area').get('areaGroup') is not None:
                 if document.get('area').get('areaGroup').get('displayName_translation') is not None:
-                    area_group_name: str = document.get('area').get('areaGroup').get('displayName_translation').get('gbl') or document.get('area').get('areaGroup').get('displayName_translation').get('ja')
+                    area_group_name: str = self.util.get_localized_string(data=document.get('area').get('areaGroup'), key='displayName_translation', path=document.get('linked_asset_id'))
 
-            area_name: str = document.get('area').get('displayName_translation').get('gbl') or document.get('area').get('displayName_translation').get('ja')
-            stage_name: str = document.get('displayName_translation').get('gbl') or document.get('displayName_translation').get('ja')
+            area_name: str = self.util.get_localized_string(data=document.get('area'), key='displayName_translation', path=document.get('linked_asset_id'))
+            stage_name: str = self.util.get_localized_string(data=document, key='displayName_translation', path=document.get('linked_asset_id'))
 
             display_name: str = None
 
@@ -98,7 +98,7 @@ class AssetProcessor:
         display_name: str = None
 
         if document.get('displayName_translation') is not None:
-            display_name = document.get('displayName_translation').get('gbl') or document.get('displayName_translation').get('ja')
+            display_name = self.util.get_localized_string(data=document, key='displayName_translation', path=document.get('linked_asset_id'))
         else:
             display_name = document.get('displayName')
 
@@ -109,7 +109,7 @@ class AssetProcessor:
                 display_asset = self.util.get_asset_by_path(display_path)
 
                 if display_asset.get('display_name_translation'):
-                    display_name = display_asset.get('display_name_translation').get('gbl') or display_asset.get('display_name_translation').get('ja')
+                    display_name = self.util.get_localized_string(data=display_asset, key='display_name_translation', path=document.get('linked_asset_id'))
                 else:
                     display_name = display_asset.get('display_name')
             else:

@@ -1,3 +1,4 @@
+from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.util import Util
 
@@ -37,7 +38,7 @@ class ConsumableItem(Resource):
     @api.marshal_list_with(item_model)
     def get(self, path = None):
         '''Fetch a given Item'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.items = []
 
         if path is not None:
@@ -48,12 +49,12 @@ class ConsumableItem(Resource):
             description: str = None
 
             if processed_document.get('displayName_translation') is not None:
-                display_name = processed_document.get('displayName_translation').get('gbl') or processed_document.get('displayName_translation').get('ja')
+                display_name = self.util.get_localized_string(data=processed_document, key='displayName_translation', path=path)
             else:
                 display_name = processed_document.get('displayName')
 
             if processed_document.get('description_translation') is not None:
-                description = processed_document.get('description_translation').get('gbl') or processed_document.get('description_translation').get('ja')
+                description = self.util.get_localized_string(data=processed_document, key='description', path=path)
             else:
                 description = processed_document.get('description')
 
@@ -70,7 +71,7 @@ class ConsumableItem(Resource):
 
             return self.items
 
-        self.cache_key = 'consumable_item_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_consumable_item_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -88,12 +89,12 @@ class ConsumableItem(Resource):
             description: str = None
 
             if processed_document.get('displayName_translation') is not None:
-                display_name = processed_document.get('displayName_translation').get('gbl') or processed_document.get('displayName_translation').get('ja')
+                display_name = self.util.get_localized_string(data=processed_document, key='displayName_translation', path=path)
             else:
                 display_name = processed_document.get('displayName')
 
             if processed_document.get('description_translation') is not None:
-                description = processed_document.get('description_translation').get('gbl') or processed_document.get('description_translation').get('ja')
+                description = self.util.get_localized_string(data=processed_document, key='description_translation', path=path)
             else:
                 description = processed_document.get('description')
 
@@ -124,7 +125,7 @@ class ProfileIcon(Resource):
     @api.marshal_list_with(profile_icon_model)
     def get(self, path = None):
         '''Fetch a given Profile Icon'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.profile_icons = []
 
         if path is not None:
@@ -135,12 +136,12 @@ class ProfileIcon(Resource):
             short_display_name: str = None
 
             if processed_document.get('displayName_translation') is not None:
-                display_name = processed_document.get('displayName_translation').get('gbl') or processed_document.get('displayName_translation').get('ja')
+                display_name = self.util.get_localized_string(data=processed_document, key='displayName_translation', path=path)
             else:
                 display_name = processed_document.get('displayName')
 
             if processed_document.get('shortDisplayName_translation') is not None:
-                short_display_name = processed_document.get('shortDisplayName_translation').get('gbl') or processed_document.get('shortDisplayName_translation').get('ja')
+                short_display_name = self.util.get_localized_string(data=processed_document, key='shortDisplayName_translation', path=path)
             else:
                 short_display_name = processed_document.get('shortDisplayName')
 
@@ -155,7 +156,7 @@ class ProfileIcon(Resource):
 
             return self.profile_icons
 
-        self.cache_key = 'profile_icon_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_profile_icon_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -171,12 +172,12 @@ class ProfileIcon(Resource):
             short_display_name: str = None
 
             if processed_document.get('displayName_translation') is not None:
-                display_name = processed_document.get('displayName_translation').get('gbl') or processed_document.get('displayName_translation').get('ja')
+                display_name = self.util.get_localized_string(data=processed_document, key='displayName_translation', path=path)
             else:
                 display_name = processed_document.get('displayName')
 
             if processed_document.get('shortDisplayName_translation') is not None:
-                short_display_name = processed_document.get('shortDisplayName_translation').get('gbl') or processed_document.get('shortDisplayName_translation').get('ja')
+                short_display_name = self.util.get_localized_string(data=processed_document, key='shortDisplayName_translation', path=path)
             else:
                 short_display_name = processed_document.get('shortDisplayName')
 
@@ -205,7 +206,7 @@ class Package(Resource):
     @api.marshal_list_with(package_model)
     def get(self, path = None):
         '''Fetch a given Profile Icon'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.packages = []
 
         if path is not None:
@@ -215,21 +216,27 @@ class Package(Resource):
             display_name: str = None
 
             if processed_document.get('displayName_translation') is not None:
-                display_name = processed_document.get('displayName_translation').get('gbl') or processed_document.get('displayName_translation').get('ja')
+                display_name = self.util.get_localized_string(data=processed_document, key='displayName_translation', path=path)
             else:
                 display_name = processed_document.get('displayName')
+
+            icon_path = self.util.get_image_path(processed_document.get('iconPath'))
+
+            if icon_path is None:
+                if processed_document.get('consumableItems') is not None:
+                    icon_path = self.util.get_image_path(processed_document.get('consumableItems')[0].get('drop').get('iconPath'))
 
             package = {
                 'id': path,
                 'display_name': display_name,
-                'icon_path': self.util.get_image_path(processed_document.get('iconPath'))
+                'icon_path': icon_path
             }
 
             self.packages.append(package)
 
             return self.packages
 
-        self.cache_key = 'package_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_package_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:
@@ -244,14 +251,20 @@ class Package(Resource):
             display_name: str = None
 
             if processed_document.get('displayName_translation') is not None:
-                display_name = processed_document.get('displayName_translation').get('gbl') or processed_document.get('displayName_translation').get('ja')
+                display_name = self.util.get_localized_string(data=processed_document, key='displayName_translation', path=path)
             else:
                 display_name = processed_document.get('displayName')
+
+            icon_path = self.util.get_image_path(processed_document.get('iconPath'))
+
+            if icon_path is None:
+                if processed_document.get('consumableItems') is not None:
+                    icon_path = self.util.get_image_path(processed_document.get('consumableItems')[0].get('drop').get('iconPath'))
 
             package = {
                 'id': path,
                 'display_name': display_name,
-                'icon_path': self.util.get_image_path(processed_document.get('iconPath'))
+                'icon_path': icon_path
             }
 
             self.packages.append(package)

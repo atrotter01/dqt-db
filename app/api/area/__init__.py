@@ -1,3 +1,4 @@
+from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.data.area import Area
 from app.util import Util
@@ -41,7 +42,7 @@ class Asset(Resource):
     @api.marshal_list_with(area_model)
     def get(self, path = None):
         '''Fetch a given Area'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.area_parser = Area(util=self.util)
         self.areas = []
 
@@ -50,7 +51,7 @@ class Asset(Resource):
 
             return self.areas
 
-        self.cache_key = 'area_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_area_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:

@@ -1,3 +1,4 @@
+from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.util import Util
 from app.data.equipment import Equipment
@@ -37,7 +38,7 @@ class Asset(Resource):
     @api.marshal_list_with(equipment_model)
     def get(self, path = None):
         '''Fetch a given Equipment'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.equipment_parser = Equipment(util=self.util)
         self.equipments = []
 
@@ -46,7 +47,7 @@ class Asset(Resource):
 
             return self.equipments
 
-        self.cache_key = 'equipment_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_equipment_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:

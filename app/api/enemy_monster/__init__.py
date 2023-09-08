@@ -1,3 +1,4 @@
+from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.data.enemymonster import EnemyMonster
 from app.util import Util
@@ -48,7 +49,7 @@ class Asset(Resource):
     @api.marshal_list_with(enemy_monster_model)
     def get(self, path = None):
         '''Fetch a given Enemy Monster'''
-        self.util = Util()
+        self.util = Util(lang=request.args.get('lang'))
         self.enemy_monster_parser = EnemyMonster(util=self.util)
         self.enemy_monsters = []
 
@@ -57,7 +58,7 @@ class Asset(Resource):
 
             return self.enemy_monsters
 
-        self.cache_key = 'enemy_monster_parsed_asset'
+        self.cache_key = f'{self.util.get_language_setting()}_enemy_monster_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
         if cached_asset is not None:

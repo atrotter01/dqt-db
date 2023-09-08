@@ -1,10 +1,11 @@
 import datetime
 import json
 import requests
-from flask import Flask, Blueprint, render_template, request, Response
+from flask import Flask, Blueprint, render_template, request, Response, session
 from flask_restx import Api
 from flask_autoindex import AutoIndex
 from werkzeug.middleware.proxy_fix import ProxyFix
+#from werkzeug.middleware.profiler import ProfilerMiddleware
 from app.api.accolade import api as accolade_api
 from app.api.area import api as area_api
 from app.api.area_group import api as area_group_api
@@ -23,7 +24,9 @@ from app.api.unit import api as unit_api
 from app.util import Util
 
 app = Flask(__name__, static_folder='../static', template_folder='../templates')
+app.secret_key = 'REo!NtU6Wr2g#nPpGll116@uXuEqTBJHyOqVG$Stfv8Wo^cJbBiqsNsQwyEG&wEfI6tb6ZXbQdhn2*eBtEwa-bcwY3ot2vQJfldR8wL=v3iJx=9rsGzbUIJr3q!rnmONavS'
 app.wsgi_app = ProxyFix(app.wsgi_app)
+#app.wsgi_app = ProfilerMiddleware(app.wsgi_app)
 
 blueprint: Blueprint = Blueprint('api', __name__, url_prefix='/api')
 api = Api(
@@ -52,7 +55,14 @@ api.add_namespace(unit_api)
 app.register_blueprint(blueprint=blueprint)
 
 files_index = AutoIndex(app, browse_root='static/dqt_images', add_url_rules=False)
-util: Util = Util()
+
+@app.before_request
+def check_session_vars():
+    if request.args.get('lang') is not None:
+        session['lang'] = request.args.get('lang')
+
+    if session.get('lang') is None:
+        session['lang'] = 'en'
 
 @app.route('/')
 def index_route():
@@ -60,7 +70,7 @@ def index_route():
 
 @app.route('/unit/')
 def unit_route():
-    api_response = requests.get(url='http://localhost:5000/api/unit/', timeout=60)
+    api_response = requests.get(url='http://localhost:5000/api/unit/', timeout=300, params=dict(lang=session['lang']))
     units = []
 
     if api_response.status_code == 200:
@@ -70,7 +80,7 @@ def unit_route():
 
 @app.route('/skill/active_skill/')
 def active_skill_route():
-    active_skill_api_response = requests.get(url='http://localhost:5000/api/skill/active_skill', timeout=60)
+    active_skill_api_response = requests.get(url='http://localhost:5000/api/skill/active_skill', timeout=300, params=dict(lang=session['lang']))
     active_skills = []
 
     if active_skill_api_response.status_code == 200:
@@ -80,7 +90,7 @@ def active_skill_route():
 
 @app.route('/skill/enemy_skill/')
 def enemy_skill_route():
-    enemy_skill_api_response = requests.get(url='http://localhost:5000/api/skill/enemy_skill', timeout=60)
+    enemy_skill_api_response = requests.get(url='http://localhost:5000/api/skill/enemy_skill', timeout=300, params=dict(lang=session['lang']))
     enemy_skills = []
 
     if enemy_skill_api_response.status_code == 200:
@@ -90,7 +100,7 @@ def enemy_skill_route():
 
 @app.route('/skill/passive_skill/')
 def passive_skill_route():
-    passive_skill_api_response = requests.get(url='http://localhost:5000/api/skill/passive_skill', timeout=60)
+    passive_skill_api_response = requests.get(url='http://localhost:5000/api/skill/passive_skill', timeout=300, params=dict(lang=session['lang']))
     passive_skills = []
 
     if passive_skill_api_response.status_code == 200:
@@ -100,7 +110,7 @@ def passive_skill_route():
 
 @app.route('/skill/reaction_skill/')
 def reaction_skill_route():
-    reaction_skill_api_response = requests.get(url='http://localhost:5000/api/skill/reaction_skill', timeout=60)
+    reaction_skill_api_response = requests.get(url='http://localhost:5000/api/skill/reaction_skill', timeout=300, params=dict(lang=session['lang']))
     reaction_skills = []
 
     if reaction_skill_api_response.status_code == 200:
@@ -110,7 +120,8 @@ def reaction_skill_route():
 
 @app.route('/skill/<type_of_skill>/<skill_id>')
 def skill_detail_route(type_of_skill, skill_id):
-    api_response = requests.get(url=f'http://localhost:5000/api/skill/{type_of_skill}/{skill_id}', timeout=60)
+    util: Util = Util(lang=session['lang'])
+    api_response = requests.get(url=f'http://localhost:5000/api/skill/{type_of_skill}/{skill_id}', timeout=300, params=dict(lang=session['lang']))
     skill_data = []
     skill_learned_by = []
     skill_equipment_cache = []
@@ -130,7 +141,7 @@ def skill_detail_route(type_of_skill, skill_id):
 def item_route():
     consumable_items = []
 
-    item_api_response = requests.get(url='http://localhost:5000/api/item/consumableitem', timeout=60)
+    item_api_response = requests.get(url='http://localhost:5000/api/item/consumableitem', timeout=300, params=dict(lang=session['lang']))
     if item_api_response.status_code == 200:
         consumable_items = item_api_response.json()
 
@@ -138,7 +149,8 @@ def item_route():
 
 @app.route('/item/<consumable_item_id>')
 def item_detail_route(consumable_item_id):
-    api_response = requests.get(url=f'http://localhost:5000/api/item/consumableitem/{consumable_item_id}', timeout=60)
+    util: Util = Util(lang=session['lang'])
+    api_response = requests.get(url=f'http://localhost:5000/api/item/consumableitem/{consumable_item_id}', timeout=300, params=dict(lang=session['lang']))
     item_data = []
     location_table = []
 
@@ -154,7 +166,7 @@ def item_detail_route(consumable_item_id):
 def icon_route():
     profile_icons = []
 
-    profile_icon_api_response = requests.get(url='http://localhost:5000/api/item/profileicon', timeout=60)
+    profile_icon_api_response = requests.get(url='http://localhost:5000/api/item/profileicon', timeout=300, params=dict(lang=session['lang']))
     if profile_icon_api_response.status_code == 200:
         profile_icons = profile_icon_api_response.json()
 
@@ -162,7 +174,8 @@ def icon_route():
 
 @app.route('/icon/<profile_icon_id>')
 def icon_detail_route(profile_icon_id):
-    api_response = requests.get(url=f'http://localhost:5000/api/item/profileicon/{profile_icon_id}', timeout=60)
+    util: Util = Util(lang=session['lang'])
+    api_response = requests.get(url=f'http://localhost:5000/api/item/profileicon/{profile_icon_id}', timeout=300, params=dict(lang=session['lang']))
     icon_data = []
     location_table = []
 
@@ -178,7 +191,7 @@ def icon_detail_route(profile_icon_id):
 def package_route():
     packages = []
 
-    package_api_response = requests.get(url='http://localhost:5000/api/item/package', timeout=60)
+    package_api_response = requests.get(url='http://localhost:5000/api/item/package', timeout=300, params=dict(lang=session['lang']))
     if package_api_response.status_code == 200:
         packages = package_api_response.json()
 
@@ -186,8 +199,8 @@ def package_route():
 
 @app.route('/unit/<unit_id>')
 def unit_detail_route(unit_id):
-    api_response = requests.get(url=f'http://localhost:5000/api/unit/{unit_id}', timeout=60)
-    farmable_api_response = requests.get(url='http://localhost:5000/api/farmable/', timeout=60)
+    api_response = requests.get(url=f'http://localhost:5000/api/unit/{unit_id}', timeout=300, params=dict(lang=session['lang']))
+    farmable_api_response = requests.get(url='http://localhost:5000/api/farmable/', timeout=300, params=dict(lang=session['lang']))
 
     unit = []
     farmables = []
@@ -202,7 +215,7 @@ def unit_detail_route(unit_id):
 
 @app.route('/equipment/')
 def equipment_route():
-    api_response = requests.get(url='http://localhost:5000/api/equipment', timeout=60)
+    api_response = requests.get(url='http://localhost:5000/api/equipment', timeout=300, params=dict(lang=session['lang']))
     equipments = []
 
     if api_response.status_code == 200:
@@ -212,7 +225,8 @@ def equipment_route():
 
 @app.route('/equipment/<equipment_id>')
 def equipment_detail_route(equipment_id):
-    api_response = requests.get(url=f'http://localhost:5000/api/equipment/{equipment_id}', timeout=60)
+    util: Util = Util(lang=session['lang'])
+    api_response = requests.get(url=f'http://localhost:5000/api/equipment/{equipment_id}', timeout=300, params=dict(lang=session['lang']))
     equipment_data = []
     location_table = []
 
@@ -226,7 +240,7 @@ def equipment_detail_route(equipment_id):
 
 @app.route('/accolade/')
 def accolade_route():
-    api_response = requests.get(url='http://localhost:5000/api/accolade/', timeout=60)
+    api_response = requests.get(url='http://localhost:5000/api/accolade/', timeout=300, params=dict(lang=session['lang']))
     accolades = []
 
     if api_response.status_code == 200:
@@ -236,7 +250,7 @@ def accolade_route():
 
 @app.route('/asset_container/')
 def asset_container_route():
-    api_response = requests.get(url='http://localhost:5000/api/asset_container', timeout=60)
+    api_response = requests.get(url='http://localhost:5000/api/asset_container', timeout=300, params=dict(lang=session['lang']))
     asset_container_response: dict = {}
     asset_containers: list = []
 
@@ -253,7 +267,7 @@ def asset_container_route():
 
 @app.route('/asset_container/<container_id>')
 def asset_type_route(container_id):
-    api_response = requests.get(url='http://localhost:5000/api/asset_container', timeout=60)
+    api_response = requests.get(url='http://localhost:5000/api/asset_container', timeout=300, params=dict(lang=session['lang']))
     asset_container_response: dict = {}
     asset_types: list = []
 
@@ -271,7 +285,7 @@ def asset_type_route(container_id):
 
 @app.route('/asset_container/<container>/<container_asset_type>')
 def asset_list_route(container, container_asset_type):
-    api_response = requests.get(url='http://localhost:5000/api/asset_container', timeout=60)
+    api_response = requests.get(url='http://localhost:5000/api/asset_container', timeout=300, params=dict(lang=session['lang']))
     asset_container_response: dict = {}
     container_key: str = container.replace('___', '/')
     assets: list = []
@@ -284,7 +298,7 @@ def asset_list_route(container, container_asset_type):
 
 @app.route('/asset/<path_id>')
 def asset_route(path_id):
-    api_response = requests.get(url=f'http://localhost:5000/api/asset/{path_id}', timeout=60)
+    api_response = requests.get(url=f'http://localhost:5000/api/asset/{path_id}', timeout=300, params=dict(lang=session['lang']))
     asset = {}
 
     if api_response.status_code == 200:
@@ -294,7 +308,7 @@ def asset_route(path_id):
 
 @app.route('/shop/')
 def shop_route():
-    api_response = requests.get(url='http://localhost:5000/api/shop', timeout=60)
+    api_response = requests.get(url='http://localhost:5000/api/shop', timeout=300, params=dict(lang=session['lang']))
     shops = []
 
     if api_response.status_code == 200:
@@ -304,7 +318,7 @@ def shop_route():
 
 @app.route('/shop/<shop_id>')
 def shop_goods_route(shop_id):
-    api_response = requests.get(url=f'http://localhost:5000/api/shop/{shop_id}', timeout=60)
+    api_response = requests.get(url=f'http://localhost:5000/api/shop/{shop_id}', timeout=300, params=dict(lang=session['lang']))
     shop_goods = []
 
     if api_response.status_code == 200:
@@ -314,12 +328,12 @@ def shop_goods_route(shop_id):
 
 @app.route('/imagebrowser/')
 @app.route('/imagebrowser/<path:path>')
-def autoindex_route(path='.'):
+def autoindex(path='.'):
     return files_index.render_autoindex(path)
 
 @app.route('/rankup_calculator/')
 def rankup_calculator_route():
-    api_response = requests.get(url='http://localhost:5000/api/unit', timeout=60)
+    api_response = requests.get(url='http://localhost:5000/api/unit', timeout=300, params=dict(lang=session['lang']))
     units = []
 
     if api_response.status_code == 200:
@@ -329,7 +343,8 @@ def rankup_calculator_route():
 
 @app.route('/enemy_monster/<monster_id>')
 def enemy_monster_route(monster_id):
-    api_response = requests.get(url=f'http://localhost:5000/api/enemy_monster/{monster_id}', timeout=60)
+    util: Util = Util(lang=session['lang'])
+    api_response = requests.get(url=f'http://localhost:5000/api/enemy_monster/{monster_id}', timeout=300, params=dict(lang=session['lang']))
     enemy_monster_data = []
     stages: list = util.get_redis_asset('stage_monster_lookup_parsed_asset').get(monster_id)
 
@@ -340,7 +355,7 @@ def enemy_monster_route(monster_id):
 
 @app.route('/stage/<stage_id>')
 def stage_route(stage_id):
-    api_response = requests.get(url=f'http://localhost:5000/api/stage/{stage_id}', timeout=60)
+    api_response = requests.get(url=f'http://localhost:5000/api/stage/{stage_id}', timeout=300, params=dict(lang=session['lang']))
     stage_data = []
 
     if api_response.status_code == 200:
@@ -362,13 +377,14 @@ def stage_route(stage_id):
 
 @app.route('/stage/category/<stage_category>')
 def stage_category_route(stage_category):
+    util: Util = Util(lang=session['lang'])
     stage_structure = util.get_redis_asset('stage_structure_parsed_asset')
 
     return render_template('stage_list.html', stage_structure=stage_structure, stage_category=int(stage_category))
 
 @app.route('/battleroad/')
 def battleroad_route():
-    api_response = requests.get(url='http://localhost:5000/api/area', timeout=60)
+    api_response = requests.get(url='http://localhost:5000/api/area', timeout=300, params=dict(lang=session['lang']))
     area_data = []
     battleroads = []
 
@@ -383,7 +399,7 @@ def battleroad_route():
 
 @app.route('/farmable/')
 def farmable_route():
-    api_response = requests.get(url='http://localhost:5000/api/farmable', timeout=60)
+    api_response = requests.get(url='http://localhost:5000/api/farmable', timeout=300, params=dict(lang=session['lang']))
     farmable_data = []
 
     if api_response.status_code == 200:
@@ -393,6 +409,7 @@ def farmable_route():
 
 @app.route('/lawson/')
 def lawson_route():
+    util: Util = Util(lang=session['lang'])
     condolences = util.get_redis_asset('user_data_lawson')
 
     if condolences is None:
@@ -402,6 +419,7 @@ def lawson_route():
 
 @app.route('/lawson/save', methods=['POST'])
 def lawson_save_route():
+    util: Util = Util(lang=session['lang'])
     user = request.form.get('name')
     message = request.form.get('message')
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -425,6 +443,37 @@ def lawson_save_route():
     util.save_redis_asset(cache_key='user_data_lawson', data=condolences)
 
     return render_template('lawson.html', condolences=condolences)
+
+@app.route('/translate')
+def translate_route():
+    util: Util = Util(lang=session['lang'])
+    untranslated_asset_list = util.get_redis_asset('user_data_untranslated_strings')
+    untranslated_assets: list = []
+    seen_assets: list = []
+
+    for asset_key in untranslated_asset_list:
+        key: str = untranslated_asset_list.get(asset_key).get('key')
+        path: str = untranslated_asset_list.get(asset_key).get('path')
+        asset_id: str = untranslated_asset_list.get(asset_key).get('asset_id')
+
+        if asset_id in seen_assets:
+            continue
+
+        seen_assets.append(asset_id)
+        asset: dict = util.get_asset_by_path(asset_id, deflate_data=True)
+        data: dict = asset.get('processed_document')
+        filetype: str = asset.get('filetype')
+        string = data.get(key).get('ja')
+
+        untranslated_assets.append({
+            'key': key,
+            'path': path,
+            'filetype': filetype,
+            'asset_id': asset_id,
+            'string': string
+        })
+
+    return render_template('translate.html', untranslated_assets=untranslated_assets)
 
 if __name__ == '__main__':
     app.run(debug=True)

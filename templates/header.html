@@ -25,6 +25,12 @@
             function hideSearchPanes(e, dt, node, config) {
                 dt.searchPanes.container().toggle();
             }
+
+            function setLanguage(el) {
+                if(el.selectedIndex) {
+                    location.href = window.location.href.split('?')[0].replace('#', '') + '?lang=' + el.options[el.selectedIndex].value;
+                }
+            }
         </script>
 
         <style type="text/css">
@@ -77,6 +83,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
+                <div class="form-floating">
+                    <select id="language" name="language" class="form-select" aria-label="Language" onchange="setLanguage(this)">
+                        <option selected></option>
+                        <option value="en">English</option>
+                        <option value="ja">Japanese</option>
+                    </select>
+                    <label for="language">Language</label>
+                </div>
+                <br />
                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Home</button>
