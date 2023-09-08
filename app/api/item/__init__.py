@@ -54,7 +54,7 @@ class ConsumableItem(Resource):
                 display_name = processed_document.get('displayName')
 
             if processed_document.get('description_translation') is not None:
-                description = self.util.get_localized_string(data=processed_document, key='description', path=path)
+                description = self.util.get_localized_string(data=processed_document, key='description_translation', path=path)
             else:
                 description = processed_document.get('description')
 
