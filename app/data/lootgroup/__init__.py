@@ -19,14 +19,14 @@ class LootGroup:
             loot_type = 'equipment'
             display_name = self.util.get_localized_string(loot.get('drop').get('profile'), key='displayName_translation', path=path)
             icon = self.util.get_image_path(loot.get('drop').get('profile').get('iconPath'))
-            path = loot.get('drop').get('linked_asset_id')
+            loot_path = loot.get('drop').get('linked_asset_id')
 
             loot: dict = {
                 'quantity': quantity,
                 'loot_type': loot_type,
                 'display_name': display_name,
                 'icon': icon,
-                'path': path
+                'path': loot_path
             }
 
             loots.append(loot)
@@ -36,14 +36,14 @@ class LootGroup:
             loot_type = 'consumable_item'
             display_name = self.util.get_localized_string(loot.get('drop'), key='displayName_translation', path=path)
             icon = self.util.get_image_path(loot.get('drop').get('iconPath'))
-            path = loot.get('drop').get('linked_asset_id')
+            loot_path = loot.get('drop').get('linked_asset_id')
 
             loot: dict = {
                 'quantity': quantity,
                 'loot_type': loot_type,
                 'display_name': display_name,
                 'icon': icon,
-                'path': path
+                'path': loot_path
             }
 
             loots.append(loot)
@@ -53,14 +53,14 @@ class LootGroup:
             loot_type = 'monster'
             display_name = self.util.get_localized_string(loot.get('drop').get('profile'), key='displayName_translation', path=path)
             icon = self.util.get_image_path(loot.get('drop').get('profile').get('iconPath'))
-            path = loot.get('drop').get('linked_asset_id')
+            loot_path = loot.get('drop').get('linked_asset_id')
 
             loot: dict = {
                 'quantity': quantity,
                 'loot_type': loot_type,
                 'display_name': display_name,
                 'icon': icon,
-                'path': path
+                'path': loot_path
             }
 
             loots.append(loot)
@@ -70,14 +70,14 @@ class LootGroup:
             loot_type = 'profile_icon'
             display_name = self.util.get_localized_string(loot.get('drop'), key='displayName_translation', path=path)
             icon = self.util.get_image_path(loot.get('drop').get('iconPath'))
-            path = loot.get('drop').get('linked_asset_id')
+            loot_path = loot.get('drop').get('linked_asset_id')
 
             loot: dict = {
                 'quantity': quantity,
                 'loot_type': loot_type,
                 'display_name': display_name,
                 'icon': icon,
-                'path': path
+                'path': loot_path
             }
 
             loots.append(loot)
@@ -87,14 +87,14 @@ class LootGroup:
             loot_type = 'experience'
             display_name = 'Experience'
             icon = None
-            path = None
+            loot_path = None
 
             loot: dict = {
                 'quantity': quantity,
                 'loot_type': loot_type,
                 'display_name': display_name,
                 'icon': icon,
-                'path': path
+                'path': loot_path
             }
 
             loots.append(loot)

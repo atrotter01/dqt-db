@@ -37,15 +37,20 @@ class AssetProcessor:
 
                     self.process_asset(path=path, asset_type=asset_type)
 
-    def process_asset(self, path, asset_type):
+    def process_asset(self, path, asset_type=None, force_rebuild=False):
         try:
-            document: dict = self.data_processor.parse_asset(path=str(path))
+            document: dict = self.data_processor.parse_asset(path=str(path), force_rebuild=force_rebuild)
 
             assert isinstance(document, dict), document
 
-            display_name: str = self.get_asset_name(document=document, asset_type=asset_type)
+            display_name: str = None
 
-            print(f'Saving {display_name}')
+            if asset_type is not None:
+                display_name = self.get_asset_name(document=document, asset_type=asset_type)
+                print(f'Saving {display_name}')
+            else:
+                print(f'Saving {path}')
+
             self.util.save_processed_document(path=path, processed_document=document, display_name=display_name)
         except TypeError as ex:
             print(f'Failed to process with type error {path} {ex}')

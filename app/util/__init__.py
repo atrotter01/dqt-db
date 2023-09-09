@@ -73,7 +73,7 @@ class Util:
 
         asset = json.loads(redis_data)
 
-        if path not in self.cache_keys and not str(path).endswith('_cache') and not str(path).endswith('_parsed_asset'):
+        if path not in self.cache_keys and not str(path).endswith('_cache') and not str(path).endswith('_parsed_asset') and not str(path).startswith('user_data'):
             assert isinstance(asset, dict), type(asset)
 
         if deflate_data is True and self.redis_client.get(f'{path}_data') is not None:
@@ -192,7 +192,7 @@ class Util:
         or force_rebuild is True:
             for path in asset_list:
                 path = str(path)
-                if path in self.cache_keys or path.endswith('_parsed_asset'):
+                if path in self.cache_keys or path.endswith('_parsed_asset') or path.startswith('user_data'):
                     continue
 
                 asset = self.get_asset_by_path(path=path, deflate_data=False)
