@@ -2,8 +2,66 @@
 
     <script>
         $(document).ready( function () {
+            var dt_options = {
+                autoWidth: true,
+                paging: false,
+                responsive: true,
+                searchPanes: {
+                    cascadePanes: false,
+                    columns: [2,3],
+                    controls: true,
+                    collapse: true,
+                    initCollapsed: true,
+                    layout: 'auto',
+                    orderable: false,
+                },
+                buttons: [
+                    {
+                        text: 'Toggle Filters',
+                        className: 'spToggle showPanes',
+                        action: hideSearchPanes,
+                    },
+                    {
+                        text: 'Save Data',
+                        className: 'btn btn-primary',
+                        action: saveForm,
+                    },
+                    {
+                        text: 'Load Data',
+                        className: 'btn btn-primary',
+                        action: loadForm,
+                    },
+                    {
+                        text: 'Set Desired Ranks To Max',
+                        className: 'btn btn-primary',
+                        action: setDesiredRanks,
+                    },
+                    {
+                        text: 'Set Current Ranks To Max',
+                        className: 'btn btn-primary',
+                        action: setCurrentRanks,
+                    },
+                ],
+                dom: 'BPflrtip'
+            };
+
+            var table = $('#dt').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
+            table.columns.adjust().responsive.recalc();
+            table.searchPanes.container().prependTo(table.table().container());
+            table.searchPanes.resizePanes();
+            hideSearchPanes(null, table, null, null);
+
+            var dt_options = {
+                autoWidth: true,
+                paging: false,
+                searching: false,
+                responsive: true,
+            };
+
+            var table_rankup = $('#dt_rankup').DataTable(dt_options);
+            table_rankup.columns.adjust().responsive.recalc();
         } );
 
         var rank_up_table = [];
@@ -71,39 +129,39 @@
                 current_materials[key] = val;
             });
 
-            var html = '<table class="table table-striped table-bordered"><thead class="table-dark">';
+            var html = '<table id="dt_rankup" class="table table-striped table-hover table-bordered align-middle" style="width:100%">';
+                html += '<thead>';
+                html += '<td class="text-center">Material</td>';
+                html += '<td class="text-center">Icon</td>';
+                html += '<td class="text-center">Quantity</td>';
+                html += '<td class="text-center">Have</td>';
+                html += '<td class="text-center">Need</td>';
+                html += '</thead>';
+                html += '<tbody>';
 
             Object.keys(needed_materials).sort().forEach((material) => {
+                html += '<tr>';
                 html += '<td class="text-center">' + needed_materials[material]['name'] + '</td>';
-            });
-
-            html += '</thead><tbody><tr>';
-
-            Object.keys(needed_materials).sort().forEach((material) => {
                 html += '<td class="text-center"><img style="width: 64px; height: 64px;" src="/' + needed_materials[material]['icon'] + '" /></td>';
-            });
-
-            html += '</tr><tr>';
-
-            Object.keys(needed_materials).sort().forEach((material) => {
                 html += '<td class="text-center">' + needed_materials[material]['quantity'] + '</td>';
-            });
-
-            html += '</tr><tr>';
-
-            Object.keys(needed_materials).sort().forEach((material) => {
                 html += '<td class="text-center"><input onblur="calculate_materials()" type="text" placeholder="Currently Have" id="h_' + needed_materials[material]['name'].replaceAll(' ', '_') + '" name="h_' + needed_materials[material]['name'].replaceAll(' ', '_') + '" class="form-control" /></td>';
-            });
-
-            html += '</tr><tr>';
-
-            Object.keys(needed_materials).sort().forEach((material) => {
                 html += '<td class="text-center" id="t_' + needed_materials[material]['name'].replaceAll(' ', '_') + '">';
+                html += '</tr>';
             });
 
-            html += '</tr></table>';
+            html += '</table>';
 
             $('#calculator_results').html(html);
+
+            var dt_options = {
+                autoWidth: true,
+                paging: true,
+                searching: false,
+                responsive: true,
+            };
+
+            var table_rankup = $('#dt_rankup').DataTable(dt_options);
+            table_rankup.columns.adjust().responsive.recalc();
 
             Object.keys(current_materials).forEach((material) => {
                 var current_qty = current_materials[material];
@@ -161,14 +219,28 @@
             calculate_materials();
         }
 
-    </script>
-    <div>
-        <button type="button" class="btn btn-primary" onclick="saveForm()">Save Data</button>
-        <button type="button" class="btn btn-primary" onclick="loadForm()">Load Data</button>
-    </div>
-    <form name="calculator_form" id="calculator_form">
-    <div id="calculator_results" class="sticky-top" style="background-color: #ffffff; overflow-y: scroll;">
+        function setCurrentRanks() {
+            $('[id*="c_"]').val({{units[0].rank_up_table[-1:][0].rank_number}});
+            calculate_materials();
+        }
 
+        function setDesiredRanks() {
+            $('[id*="d_"]').val({{units[0].rank_up_table[-1:][0].rank_number}});
+            calculate_materials();
+        }
+
+    </script>
+    <form name="calculator_form" id="calculator_form">
+    <div id="calculator_results" class="accordion-body">
+        <table id="dt_rankup" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <td class="text-center">Material</td>
+                <td class="text-center">Icon</td>
+                <td class="text-center">Quantity</td>
+                <td class="text-center">Have</td>
+                <td class="text-center">Need</td>
+            </thead>
+        </table>
     </div>
     <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
         <thead>
@@ -190,7 +262,16 @@
                     </a>
                 </td>
                 <td>{{ unit.display_name }}</td>
-                <td><span style="display: none">{{ unit.unit_rank }}</span><img src="/{{ unit.unit_rank_icon }}" alt="{{ unit.unit_rank }}" style="width: 64px; height: 64px;" /></td>
+                <td>
+                    <span style="display: none">
+                        {% if unit.unit_rank == 'S' %}
+                        1
+                        {% else %}
+                        {{ unit.unit_rank }}
+                        {% endif %}
+                    </span>
+                    <img src="/{{ unit.unit_rank_icon }}" alt="{{ unit.unit_rank }}" style="width: 64px; height: 64px;" />
+                </td>
                 <td><span style="display: none">{{ unit.family }}</span><img src="/{{ unit.family_icon }}" alt="{{ unit.family }}" style="width: 64px; height: 64px;" /></td>
                 <td>
                     <select id="c_{{unit.id}}" name="c_{{unit.id}}" onchange="calculate_materials()" class="form-control">
