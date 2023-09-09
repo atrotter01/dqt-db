@@ -280,6 +280,7 @@
             table.columns.adjust().responsive.recalc();
             table.searchPanes.container().prependTo(table.table().container());
             table.searchPanes.resizePanes();
+            table.order([19, 'asc']).draw();
             hideSearchPanes(null, table, null, null);
         } );
     </script>

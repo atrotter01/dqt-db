@@ -25,6 +25,7 @@ unit_model = api.model('unit', {
     'stats_by_level': fields.List(fields.Raw),
     'family': fields.String,
     'family_icon': fields.String,
+    'small_family_icon': fields.String,
     'role': fields.String,
     'role_icon': fields.String,
     'unit_icon': fields.String,

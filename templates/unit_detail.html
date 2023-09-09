@@ -22,11 +22,11 @@
             dt_rankup.columns.adjust().responsive.recalc();
             dt_element.columns.adjust().responsive.recalc();
             dt_status.columns.adjust().responsive.recalc();
-            dt_active_skills.columns.adjust().responsive.recalc();
-            dt_passive_skills.columns.adjust().responsive.recalc();
-            dt_awakening_passive_skills.columns.adjust().responsive.recalc();
-            dt_reaction_skills.columns.adjust().responsive.recalc();
-            dt_awakening_reaction_skills.columns.adjust().responsive.recalc();
+            dt_active_skills.columns.adjust().responsive.recalc().order([1, 'asc']).draw();
+            dt_passive_skills.columns.adjust().responsive.recalc().order([1, 'asc']).draw();
+            dt_awakening_passive_skills.columns.adjust().responsive.recalc().order([1, 'asc']).draw();
+            dt_reaction_skills.columns.adjust().responsive.recalc().order([1, 'asc']).draw();
+            dt_awakening_reaction_skills.columns.adjust().responsive.recalc().order([1, 'asc']).draw();
             dt_blossom.columns.adjust().responsive.recalc();
             dt_character_builder.columns.adjust().responsive.recalc();
             {% if unit.is_quest_reward is true %}
@@ -44,9 +44,9 @@
             <ul class="slimelist">
                 <li><span style="font-weight: bold;">Name: </span>{{ unit.display_name }}</li>
                 <li><span style="font-weight: bold;">Flavor Text: </span>{{ unit.flavor_text }}</li>
-                <li><span style="font-weight: bold;">Family: </span>{{ unit.family }}</li>
-                <li><span style="font-weight: bold;">Role: </span>{{ unit.role }}</li>
-                <li><span style="font-weight: bold;">Rank: </span>{{ unit.unit_rank }}</li>
+                <li><span style="font-weight: bold;">Family: </span><img src="/{{ unit.small_family_icon }}" style="width: 64px; height: 64px;" /></li>
+                <li><span style="font-weight: bold;">Role: </span><img src="/{{ unit.role_icon }}" style="width: 64px; height: 64px;" /></li>
+                <li><span style="font-weight: bold;">Rank: </span><img src="/{{ unit.unit_rank_icon }}" style="width: 64px; height: 64px;" /></li>
             </ul>
         </div>
         <div class="col">

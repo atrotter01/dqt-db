@@ -39,6 +39,7 @@ class Unit:
         weight = data.get('weight')
         family = self.util.get_localized_string(data=data.get('profile').get('family'), key='abbrevDisplayName_translation', path=path)
         family_icon = data.get('profile').get('family').get('largeIconPath')
+        small_family_icon = data.get('profile').get('family').get('smallIconPath')
         role = self.util.get_localized_string(data=data.get('profile').get('role'), key='abbrevDisplayName_translation', path=path)
         role_icon = data.get('profile').get('role').get('iconPath')
         unit_icon = data.get('profile').get('iconPath')
@@ -170,6 +171,7 @@ class Unit:
             'is_gacha_unit': is_gacha_unit,
             'family': family,
             'family_icon': self.util.get_image_path(family_icon),
+            'small_family_icon': self.util.get_image_path(small_family_icon),
             'role': role,
             'role_icon': self.util.get_image_path(role_icon),
             'unit_icon': self.util.get_image_path(unit_icon),
@@ -185,7 +187,7 @@ class Unit:
             'blossoms': blossoms,
             'character_builder_blossoms': character_builder_blossoms
         }
-
+        
         unit.update({'abnormity_resistances': abnormity_resistance_table})
         unit.update({'element_resistances': element_resistance_table})
         unit.update({'rank_up_table': rank_up_table_list})
