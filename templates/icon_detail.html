@@ -8,10 +8,17 @@
             table.columns.adjust().responsive.recalc();
         } );
     </script>
-    <p><img src="/{{ icon.icon_path }}" /></p>
-    <h4>Icon Details</h4>
-    <div>
-        <p><span style="font-weight: bold;">Name: </span>{{ icon.display_name }}</p>
+    <div class="row detailsbox">
+        <div class="row text-center"><h4>Icon Details</h4></div>
+        <hr />
+        <div class="col col-auto">
+            <img src="/{{ icon.icon_path }}" />
+        </div>
+        <div class="col">
+            <ul class="slimelist">
+                <li><span style="font-weight: bold;">Name: </span>{{ icon.display_name }}</li>
+            </ul>
+        </div>
     </div>
     <hr />
     <h4>Acquirable From</h4>

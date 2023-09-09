@@ -16,39 +16,54 @@
             equipment_table.columns.adjust().responsive.recalc();
         } );
     </script>
-    <h4>Skill Details</h4>
     {% if skill.type_of_skill == 'active_skill' or skill.type_of_skill == 'enemy_skill' %}
-    <div>
-        <p><span style="font-weight: bold;">Name: </span>{{ skill.skill_name }}</p>
-        <p><span style="font-weight: bold;">Description: </span>{{ skill.skill_description }}</p>
-        <p><span style="font-weight: bold;">Rank: </span><img src="/{{ skill.skill_rank_icon }}" style="width: 64px; height: 64px;" /></p>
-        <p><span style="font-weight: bold;">Range: </span><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></p>
-        <p><span style="font-weight: bold;">Reach: </span>{{ skill.skill_reach }}</p>
-        <p><span style="font-weight: bold;">Element: </span><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></p>
-        <p><span style="font-weight: bold;">Disruptive Wave Immune: </span>{{ skill.skill_wave_immune }}</p>
-        <p><span style="font-weight: bold;">Related Status Effect Name: </span>{{ skill.skill_status_effect_parameter_name }}</p>
-        <p><span style="font-weight: bold;">Ignores Damage Reduction: </span>{{ skill.skill_ignores_damage_reduction }}</p>
-        <p><span style="font-weight: bold;">Ignores Death Save: </span>{{ skill.skill_ignore_death_endurance }}</p>
-        <p><span style="font-weight: bold;">Ignores Reflect: </span>{{ skill.skill_ignore_reflect }}</p>
-        <p><span style="font-weight: bold;">Ignores Spell Nullify: </span>{{ skill.skill_ignore_spell_invalid }}</p>
-        <p><span style="font-weight: bold;">Is Surehit: </span>{{ skill.skill_surehit }}</p>
-        <p><span style="font-weight: bold;">Threshold of Intelligence: </span>{{ skill.skill_threshold_of_intelligence }}</p>
-        <p><span style="font-weight: bold;">Threshold of Attack: </span>{{ skill.skill_threshold_of_attack }}</p>
-        <p><span style="font-weight: bold;">MP Cost: </span>{{ skill.skill_mp_cost }}</p>
-        <p><span style="font-weight: bold;">Is Swap Skill: </span>{{ skill.skill_is_swap_skill }}</p>
-        <p><span style="font-weight: bold;">Is Special Skill: </span>{{ skill.skill_is_special }}</p>
-        <p><span style="font-weight: bold;">Times Available: </span>{{ skill.skill_times_available }}</p>
-        <p><span style="font-weight: bold;">Turns Needed: </span>{{ skill.skill_turns_needed }}</p>
-        <p><span style="font-weight: bold;">Number Hits: </span>{{ skill.skill_num_attacks }}</p>
-        <p><span style="font-weight: bold;">Hits Random Targets: </span>{{ skill.skill_is_random_target }}</p>
-        <p><span style="font-weight: bold;">Base Damage: </span>{{ skill.skill_base_damage }}</p>
-        <p><span style="font-weight: bold;">Min Damage: </span>{{ skill.skill_min_damage }}</p>
-        <p><span style="font-weight: bold;">Max Damage: </span>{{ skill.skill_max_damage }}</p>
-        <p><span style="font-weight: bold;">Multiplier: </span>{{ skill.skill_multiplier }}</p>
-        <p><span style="font-weight: bold;">Action Type: </span>{{ skill.skill_action_type }}</p>
-        <p><span style="font-weight: bold;">Active Skill Type: </span>{{ skill.skill_type }}</p>
-        <p><span style="font-weight: bold;">Target Type: </span>{{ skill.skill_target_type }}</p>
-        <p><span style="font-weight: bold;">Damage Calculation Type: </span>{{ skill.skill_damage_calculation_type }}</p>
+    <div class="row detailsbox">
+        <div class="row text-center"><h4>Skill Details</h4></div>
+        <hr />
+        <div class="col">
+            <ul class="slimelist">
+                <li><span style="font-weight: bold;">Name: </span>{{ skill.skill_name }}</li>
+                <li><span style="font-weight: bold;">Description: </span>{{ skill.skill_description }}</li>
+                <li><span style="font-weight: bold;">Reach: </span>{{ skill.skill_reach }}</li>
+                <li><span style="font-weight: bold;">MP Cost: </span>{{ skill.skill_mp_cost }}</li>
+                <li><span style="font-weight: bold;">Related Status Effect Name: </span>{{ skill.skill_status_effect_parameter_name }}</li>
+                <li><span style="font-weight: bold;">Rank: </span><img src="/{{ skill.skill_rank_icon }}" style="width: 64px; height: 64px;" /></li>
+                <li><span style="font-weight: bold;">Range: </span><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></li>
+                <li><span style="font-weight: bold;">Element: </span><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></li>
+            </ul>
+        </div>
+        <div class="col">
+            <ul class="slimelist">
+                <li><span style="font-weight: bold;">Disruptive Wave Immune: </span>{{ skill.skill_wave_immune }}</li>
+                <li><span style="font-weight: bold;">Ignores Damage Reduction: </span>{{ skill.skill_ignores_damage_reduction }}</li>
+                <li><span style="font-weight: bold;">Ignores Death Save: </span>{{ skill.skill_ignore_death_endurance }}</li>
+                <li><span style="font-weight: bold;">Ignores Reflect: </span>{{ skill.skill_ignore_reflect }}</li>
+                <li><span style="font-weight: bold;">Ignores Spell Nullify: </span>{{ skill.skill_ignore_spell_invalid }}</li>
+                <li><span style="font-weight: bold;">Is Surehit: </span>{{ skill.skill_surehit }}</li>
+                <li><span style="font-weight: bold;">Is Swap Skill: </span>{{ skill.skill_is_swap_skill }}</li>
+                <li><span style="font-weight: bold;">Is Special Skill: </span>{{ skill.skill_is_special }}</li>
+                <li><span style="font-weight: bold;">Times Available: </span>{{ skill.skill_times_available }}</li>
+                <li><span style="font-weight: bold;">Turns Needed: </span>{{ skill.skill_turns_needed }}</li>
+            </ul>
+        </div>
+        <div class="col">
+            <ul class="slimelist">
+                <li><span style="font-weight: bold;">Number Hits: </span>{{ skill.skill_num_attacks }}</li>
+                <li><span style="font-weight: bold;">Hits Random Targets: </span>{{ skill.skill_is_random_target }}</li>
+                <li><span style="font-weight: bold;">Base Damage: </span>{{ skill.skill_base_damage }}</li>
+                <li><span style="font-weight: bold;">Min Damage: </span>{{ skill.skill_min_damage }}</li>
+                <li><span style="font-weight: bold;">Max Damage: </span>{{ skill.skill_max_damage }}</li>
+                <li><span style="font-weight: bold;">Multiplier: </span>{{ skill.skill_multiplier }}</li>
+                <li><span style="font-weight: bold;">Threshold of Intelligence: </span>{{ skill.skill_threshold_of_intelligence }}</li>
+                <li><span style="font-weight: bold;">Threshold of Attack: </span>{{ skill.skill_threshold_of_attack }}</li>
+                <!--
+                <li><span style="font-weight: bold;">Action Type: </span>{{ skill.skill_action_type }}</li>
+                <li><span style="font-weight: bold;">Active Skill Type: </span>{{ skill.skill_type }}</li>
+                <li><span style="font-weight: bold;">Target Type: </span>{{ skill.skill_target_type }}</li>
+                <li><span style="font-weight: bold;">Damage Calculation Type: </span>{{ skill.skill_damage_calculation_type }}</li>
+                -->
+            </ul>
+        </div>
     </div>
     <hr />
     <h4>Skill Enhancements</h4>
@@ -102,40 +117,64 @@
 
     {% if skill.type_of_skill == 'passive_skill' %}
     <div>
-        <p><span style="font-weight: bold;">Name: </span>{{ skill.skill_name }}</p>
-        <p><span style="font-weight: bold;">Description: </span>{{ skill.skill_description }}</p>
-        <p><span style="font-weight: bold;">Is Invisible: </span>{{ skill.skill_is_invisible }}</p>
-        <p><span style="font-weight: bold;">Is PVE Only: </span>{{ skill.skill_is_pve_only }}</p>
+        <div class="row detailsbox">
+            <div class="row text-center"><h4>Skill Details</h4></div>
+            <hr />
+            <div class="col">
+                <ul class="slimelist">
+                    <li><span style="font-weight: bold;">Name: </span>{{ skill.skill_name }}</li>
+                    <li><span style="font-weight: bold;">Description: </span>{{ skill.skill_description }}</li>
+                    <li><span style="font-weight: bold;">Is Invisible: </span>{{ skill.skill_is_invisible }}</li>
+                    <li><span style="font-weight: bold;">Is PVE Only: </span>{{ skill.skill_is_pve_only }}</li>
+                </ul>
+            </div>
+        </div>
     </div>
     {% endif %}
 
     {% if skill.type_of_skill == 'reaction_skill' %}
-    <div>
-        <p><span style="font-weight: bold;">Name: </span>{{ skill.skill_name }}</p>
-        <p><span style="font-weight: bold;">Description: </span>{{ skill.skill_description }}</p>
-        {% if skill.skill_related_active_skill_id != None %}
-        <p>
-            <span style="font-weight: bold;">Related Skill: </span>
-            <a href='/skill/active_skill/{{ skill.skill_related_active_skill_id }}'>{{ skill.skill_related_active_skill_name }}</a>
-        </p>
-        {% endif %}
-        <p><span style="font-weight: bold;">Is Invisible: </span>{{ skill.skill_is_invisible }}</p>
-        <p><span style="font-weight: bold;">Is PVE Only: </span>{{ skill.skill_is_pve_only }}</p>
-        <p><span style="font-weight: bold;">Times Available: </span>{{ skill.skill_times_available }}</p>
-        <p><span style="font-weight: bold;">Accuracy: </span>{{ skill.skill_accuracy }}</p>
-        <p><span style="font-weight: bold;">Triggers On Enemy Attack: </span>{{ skill.skill_attacker_is_enemy }}</p>
-        <p><span style="font-weight: bold;">Triggers On Self Attack: </span>{{ skill.skill_attacker_is_self }}</p>
-        <p><span style="font-weight: bold;">Triggers On Ally Attack: </span>{{ skill.skill_attacker_is_ally }}</p>
-        <p><span style="font-weight: bold;">Triggers On Enemy Attacked: </span>{{ skill.skill_receiver_is_enemy }}</p>
-        <p><span style="font-weight: bold;">Triggers On Self Attacked: </span>{{ skill.skill_receiver_is_self }}</p>
-        <p><span style="font-weight: bold;">Triggers On Ally Attacked: </span>{{ skill.skill_receiver_is_ally }}</p>
-        <p><span style="font-weight: bold;">Is Activated By Damage: </span>{{ skill.skill_is_activated_by_damage }}</p>
-        <p><span style="font-weight: bold;">Is Activated By Healing: </span>{{ skill.skill_is_activated_by_recovery }}</p>
-        <p><span style="font-weight: bold;">Is Activated By Status Effect: </span>{{ skill.skill_is_activated_by_abnormity }}</p>
-        <p><span style="font-weight: bold;">Is Activated By Death: </span>{{ skill.skill_is_activated_by_death }}</p>
-        <p><span style="font-weight: bold;">Reaction Target: </span>{{ skill.skill_reaction_target }}</p>
-        <p><span style="font-weight: bold;">Multiple Activations Consecutively: </span>{{ skill.skill_multiple_activation_to_same_target }}</p>
-        <p><span style="font-weight: bold;">Is Re-Reactionable: </span>{{ skill.skill_is_re_reactionable }}</p>
+    <div class="row detailsbox">
+        <div class="row text-center"><h4>Skill Details</h4></div>
+        <hr />
+        <div class="col">
+            <ul class="slimelist">
+                <li><span style="font-weight: bold;">Name: </span>{{ skill.skill_name }}</li>
+                <li><span style="font-weight: bold;">Description: </span>{{ skill.skill_description }}</li>
+                {% if skill.skill_related_active_skill_id != None %}
+                <li>
+                    <span style="font-weight: bold;">Related Skill: </span>
+                    <a href='/skill/active_skill/{{ skill.skill_related_active_skill_id }}'>{{ skill.skill_related_active_skill_name }}</a>
+                </li>
+                {% endif %}
+                <li><span style="font-weight: bold;">Times Available: </span>{{ skill.skill_times_available }}</li>
+                <li><span style="font-weight: bold;">Accuracy: </span>{{ skill.skill_accuracy }}</li>
+                <li><span style="font-weight: bold;">Reaction Target: </span>{{ skill.skill_reaction_target }}</li>
+                <li><span style="font-weight: bold;">Multiple Activations Consecutively: </span>{{ skill.skill_multiple_activation_to_same_target }}</li>
+            </ul>
+        </div>
+        <div class="col">
+            <ul class="slimelist">
+                <li><span style="font-weight: bold;">Triggers On Enemy Attack: </span>{{ skill.skill_attacker_is_enemy }}</li>
+                <li><span style="font-weight: bold;">Triggers On Self Attack: </span>{{ skill.skill_attacker_is_self }}</li>
+                <li><span style="font-weight: bold;">Triggers On Ally Attack: </span>{{ skill.skill_attacker_is_ally }}</li>
+                <li><span style="font-weight: bold;">Triggers On Enemy Attacked: </span>{{ skill.skill_receiver_is_enemy }}</li>
+                <li><span style="font-weight: bold;">Triggers On Self Attacked: </span>{{ skill.skill_receiver_is_self }}</li>
+                <li><span style="font-weight: bold;">Triggers On Ally Attacked: </span>{{ skill.skill_receiver_is_ally }}</li>
+            </ul>
+        </div>
+        <div class="col">
+            <ul class="slimelist">
+                <li><span style="font-weight: bold;">Is Invisible: </span>{{ skill.skill_is_invisible }}</li>
+                <li><span style="font-weight: bold;">Is PVE Only: </span>{{ skill.skill_is_pve_only }}</li>
+                <li><span style="font-weight: bold;">Is Activated By Damage: </span>{{ skill.skill_is_activated_by_damage }}</li>
+                <li><span style="font-weight: bold;">Is Activated By Healing: </span>{{ skill.skill_is_activated_by_recovery }}</li>
+                <li><span style="font-weight: bold;">Is Activated By Status Effect: </span>{{ skill.skill_is_activated_by_abnormity }}</li>
+                <li><span style="font-weight: bold;">Is Activated By Death: </span>{{ skill.skill_is_activated_by_death }}</li>
+                <li><span style="font-weight: bold;">Is Re-Reactionable: </span>{{ skill.skill_is_re_reactionable }}</li>
+            </ul>
+        </div>
+    </div>
+
         {% if skill.skill_applicable_abnormity_types|length > 0 %}
         <hr />
         <h4>Applicable Status Effects</h4>

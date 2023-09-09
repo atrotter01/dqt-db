@@ -70,7 +70,7 @@ class Util:
         #else:
         redis_data = None
         
-        if path.startswith('user_data'):
+        if str(path).startswith('user_data'):
             redis_data = self.user_redis_client.get(path)
         else:
             redis_data = self.redis_client.get(path)
@@ -418,7 +418,7 @@ class Util:
     def get_redis_asset(self, cache_key: str):
         cached_data: dict = None
 
-        if cache_key.startswith('user_data'):
+        if str(cache_key).startswith('user_data'):
             cached_data = self.user_redis_client.get(cache_key)
         else:
             cached_data = self.redis_client.get(cache_key)

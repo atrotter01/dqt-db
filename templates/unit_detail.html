@@ -34,19 +34,30 @@
             {% endif %}
         } );
     </script>
-    <p><img src="/{{ unit.unit_icon }}" /></p>
-    <h4>Unit Details</h4>
-    <div>
-        <p><span style="font-weight: bold;">Name: </span>{{ unit.display_name }}</p>
-        <p><span style="font-weight: bold;">Flavor Text: </span>{{ unit.flavor_text }}</p>
-        <p><span style="font-weight: bold;">Family: </span>{{ unit.family }}</p>
-        <p><span style="font-weight: bold;">Role: </span>{{ unit.role }}</p>
-        <p><span style="font-weight: bold;">Rank: </span>{{ unit.unit_rank }}</p>
-        <p><span style="font-weight: bold;">Farmable: </span>{{ unit.is_quest_reward }}</p>
-        <p><span style="font-weight: bold;">Gacha: </span>{{ unit.is_gacha_unit }}</p>
-        <p><span style="font-weight: bold;">Move: </span>{{ unit.move }}</p>
-        <p><span style="font-weight: bold;">Weight: </span>{{ unit.weight }}</p>
-        <p><span style="font-weight: bold;">Almanac Number: </span>{{ unit.almanac_number }}</p>
+    <div class="row detailsbox">
+        <div class="row text-center"><h4>Unit Details</h4></div>
+        <hr />
+        <div class="col col-auto">
+            <img src="/{{ unit.unit_icon }}" />
+        </div>
+        <div class="col">
+            <ul class="slimelist">
+                <li><span style="font-weight: bold;">Name: </span>{{ unit.display_name }}</li>
+                <li><span style="font-weight: bold;">Flavor Text: </span>{{ unit.flavor_text }}</li>
+                <li><span style="font-weight: bold;">Family: </span>{{ unit.family }}</li>
+                <li><span style="font-weight: bold;">Role: </span>{{ unit.role }}</li>
+                <li><span style="font-weight: bold;">Rank: </span>{{ unit.unit_rank }}</li>
+            </ul>
+        </div>
+        <div class="col">
+            <ul class="slimelist">
+                <li><span style="font-weight: bold;">Farmable: </span>{{ unit.is_quest_reward }}</li>
+                <li><span style="font-weight: bold;">Gacha: </span>{{ unit.is_gacha_unit }}</li>
+                <li><span style="font-weight: bold;">Move: </span>{{ unit.move }}</li>
+                <li><span style="font-weight: bold;">Weight: </span>{{ unit.weight }}</li>
+                <li><span style="font-weight: bold;">Almanac Number: </span>{{ unit.almanac_number }}</li>
+            </ul>
+        </div>
     </div>
     <hr />
     <h4>Active Skills</h4>

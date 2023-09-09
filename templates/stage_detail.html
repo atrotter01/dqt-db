@@ -12,25 +12,34 @@
             dt_enemies.columns.adjust().responsive.recalc();
         } );
     </script>
-    <h4>Stage Details</h4>
-    <div>
-        <p><span style="font-weight: bold;">Name: </span>{{ stage.stage_display_name }}</p>
-        <p><span style="font-weight: bold;">Sub Name: </span>{{ stage.stage_sub_display_name }}</p>
-        <p><span style="font-weight: bold;">Difficulty: </span>{{ stage.stage_difficulty }}</p>
-        <p><span style="font-weight: bold;">Recommended CP: </span>{{ stage.stage_recommended_cp }}</p>
-        <p><span style="font-weight: bold;">Stamina Cost: </span>{{ stage.stage_stamina_cost }}</p>
-        <p><span style="font-weight: bold;">Talent Points: </span>{{ stage.stage_talent_point_gain }}</p>
-        <p><span style="font-weight: bold;">Is Boss Stage: </span>{{ stage.stage_is_boss_stage }}</p>
-        <p><span style="font-weight: bold;">Is Story Stage: </span>{{ stage.stage_is_story_stage }}</p>
-        <p><span style="font-weight: bold;">Is Auto Only: </span>{{ stage.stage_is_auto_only }}</p>
-        {% if stage.stage_is_limited_total_weight %}
-        <p><span style="font-weight: bold;">Weight Limit: </span>{{ stage.stage_limited_total_weight }}</p>
-        {% endif %}
-        {% if stage.stage_is_organization_limit_num %}
-        <p><span style="font-weight: bold;">Unit Limit: </span>{{ stage.stage_organization_limit_num }}</p>
-        {% endif %}
-        <p><span style="font-weight: bold;">Show In Guild Feed On Clear: </span>{{ stage.stage_is_send_feed_when_first_cleared }}</p>
-        <p><span style="font-weight: bold;">Score Challenge Stage: </span>{{ stage.stage_enable_score_challenge }}</p>
+    <div class="row detailsbox">
+        <div class="row text-center"><h4>Stage Details</h4></div>
+        <hr />
+        <div class="col">
+            <ul class="slimelist">
+                <li><span style="font-weight: bold;">Name: </span>{{ stage.stage_display_name }}</li>
+                <li><span style="font-weight: bold;">Sub Name: </span>{{ stage.stage_sub_display_name }}</li>
+                <li><span style="font-weight: bold;">Difficulty: </span>{{ stage.stage_difficulty }}</li>
+                <li><span style="font-weight: bold;">Recommended CP: </span>{{ stage.stage_recommended_cp }}</li>
+                <li><span style="font-weight: bold;">Stamina Cost: </span>{{ stage.stage_stamina_cost }}</li>
+                <li><span style="font-weight: bold;">Talent Points: </span>{{ stage.stage_talent_point_gain }}</li>
+            </ul>
+        </div>
+        <div class="col">
+            <ul class="slimelist">
+                <li><span style="font-weight: bold;">Is Boss Stage: </span>{{ stage.stage_is_boss_stage }}</li>
+                <li><span style="font-weight: bold;">Is Story Stage: </span>{{ stage.stage_is_story_stage }}</li>
+                <li><span style="font-weight: bold;">Is Auto Only: </span>{{ stage.stage_is_auto_only }}</li>
+                {% if stage.stage_is_limited_total_weight %}
+                <li><span style="font-weight: bold;">Weight Limit: </span>{{ stage.stage_limited_total_weight }}</li>
+                {% endif %}
+                {% if stage.stage_is_organization_limit_num %}
+                <li><span style="font-weight: bold;">Unit Limit: </span>{{ stage.stage_organization_limit_num }}</li>
+                {% endif %}
+                <li><span style="font-weight: bold;">Show In Guild Feed On Clear: </span>{{ stage.stage_is_send_feed_when_first_cleared }}</li>
+                <li><span style="font-weight: bold;">Score Challenge Stage: </span>{{ stage.stage_enable_score_challenge }}</li>
+            </ul>
+        </div>
     </div>
     <hr />
     <h4>Loot</h4>
