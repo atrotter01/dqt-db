@@ -14,12 +14,14 @@ class Util:
         'asset_list', 'event_portal_cache', 'codelist_cache'
     ]
     redis_client: redis
+    user_redis_client: redis
     lookup_cache: dict = {}
     possible_circular_references: list = []
     lang: str
 
     def __init__(self, force_rebuild: bool = False, lang: str = 'en'):
         self.redis_client = redis.Redis(host='localhost', port=6379, decode_responses=False)
+        self.user_redis_client = redis.Redis(host='localhost', port=6380, decode_responses=False)
 
         self.asset_list = self.build_asset_list(force_rebuild=force_rebuild)
         self.lookup_cache = self.cache_lookup_table(force_rebuild=force_rebuild)
@@ -66,7 +68,12 @@ class Util:
         #if path in self.cache_keys:
         #    asset = self.inflate_asset(self.redis_client.get(path))
         #else:
-        redis_data = self.redis_client.get(path)
+        redis_data = None
+        
+        if path.startswith('user_data'):
+            redis_data = self.user_redis_client.get(path)
+        else:
+            redis_data = self.redis_client.get(path)
 
         if redis_data is None:
             return None
@@ -402,10 +409,19 @@ class Util:
 
     def save_redis_asset(self, cache_key: str, data: Union[dict,list]):
         print(f'Saving cache key {cache_key}.')
-        return self.redis_client.set(cache_key, self.deflate_asset(data))
+
+        if cache_key.startswith('user_data'):
+            return self.user_redis_client.set(cache_key, self.deflate_asset(data))
+        else:
+            return self.redis_client.set(cache_key, self.deflate_asset(data))
 
     def get_redis_asset(self, cache_key: str):
-        cached_data = self.redis_client.get(cache_key)
+        cached_data: dict = None
+
+        if cache_key.startswith('user_data'):
+            cached_data = self.user_redis_client.get(cache_key)
+        else:
+            cached_data = self.redis_client.get(cache_key)
 
         if cached_data is None:
             return None
