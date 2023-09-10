@@ -20,26 +20,37 @@
             dt_stages.columns.adjust().responsive.recalc();
         } );
     </script>
-    <p><img src="/{{ enemy_monster.enemy_unit_icon }}" /></p>
-    <h4>Enemy Monster Details</h4>
-    <div>
-        <p><span style="font-weight: bold;">Name: </span>{{ enemy_monster.enemy_display_name }}</p>
-        <p><span style="font-weight: bold;">Flavor Text: </span>{{ enemy_monster.enemy_flavor_text }}</p>
-        <p><span style="font-weight: bold;">Family: </span>{{ enemy_monster.enemy_family }}</p>
-        <p><span style="font-weight: bold;">Role: </span>{{ enemy_monster.enemy_role }}</p>
-        <p><span style="font-weight: bold;">Family: </span>{{ enemy_monster.enemy_family }}</p>
-        <p><span style="font-weight: bold;">Level: </span>{{ enemy_monster.enemy_level }}</p>
-        <p><span style="font-weight: bold;">HP: </span>{{ enemy_monster.enemy_hp }}</p>
-        <p><span style="font-weight: bold;">MP: </span>{{ enemy_monster.enemy_mp }}</p>
-        <p><span style="font-weight: bold;">Attack: </span>{{ enemy_monster.enemy_attack }}</p>
-        <p><span style="font-weight: bold;">Defense: </span>{{ enemy_monster.enemy_defense }}</p>
-        <p><span style="font-weight: bold;">Intelligence: </span>{{ enemy_monster.enemy_intelligence }}</p>
-        <p><span style="font-weight: bold;">Agility: </span>{{ enemy_monster.enemy_agility }}</p>
-        <p><span style="font-weight: bold;">Move: </span>{{ enemy_monster.enemy_mobility }}</p>
-        <p><span style="font-weight: bold;">Is Strong Enemy: </span>{{ enemy_monster.enemy_is_strong_enemy }}</p>
-        <p><span style="font-weight: bold;">Is Unique Monster: </span>{{ enemy_monster.enemy_is_unique_monster }}</p>
-        <p><span style="font-weight: bold;">Drop %: </span>{{ enemy_monster.enemy_scout_probability }}</p>
-        <p><span style="font-weight: bold;">Is Rare Scout: </span>{{ enemy_monster.enemy_is_rare_scout }}</p>
+    <div class="row detailsbox">
+        <div class="row text-center"><h4>Enemy Monster Details</h4></div>
+        <hr />
+        <div class="col col-sm-auto">
+            <img src="/{{ enemy_monster.enemy_unit_icon }}" />
+        </div>
+        <div class="col col-auto">
+            <ul class="slimelist">
+                <li><span style="font-weight: bold;">Name: </span>{{ enemy_monster.enemy_display_name }}</li>
+                <li><span style="font-weight: bold;">Flavor Text: </span>{{ enemy_monster.enemy_flavor_text }}</li>
+                <li><span style="font-weight: bold;">Family: </span>{{ enemy_monster.enemy_family }}</li>
+                <li><span style="font-weight: bold;">Role: </span>{{ enemy_monster.enemy_role }}</li>
+                <li><span style="font-weight: bold;">Family: </span>{{ enemy_monster.enemy_family }}</li>
+                <li><span style="font-weight: bold;">Level: </span>{{ enemy_monster.enemy_level }}</li>
+                <li><span style="font-weight: bold;">Is Strong Enemy: </span>{{ enemy_monster.enemy_is_strong_enemy }}</li>
+                <li><span style="font-weight: bold;">Is Unique Monster: </span>{{ enemy_monster.enemy_is_unique_monster }}</li>
+                <li><span style="font-weight: bold;">Drop %: </span>{{ enemy_monster.enemy_scout_probability }}</li>
+                <li><span style="font-weight: bold;">Is Rare Scout: </span>{{ enemy_monster.enemy_is_rare_scout }}</li>
+            </ul>
+        </div>
+        <div class="col col-auto">
+            <ul class="slimelist">
+                <li><span style="font-weight: bold;">HP: </span>{{ enemy_monster.enemy_hp }}</li>
+                <li><span style="font-weight: bold;">MP: </span>{{ enemy_monster.enemy_mp }}</li>
+                <li><span style="font-weight: bold;">Attack: </span>{{ enemy_monster.enemy_attack }}</li>
+                <li><span style="font-weight: bold;">Defense: </span>{{ enemy_monster.enemy_defense }}</li>
+                <li><span style="font-weight: bold;">Intelligence: </span>{{ enemy_monster.enemy_intelligence }}</li>
+                <li><span style="font-weight: bold;">Agility: </span>{{ enemy_monster.enemy_agility }}</li>
+                <li><span style="font-weight: bold;">Move: </span>{{ enemy_monster.enemy_mobility }}</li>
+            </ul>
+        </div>
     </div>
     <hr />
     <h4>Elemental Resistance</h4>
