@@ -319,6 +319,81 @@ class Stage:
                     'group_number': loot_group_numbers.get(loot_group.get('id'))
                 })
 
+        formatted_loot_groups: dict = {}
+
+        for stage_drop in stage_drops:
+            loot_drop_percent = stage_drop.get('drop_percent')
+            loot_first_clear_only = stage_drop.get('first_clear_only')
+
+            for loot in stage_drop.get('loot_group').get('loot'):
+                loot_quantity = loot.get('quantity')
+                loot_type = loot.get('loot_type')
+                loot_display_name = loot.get('display_name')
+                loot_icon = loot.get('icon')
+                loot_path = loot.get('path')
+
+                if formatted_loot_groups.get(loot_display_name) is None:
+                    formatted_loot_groups[loot_display_name] = {}
+
+                if formatted_loot_groups[loot_display_name].get('sources') is None:
+                    formatted_loot_groups[loot_display_name]['sources'] = []
+
+                if formatted_loot_groups[loot_display_name].get('average') is None:
+                    formatted_loot_groups[loot_display_name]['average'] = 0
+
+                formatted_loot_groups[loot_display_name]['sources'].append({
+                    'loot_quantity': loot_quantity,
+                    'loot_type': loot_type,
+                    'loot_display_name': loot_display_name,
+                    'loot_icon': loot_icon,
+                    'loot_path': loot_path,
+                    'loot_drop_percent': loot_drop_percent,
+                    'loot_first_clear_only': loot_first_clear_only,
+                    'loot_source': 'stage',
+                    'loot_source_icon': None
+                })
+
+                if loot_first_clear_only is False:
+                    formatted_loot_groups[loot_display_name]['average'] = formatted_loot_groups[loot_display_name]['average'] + (loot_quantity * (loot_drop_percent / 100))
+
+        for stage_enemy in stage_enemies:
+            stage_enemy_icon = stage_enemy.get('monster').get('enemy_unit_icon')
+
+            for enemy_drop in stage_enemy.get('monster').get('enemy_drops'):
+                loot_drop_percent = enemy_drop.get('drop_percent')
+                loot_first_clear_only = False
+
+                for loot in enemy_drop.get('loot_group').get('loot'):
+                    loot_quantity = loot.get('quantity')
+                    loot_type = loot.get('loot_type')
+                    loot_display_name = loot.get('display_name')
+                    loot_icon = loot.get('icon')
+                    loot_path = loot.get('path')
+
+                    if formatted_loot_groups.get(loot_display_name) is None:
+                        formatted_loot_groups[loot_display_name] = {}
+
+                    if formatted_loot_groups[loot_display_name].get('sources') is None:
+                        formatted_loot_groups[loot_display_name]['sources'] = []
+
+                    if formatted_loot_groups[loot_display_name].get('average') is None:
+                        formatted_loot_groups[loot_display_name]['average'] = 0
+
+                    formatted_loot_groups[loot_display_name]['sources'].append({
+                        'loot_quantity': loot_quantity,
+                        'loot_type': loot_type,
+                        'loot_display_name': loot_display_name,
+                        'loot_icon': loot_icon,
+                        'loot_path': loot_path,
+                        'loot_drop_percent': loot_drop_percent,
+                        'loot_first_clear_only': loot_first_clear_only,
+                        'loot_source': 'monster',
+                        'loot_source_icon': stage_enemy_icon
+                    })
+
+                    if loot_first_clear_only is False:
+                        formatted_loot_groups[loot_display_name]['average'] = formatted_loot_groups[loot_display_name]['average'] + (loot_quantity * (loot_drop_percent / 100))
+
         for stage_mission_key in data.get('stageMissionList').get('stageMissions'):
             stage_mission_conditions: list = []
 
@@ -389,6 +464,7 @@ class Stage:
             'stage_reinforcement_enemies': stage_reinforcement_enemies,
             'stage_drops': stage_drops,
             'stage_missions': stage_missions,
+            'stage_formatted_loot_groups': formatted_loot_groups
         }
 
         return stage

@@ -32,6 +32,7 @@ stage_model = api.model('stage', {
     'stage_enemies': fields.List(fields.Raw),
     'stage_random_enemies': fields.List(fields.Raw),
     'stage_reinforcement_enemies': fields.List(fields.Raw),
+    'stage_formatted_loot_groups': fields.Raw,
 })
 
 api.param("path", "Path")

@@ -2,7 +2,52 @@
 
     <script>
         $(document).ready( function () {
-            var dt_drops = $('#dt_drops').DataTable(dt_options);
+            var collapsedGroups = {};
+            var dt_drop_options = {
+                autoWidth: false,
+                paging: false,
+                responsive: true,
+                columnDefs: [
+                    {
+                        target: 6,
+                        visible: false,
+                        searchable: false
+                    },
+                    {
+                        target: 7,
+                        visible: false,
+                        searchable: false
+                    }
+                ],
+                rowGroup: {
+                    dataSrc: 6,
+                    startRender: function(rows, group) {
+                        let average = rows.data().pluck(7)[0];
+                        let collapsed = !collapsedGroups[group];
+                        let collapsed_text = collapsed ? 'Expand</button>' : 'Collapse</button>';
+
+                        rows.nodes().each(function (r) {
+                            r.style.display = collapsed ? 'none' : '';
+                        });
+
+                        return $('<tr/>')
+                            .append(
+                                '<td colspan="6">' +
+                                group +
+                                '<span style="float: right">Average: ' + average +
+                                '<button class="ms-3 btn btn-primary" type="button">' +
+                                '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-expand" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M3.646 9.146a.5.5 0 0 1 .708 0L8 12.793l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708zm0-2.292a.5.5 0 0 0 .708 0L8 3.207l3.646 3.647a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 0 0 0 .708z"/></svg>' +
+                                collapsed_text +
+                                '</span>' +
+                                '</td>'
+                            )
+                            .attr('data-name', group)
+                            .toggleClass('collapsed', collapsed);
+                    }
+                }
+            };
+
+            var dt_drops = $('#dt_drops').DataTable(dt_drop_options);
             var dt_missions = $('#dt_missions').DataTable(dt_options);
             var dt_enemies = $('#dt_enemies').DataTable(dt_options);
             $('#loading_spinner').hide();
@@ -10,6 +55,13 @@
             dt_drops.columns.adjust().responsive.recalc();
             dt_missions.columns.adjust().responsive.recalc();
             dt_enemies.columns.adjust().responsive.recalc();
+            dt_drops.order([6, 'asc']).draw();
+
+            $('#dt_drops tbody').on('click', 'tr.dtrg-start', function () {
+                var name = $(this).data('name');
+                collapsedGroups[name] = !collapsedGroups[name];
+                dt_drops.draw();
+            });
         } );
     </script>
     <div class="row detailsbox">
@@ -48,146 +100,48 @@
             <thead>
                 <tr>
                     <td>Name</td>
-                    <td>Loot Group #</td>
                     <td>Quantity</td>
                     <td>Drop %</td>
                     <td>First Clear Only</td>
                     <td>Drop Monster</td>
                     <td>Icon</td>
+                    <td>Display Name</td>
+                    <td>Average</td>
                 </tr>
             </thead>
             <tbody>
-                {% for stage_drop in stage.stage_drops %}
-                {% for loot in stage_drop.loot_group.loot %}
+                {% for loot in stage.stage_formatted_loot_groups %}
+                {% for source in stage.stage_formatted_loot_groups[loot].sources %}
                 <tr>
                     <td>
-                        {% if loot.loot_type == 'consumable_item' %}
-                        <a href="/item/{{ loot.path }}">
-                        {% elif loot.loot_type == 'monster' %}
-                        <a href="/unit/{{ loot.path }}">
-                        {% elif loot.loot_type == 'equipment' %}
-                        <a href="/equipment/{{ loot.path }}">
-                        {% elif loot.loot_type == 'profile_icon' %}
-                        <a href="/icon/{{ loot.path }}">
+                        {% if source.loot_type == 'consumable_item' %}
+                        <a href="/item/{{ source.loot_path }}">
+                        {% elif source.loot_type == 'monster' %}
+                        <a href="/unit/{{ source.loot_path }}">
+                        {% elif source.loot_type == 'equipment' %}
+                        <a href="/equipment/{{ source.loot_path }}">
+                        {% elif source.loot_type == 'profile_icon' %}
+                        <a href="/icon/{{ source.loot_path }}">
                         {% endif %}
-                        {{ loot.display_name }}
+                        {{ loot }}
                         </a>
                     </td>
-                    <td>{{ stage_drop.group_number }}</td>
-                    <td>{{ loot.quantity }}</td>
-                    <td>{{ stage_drop.drop_percent }}%</td>
-                    <td>{{ stage_drop.first_clear_only }}</td>
-                    <td></td>
+                    <td>{{ source.loot_quantity }}</td>
+                    <td>{{ source.loot_drop_percent }}</td>
+                    <td>{{ source.loot_first_clear_only }}</td>
                     <td>
-                        {% if loot.icon != None %}
-                        <img src='/{{ loot.icon }}' style="width: 64px; height: 64px;" />
+                        {% if source.loot_source == 'monster' %}
+                        <img src='/{{ source.loot_source_icon }}' style='width: 64px; height: 64px;' />
                         {% endif %}
                     </td>
+                    <td>
+                        {% if source.loot_icon != None %}
+                        <img src='/{{ source.loot_icon }}' style='width: 64px; height: 64px;' />
+                        {% endif %}
+                    </td>
+                    <td>{{ loot }}</td>
+                    <td>{{ stage.stage_formatted_loot_groups[loot].average }}</td>
                 </tr>
-                {% endfor %}
-                {% endfor %}
-
-                {% for enemy in stage.stage_enemies %}
-                {% for enemy_drop in enemy.monster.enemy_drops %}
-                {% for loot in enemy_drop.loot_group.loot %}
-                <tr>
-                    <td>
-                        {% if loot.loot_type == 'consumable_item' %}
-                        <a href="/item/{{ loot.path }}">
-                        {% elif loot.loot_type == 'monster' %}
-                        <a href="/unit/{{ loot.path }}">
-                        {% elif loot.loot_type == 'equipment' %}
-                        <a href="/equipment/{{ loot.path }}">
-                        {% elif loot.loot_type == 'profile_icon' %}
-                        <a href="/icon/{{ loot.path }}">
-                        {% endif %}
-                        {{ loot.display_name }}
-                        </a>
-                    </td>
-                    <td>{{ enemy_drop.group_number }}</td>
-                    <td>{{ loot.quantity }}</td>
-                    <td>{{ enemy_drop.drop_percent }}%</td>
-                    <td>{{ enemy_drop.first_clear_only }}</td>
-                    <td><img src='/{{ enemy.monster.enemy_unit_icon }}' style="width: 64px; height: 64px;" /></td>
-                    <td>
-                        {% if loot.icon != None %}
-                        <img src='/{{ loot.icon }}' style="width: 64px; height: 64px;" />
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-                {% endfor %}
-                {% endfor %}
-
-                {% for enemy in stage.stage_random_enemies %}
-                {% for enemy_drop in enemy.monster.enemy_drops %}
-                {% for loot in enemy_drop.loot_group.loot %}
-                <tr>
-                    <td>
-                        {% if loot.loot_type == 'consumable_item' %}
-                        <a href="/item/{{ loot.path }}">
-                        {% elif loot.loot_type == 'monster' %}
-                        <a href="/unit/{{ loot.path }}">
-                        {% elif loot.loot_type == 'equipment' %}
-                        <a href="/equipment/{{ loot.path }}">
-                        {% elif loot.loot_type == 'profile_icon' %}
-                        <a href="/icon/{{ loot.path }}">
-                        {% endif %}
-                        {{ loot.display_name }}
-                        </a>
-                    </td>
-                    <td>{{ enemy_drop.group_number }}</td>
-                    <td>{{ loot.quantity }}</td>
-                    <td>{{ enemy_drop.drop_percent }}%</td>
-                    <td>{{ enemy_drop.first_clear_only }}</td>
-                    <td><img src='/{{ enemy.monster.enemy_unit_icon }}' style="width: 64px; height: 64px;" /></td>
-                    <td>
-                        {% if loot.icon != None %}
-                        <img src='/{{ loot.icon }}' style="width: 64px; height: 64px;" />
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-                {% endfor %}
-                {% endfor %}
-
-                {% for enemy in stage.stage_reinforcement_enemies %}
-                {% for enemy_drop in enemy.monster.enemy_drops %}
-                {% for loot in enemy_drop.loot_group.loot %}
-                <tr>
-                    <td>
-                        {% if loot.loot_type == 'consumable_item' %}
-                        <a href="/item/{{ loot.path }}">
-                        {% elif loot.loot_type == 'monster' %}
-                        <a href="/unit/{{ loot.path }}">
-                        {% elif loot.loot_type == 'equipment' %}
-                        <a href="/equipment/{{ loot.path }}">
-                        {% elif loot.loot_type == 'profile_icon' %}
-                        <a href="/icon/{{ loot.path }}">
-                        {% endif %}
-                        {{ loot.display_name }}
-                        {% if loot.loot_type == 'consumable_item' %}
-                        </a>
-                        {% elif loot.loot_type == 'monster' %}
-                        </a>
-                        {% elif loot.loot_type == 'equipment' %}
-                        </a>
-                        {% elif loot.loot_type == 'profile_icon' %}
-                        </a>
-                        {% endif %}
-                    </td>
-                    <td>{{ enemy_drop.group_number }}</td>
-                    <td>{{ loot.quantity }}</td>
-                    <td>{{ enemy_drop.drop_percent }}%</td>
-                    <td>{{ enemy_drop.first_clear_only }}</td>
-                    <td><img src='/{{ enemy.monster.enemy_unit_icon }}' style="width: 64px; height: 64px;" /></td>
-                    <td>
-                        {% if loot.icon != None %}
-                        <img src='/{{ loot.icon }}' style="width: 64px; height: 64px;" />
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
                 {% endfor %}
                 {% endfor %}
             </tbody>
