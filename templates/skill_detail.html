@@ -58,10 +58,12 @@
                 <li><span style="font-weight: bold;">Threshold of Attack: </span>{{ skill.skill_threshold_of_attack }}</li>
                 <li><span style="font-weight: bold;">Active Skill Type: </span>{{ skill.skill_type }}</li>
                 {% if skill.skill_type == '4' %}
+                {% if skill.skill_multiplier > 0 %}
                 {% set ns_damage_constant = namespace(damage_constant=skill.skill_min_damage - (skill.skill_multiplier / 100) * skill.skill_threshold_of_intelligence) %}
                 {% set ns_wisdom_cap = namespace(wisdom_cap=((skill.skill_max_damage - skill.skill_min_damage) / (skill.skill_multiplier / 100)) + skill.skill_threshold_of_intelligence) %}
                 <li><span style="font-weight: bold;">Damage Constant: {{ ns_damage_constant.damage_constant|round(2) }}</span></li>
                 <li><span style="font-weight: bold;">Wisdom Cap: {{ ns_wisdom_cap.wisdom_cap|round(2) }}</span></li>
+                {% endif %}
                 {% endif %}
                 <!--
                 <li><span style="font-weight: bold;">Action Type: </span>{{ skill.skill_action_type }}</li>
