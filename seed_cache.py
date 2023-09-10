@@ -3,7 +3,7 @@ import json
 import requests
 from app.util import Util
 
-def cache_stage_structure():
+def cache_stage_structure(lang: str):
     event_portal_list = util.get_asset_list('EventPortal')
     event_portals: dict = {}
 
@@ -80,15 +80,16 @@ def cache_stage_structure():
             'stage_name': stage_name
         })
 
-    util.save_redis_asset(cache_key='stage_structure_parsed_asset', data=stage_structure)
+    util.save_redis_asset(cache_key=f'{lang}_stage_structure_parsed_asset', data=stage_structure)
 
-def cache_stage_monster_lookup_table():
+def cache_stage_monster_lookup_table(lang: str):
     stage_monster_lookup_parsed_asset: dict = {}
 
     for stage in stage_data:
         stage_id = stage.get('id')
         stage_name = stage.get('stage_display_name')
-        #stage_area_id = stage.get('stage_area_id')
+        stage_area_name = stage.get('stage_area_name')
+        stage_area_group_name = stage.get('stage_area_group_name')
 
         for enemy in stage.get('stage_enemies'):
             monster_id: str = enemy.get('monster').get('id')
@@ -98,7 +99,9 @@ def cache_stage_monster_lookup_table():
 
             stage_monster_lookup_parsed_asset[monster_id].append({
                 'stage_id': stage_id,
-                'stage_name': stage_name
+                'stage_name': stage_name,
+                'stage_area_name': stage_area_name,
+                'stage_area_group_name': stage_area_group_name
             })
 
         for enemy in stage.get('stage_random_enemies'):
@@ -109,7 +112,9 @@ def cache_stage_monster_lookup_table():
 
             stage_monster_lookup_parsed_asset[monster_id].append({
                 'stage_id': stage_id,
-                'stage_name': stage_name
+                'stage_name': stage_name,
+                'stage_area_name': stage_area_name,
+                'stage_area_group_name': stage_area_group_name
             })
 
         for enemy in stage.get('stage_reinforcement_enemies'):
@@ -120,12 +125,14 @@ def cache_stage_monster_lookup_table():
 
             stage_monster_lookup_parsed_asset[monster_id].append({
                 'stage_id': stage_id,
-                'stage_name': stage_name
+                'stage_name': stage_name,
+                'stage_area_name': stage_area_name,
+                'stage_area_group_name': stage_area_group_name
             })
 
-    util.save_redis_asset(cache_key='stage_monster_lookup_parsed_asset', data=stage_monster_lookup_parsed_asset)
+    util.save_redis_asset(cache_key=f'{lang}_stage_monster_lookup_parsed_asset', data=stage_monster_lookup_parsed_asset)
 
-def cache_skill_unit_table():
+def cache_skill_unit_table(lang: str):
     enemy_monster_data = enemy_monster_response.json()
 
     skill_unit_table: dict = {}
@@ -332,9 +339,9 @@ def cache_skill_unit_table():
                 'unit_type': 'Enemy Monster'
             })
 
-    util.save_redis_asset(cache_key='skill_unit_table_parsed_asset', data=skill_unit_table)
+    util.save_redis_asset(cache_key=f'{lang}_skill_unit_table_parsed_asset', data=skill_unit_table)
 
-def cache_equipment_skill_table():
+def cache_equipment_skill_table(lang: str):
     skill_equipment_cache: dict = {}
 
     for equipment in equipment_response.json():
@@ -414,14 +421,16 @@ def cache_equipment_skill_table():
                         'equipment_name': equipment_name,
                     })
 
-    util.save_redis_asset('skill_equipment_parsed_asset', skill_equipment_cache)
+    util.save_redis_asset(f'{lang}_skill_equipment_parsed_asset', skill_equipment_cache)
 
-def cache_item_location_table():
+def cache_item_location_table(lang: str):
     item_location_table: dict = {}
 
     for stage in stage_data:
         location_id = stage.get('id')
         location_name = stage.get('stage_display_name')
+        location_area_name = stage.get('stage_area_name')
+        location_area_group_name = stage.get('stage_area_group_name')
 
         for drop in stage.get('stage_drops'):
             for loot in drop.get('loot_group').get('loot'):
@@ -433,6 +442,8 @@ def cache_item_location_table():
                 item_location_table[item_id].append({
                     'location_id': location_id,
                     'location_name': location_name,
+                    'location_area_name': location_area_name,
+                    'location_area_group_name': location_area_group_name,
                     'location_type': 'Stage'
                 })
 
@@ -445,6 +456,8 @@ def cache_item_location_table():
             item_location_table[item_id].append({
                 'location_id': location_id,
                 'location_name': location_name,
+                'location_area_name': location_area_name,
+                'location_area_group_name': location_area_group_name,
                 'location_type': 'Stage'
             })
 
@@ -471,9 +484,9 @@ def cache_item_location_table():
                 'location_type': 'Shop'
             })
 
-    util.save_redis_asset('item_location_parsed_asset', item_location_table)
+    util.save_redis_asset(f'{lang}_item_location_parsed_asset', item_location_table)
 
-def cache_unit_profile_map():
+def cache_unit_profile_map(lang: str):
     profile_unit_map: dict = {}
 
     for path in util.get_asset_list('AllyMonster'):
@@ -484,7 +497,7 @@ def cache_unit_profile_map():
 
         profile_unit_map[profile_id] = path
 
-    util.save_redis_asset('profile_unit_map_parsed_asset', profile_unit_map)
+    util.save_redis_asset(f'{lang}_profile_unit_map_parsed_asset', profile_unit_map)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -518,9 +531,9 @@ if __name__ == '__main__':
     shop_data = shop_response.json()
     unit_data = unit_response.json()
 
-    cache_stage_structure()
-    cache_skill_unit_table()
-    cache_stage_monster_lookup_table()
-    cache_equipment_skill_table()
-    cache_item_location_table()
-    cache_unit_profile_map()
+    cache_stage_structure(lang=util.get_language_setting())
+    cache_skill_unit_table(lang=util.get_language_setting())
+    cache_stage_monster_lookup_table(lang=util.get_language_setting())
+    cache_equipment_skill_table(lang=util.get_language_setting())
+    cache_item_location_table(lang=util.get_language_setting())
+    cache_unit_profile_map(lang=util.get_language_setting())

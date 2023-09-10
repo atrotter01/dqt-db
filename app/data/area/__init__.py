@@ -18,7 +18,13 @@ class Area:
 
         area_display_name = self.util.get_localized_string(data=data, key='displayName_translation', path=path)
         area_sub_display_name = None
-        area_group = data.get('areaGroup').get('linked_asset_id')
+        area_group = None
+        area_group_name = None
+
+        if data.get('areaGroup').get('m_PathID') is None:
+            area_group = data.get('areaGroup').get('linked_asset_id')
+            area_group_name = self.util.get_localized_string(data=data.get('areaGroup'), key='displayName_translation', path=path)
+
         area_category = data.get('category')
         area_sub_category = data.get('subCategory')
         area_stage_display_type = data.get('stageDisplayType')
@@ -70,6 +76,7 @@ class Area:
             'area_group': area_group,
             'area_display_name': area_display_name,
             'area_sub_display_name': area_sub_display_name,
+            'area_group_name': area_group_name,
             'area_category': area_category,
             'area_sub_category': area_sub_category,
             'area_stage_display_type': area_stage_display_type,

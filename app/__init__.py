@@ -126,11 +126,11 @@ def skill_detail_route(type_of_skill, skill_id):
     skill_learned_by = []
     skill_equipment_cache = []
 
-    if util.get_redis_asset('skill_equipment_parsed_asset').get(skill_id) is not None:
-        skill_equipment_cache = util.get_redis_asset('skill_equipment_parsed_asset').get(skill_id)
+    if util.get_redis_asset(f'{util.get_language_setting()}_skill_equipment_parsed_asset').get(skill_id) is not None:
+        skill_equipment_cache = util.get_redis_asset(f'{util.get_language_setting()}_skill_equipment_parsed_asset').get(skill_id)
 
-    if util.get_redis_asset('skill_unit_table_parsed_asset').get(skill_id) is not None:
-        skill_learned_by.extend(util.get_redis_asset('skill_unit_table_parsed_asset').get(skill_id))
+    if util.get_redis_asset(f'{util.get_language_setting()}_skill_unit_table_parsed_asset').get(skill_id) is not None:
+        skill_learned_by.extend(util.get_redis_asset(f'{util.get_language_setting()}_skill_unit_table_parsed_asset').get(skill_id))
 
     if api_response.status_code == 200:
         skill_data = api_response.json()
@@ -157,8 +157,8 @@ def item_detail_route(consumable_item_id):
     if api_response.status_code == 200:
         item_data = api_response.json()
 
-    if util.get_redis_asset('item_location_parsed_asset').get(consumable_item_id) is not None:
-        location_table = util.get_redis_asset('item_location_parsed_asset').get(consumable_item_id)
+    if util.get_redis_asset(f'{util.get_language_setting()}_item_location_parsed_asset').get(consumable_item_id) is not None:
+        location_table = util.get_redis_asset(f'{util.get_language_setting()}_item_location_parsed_asset').get(consumable_item_id)
 
     return render_template('item_detail.html', item=item_data[0], location_table=location_table)
 
@@ -182,8 +182,8 @@ def icon_detail_route(profile_icon_id):
     if api_response.status_code == 200:
         icon_data = api_response.json()
 
-    if util.get_redis_asset('item_location_parsed_asset').get(profile_icon_id) is not None:
-        location_table = util.get_redis_asset('item_location_parsed_asset').get(profile_icon_id)
+    if util.get_redis_asset(f'{util.get_language_setting()}_item_location_parsed_asset').get(profile_icon_id) is not None:
+        location_table = util.get_redis_asset(f'{util.get_language_setting()}_item_location_parsed_asset').get(profile_icon_id)
 
     return render_template('icon_detail.html', icon=icon_data[0], location_table=location_table)
 
@@ -233,8 +233,8 @@ def equipment_detail_route(equipment_id):
     if api_response.status_code == 200:
         equipment_data = api_response.json()
 
-    if util.get_redis_asset('item_location_parsed_asset').get(equipment_id) is not None:
-        location_table = util.get_redis_asset('item_location_parsed_asset').get(equipment_id)
+    if util.get_redis_asset(f'{util.get_language_setting()}_item_location_parsed_asset').get(equipment_id) is not None:
+        location_table = util.get_redis_asset(f'{util.get_language_setting()}_item_location_parsed_asset').get(equipment_id)
 
     return render_template('equipment_detail.html', equipment=equipment_data[0], location_table=location_table)
 
@@ -346,7 +346,7 @@ def enemy_monster_route(monster_id):
     util: Util = Util(lang=session['lang'])
     api_response = requests.get(url=f'http://localhost:5000/api/enemy_monster/{monster_id}', timeout=300, params=dict(lang=session['lang']))
     enemy_monster_data = []
-    stages: list = util.get_redis_asset('stage_monster_lookup_parsed_asset').get(monster_id)
+    stages: list = util.get_redis_asset(f'{util.get_language_setting()}_stage_monster_lookup_parsed_asset').get(monster_id)
 
     if api_response.status_code == 200:
         enemy_monster_data = api_response.json()
@@ -378,7 +378,7 @@ def stage_route(stage_id):
 @app.route('/stage/category/<stage_category>')
 def stage_category_route(stage_category):
     util: Util = Util(lang=session['lang'])
-    stage_structure = util.get_redis_asset('stage_structure_parsed_asset')
+    stage_structure = util.get_redis_asset(f'{util.get_language_setting()}_stage_structure_parsed_asset')
 
     return render_template('stage_list.html', stage_structure=stage_structure, stage_category=int(stage_category))
 

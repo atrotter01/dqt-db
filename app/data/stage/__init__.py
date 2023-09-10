@@ -21,6 +21,12 @@ class Stage:
 
         stage_name = self.util.get_localized_string(data=data, key='displayName_translation', path=path)
         stage_area_id = data.get('area').get('linked_asset_id')
+        stage_area_name = self.util.get_localized_string(data=data.get('area'), key='displayName_translation', path=path)
+        stage_area_group_name = None
+        
+        if data.get('area').get('areaGroup').get('m_PathID') is None:
+            stage_area_group_name = self.util.get_localized_string(data=data.get('area').get('areaGroup'), key='displayName_translation', path=path)
+
         stage_list_order = data.get('listOrder')
         stage_difficulty = data.get('difficulty')
         stage_recommended_cp = data.get('recommendedAveragePowerLevel')
@@ -359,6 +365,8 @@ class Stage:
         stage: dict = {
             'id': path,
             'stage_display_name': stage_name,
+            'stage_area_name': stage_area_name,
+            'stage_area_group_name': stage_area_group_name,
             'stage_sub_display_name': stage_sub_display_name,
             'stage_area_id': stage_area_id,
             'stage_list_order': stage_list_order,

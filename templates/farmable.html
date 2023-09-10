@@ -54,7 +54,17 @@
                 <tr>
                     <td><a href='/enemy_monster/{{ farmable.enemy_id }}'>{{ farmable.enemy_display_name }}</a></td>
                     <td><img src="/{{ farmable.enemy_icon }}" style="width: 64px; height: 64px;" /></td>
-                    <td><a href='/stage/{{ farmable.stage_id }}'>{{ farmable.stage_display_name }}</a></td>
+                    <td>
+                        <a href='/stage/{{ farmable.stage_id }}'>
+                            {% if farmable.stage_area_group_name != None %}
+                            {{ farmable.stage_area_group_name }} - 
+                            {% endif %}
+                            {% if farmable.stage_area_name != None %}
+                            {{ farmable.stage_area_name }} - 
+                            {% endif %}
+                            {{ farmable.stage_display_name }}
+                        </a>
+                    </td>
                     <td>{{ farmable.stage_stamina_cost }}</td>
                     <td>{{ farmable.scout_probability }}%</td>
                     <td>{{ farmable.stamina_per_drop }}</td>

@@ -1,12 +1,12 @@
 import argparse
 from app.util import Util
 
-#parser = argparse.ArgumentParser()
-#parser.add_argument('--type')
-#args = parser.parse_args()
+parser = argparse.ArgumentParser()
+parser.add_argument('--type')
+args = parser.parse_args()
 
 util = Util()
-#util.reset_processed_data(asset_type_to_reset=args.type)
+util.reset_processed_data(asset_type_to_reset=args.type)
 
 # Guild Boss
 #util.reset_processed_data(path='-1400780540462253343')
@@ -29,12 +29,12 @@ util = Util()
 #util.reset_processed_data(path='8296386512021214169')
 
 # Translation
-util.redis_client.delete('-2375090901635097832000')
-util.redis_client.delete('-2375090901635097832000_data')
-util.redis_client.delete('-2375090901635097832000_processed_data')
-util.redis_client.delete('5894932678760388815000')
-util.redis_client.delete('5894932678760388815000_data')
-util.redis_client.delete('5894932678760388815000_processed_data')
-util.redis_client.delete('7681253118616506923000')
-util.redis_client.delete('7681253118616506923000_data')
-util.redis_client.delete('7681253118616506923000_processed_data')
+#util.redis_client.delete('-2375090901635097832000')
+#util.redis_client.delete('-2375090901635097832000_data')
+#util.redis_client.delete('-2375090901635097832000_processed_data')
+#util.redis_client.delete('5894932678760388815000')
+#util.redis_client.delete('5894932678760388815000_data')
+#util.redis_client.delete('5894932678760388815000_processed_data')
+#util.redis_client.delete('7681253118616506923000')
+#util.redis_client.delete('7681253118616506923000_data')
+#util.redis_client.delete('7681253118616506923000_processed_data')

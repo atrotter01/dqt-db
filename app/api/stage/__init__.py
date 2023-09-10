@@ -8,6 +8,8 @@ api = Namespace("stage", description="")
 stage_model = api.model('stage', {
     'id': fields.String,
     'stage_display_name': fields.String,
+    'stage_area_name': fields.String,
+    'stage_area_group_name': fields.String,
     'stage_sub_display_name': fields.String,
     'stage_area_id': fields.String,
     'stage_list_order': fields.Integer,

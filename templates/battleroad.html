@@ -22,7 +22,12 @@
         <tbody>
             {% for battleroad in battleroads %}
             <tr>
-                <td>{{ battleroad.area_display_name }}</td>
+                <td>
+                    {% if battleroad.area_group_name is defined %}
+                    {{ battleroad.area_group_name }} - 
+                    {% endif %}
+                    {{ battleroad.area_display_name }}
+                </td>
                 <td>
                     <div class="container">
                         <div class="row align-items-start">

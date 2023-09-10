@@ -35,7 +35,15 @@
                 <tr>
                     <td>
                         {% if location.location_type == 'Stage' %}
-                        <a href="/stage/{{location.location_id}}">{{ location.location_name }}</a>
+                        <a href="/stage/{{location.location_id}}">
+                            {% if location.location_area_group_name != None %}
+                            {{ location.location_area_group_name }} - 
+                            {% endif %}
+                            {% if location.location_area_name != None %}
+                            {{ location.location_area_name }} - 
+                            {% endif %}
+                            {{ location.location_name }}
+                        </a>
                         {% elif location.location_type == 'Shop' %}
                         <a href="/shop/{{location.location_id}}">{{ location.location_name }}</a>
                         {% endif %}

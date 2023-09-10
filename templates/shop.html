@@ -43,7 +43,6 @@
                     <td>Name</td>
                     <td>Reminiscene</td>
                     <td>Banner</td>
-                    <td>Category Banner</td>
                 </tr>
             </thead>
             <tbody>
@@ -51,10 +50,20 @@
                 <tr>
                     <td><a href='/shop/{{ shop.id }}'>{{ shop.display_name }}</a></td>
                     <td>{{ shop.available_in_reminiscene }}</td>
-                    <td><img src="/{{ shop.banner_path }}" /></td>
-                    <td>
-                        {% if shop.category_banner_path %}
-                        <img src="/{{ shop.category_banner_path }}" />
+                    <td class="align-top" style="width: 512px;">
+                        {% if shop.category_banner_path != None %}
+                        <div id="carouselIndicators_{{ area }}" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img class="d-block img-fluid" src="/{{ shop.banner_path }}" style="width: 512px; height: 120px;" />
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="d-block img-fluid" src="/{{ shop.category_banner_path }}" style="width: 512px; height: 120px;" />
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <img src="/{{ shop.banner_path }}" style="width: 512px; height: 120px;" />
                         {% endif %}
                     </td>
                 </tr>

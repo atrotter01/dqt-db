@@ -10,6 +10,7 @@ area_model = api.model('area', {
     'area_group': fields.String,
     'area_display_name': fields.String,
     'area_sub_display_name': fields.String,
+    'area_group_name': fields.String,
     'area_category': fields.Integer,
     'area_sub_category': fields.Integer,
     'area_stage_display_type': fields.Integer,

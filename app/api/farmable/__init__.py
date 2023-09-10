@@ -7,6 +7,9 @@ api = Namespace("farmable", description="")
 
 farmable_model = api.model('farmable', {
     'stage_id': fields.String,
+    'stage_area_id': fields.String,
+    'stage_area_name': fields.String,
+    'stage_area_group_name': fields.String,
     'stage_display_name': fields.String,
     'stage_stamina_cost': fields.Integer,
     'enemy_id': fields.String,
@@ -43,6 +46,9 @@ class Asset(Resource):
         for path in asset_list:
             stage = self.stage_parser.get_data(path)
             stage_id: str = stage.get('id')
+            stage_area_id: str = stage.get('stage_area_id')
+            stage_area_name: str = stage.get('stage_area_name')
+            stage_area_group_name: str = stage.get('stage_area_group_name')
             stage_display_name: str = stage.get('stage_display_name')
             stage_stamina_cost: int = stage.get('stage_stamina_cost')
             seen_units: list = []
@@ -63,6 +69,9 @@ class Asset(Resource):
                 if scout_probability > 0:
                     self.farmables.append({
                         'stage_id': stage_id,
+                        'stage_area_id': stage_area_id,
+                        'stage_area_name': stage_area_name,
+                        'stage_area_group_name': stage_area_group_name,
                         'stage_display_name': stage_display_name,
                         'stage_stamina_cost': stage_stamina_cost,
                         'enemy_id': enemy_id,
@@ -89,6 +98,9 @@ class Asset(Resource):
                 if scout_probability > 0:
                     self.farmables.append({
                         'stage_id': stage_id,
+                        'stage_area_id': stage_area_id,
+                        'stage_area_name': stage_area_name,
+                        'stage_area_group_name': stage_area_group_name,
                         'stage_display_name': stage_display_name,
                         'stage_stamina_cost': stage_stamina_cost,
                         'enemy_id': enemy_id,
@@ -115,6 +127,9 @@ class Asset(Resource):
                 if scout_probability > 0:
                     self.farmables.append({
                         'stage_id': stage_id,
+                        'stage_area_id': stage_area_id,
+                        'stage_area_name': stage_area_name,
+                        'stage_area_group_name': stage_area_group_name,
                         'stage_display_name': stage_display_name,
                         'stage_stamina_cost': stage_stamina_cost,
                         'enemy_id': enemy_id,
