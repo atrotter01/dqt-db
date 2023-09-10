@@ -16,13 +16,13 @@
         <div class="col col-auto">
             <img src="/{{ equipment.equipment_icon }}" />
         </div>
-        <div class="col">
+        <div class="col col-auto">
             <ul class="slimelist">
                 <li><span style="font-weight: bold;">Name: </span>{{ equipment.equipment_display_name }}</li>
                 <li><span style="font-weight: bold;">Description: </span>{{ equipment.equipment_description }}</li>
                 <li><span style="font-weight: bold;">Type: </span>{{ equipment.equipment_type }}</li>
                 <li><span style="font-weight: bold;">Category: </span>{{ equipment.equipment_category }}</li>
-                <li><span style="font-weight: bold;">Rank: </span><img src='/{{ equipment.equipment_rank_icon }}' style='width: 64px; height: 64px;' /></li>
+                <li><span style="font-weight: bold;">Rank: </span><img src='/{{ equipment.equipment_rank_icon }}' style='width: 32px; height: 32px;' /></li>
                 <li><span style="font-weight: bold;">Alchemy Cost: </span>{{ equipment.equipment_alchemy_cost }}</li>
                 <li><span style="font-weight: bold;">Is Free Alchemy: </span>{{ equipment.equipment_is_free_alchemy }}</li>
                 <li>
@@ -35,7 +35,7 @@
                 </li>
             </ul>
         </div>
-        <div class="col">
+        <div class="col col-auto">
             <ul class="slimelist">
                 <li><span style="font-weight: bold;">HP: </span>{{ equipment.equipment_status_increase.hp }}</li>
                 <li><span style="font-weight: bold;">MP: </span>{{ equipment.equipment_status_increase.mp }}</li>

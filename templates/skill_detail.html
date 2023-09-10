@@ -20,7 +20,7 @@
     <div class="row detailsbox">
         <div class="row text-center"><h4>Skill Details</h4></div>
         <hr />
-        <div class="col">
+        <div class="col col-auto">
             <ul class="slimelist">
                 <li><span style="font-weight: bold;">Name: </span>{{ skill.skill_name }}</li>
                 <li><span style="font-weight: bold;">Description: </span>{{ skill.skill_description }}</li>
@@ -32,7 +32,7 @@
                 <li><span style="font-weight: bold;">Element: </span><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></li>
             </ul>
         </div>
-        <div class="col">
+        <div class="col col-auto">
             <ul class="slimelist">
                 <li><span style="font-weight: bold;">Disruptive Wave Immune: </span>{{ skill.skill_wave_immune }}</li>
                 <li><span style="font-weight: bold;">Ignores Damage Reduction: </span>{{ skill.skill_ignores_damage_reduction }}</li>

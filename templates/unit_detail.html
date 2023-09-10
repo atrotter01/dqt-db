@@ -37,19 +37,19 @@
     <div class="row detailsbox">
         <div class="row text-center"><h4>Unit Details</h4></div>
         <hr />
-        <div class="col col-auto">
+        <div class="col col-sm-auto">
             <img src="/{{ unit.unit_icon }}" />
         </div>
-        <div class="col">
+        <div class="col col-auto">
             <ul class="slimelist">
                 <li><span style="font-weight: bold;">Name: </span>{{ unit.display_name }}</li>
                 <li><span style="font-weight: bold;">Flavor Text: </span>{{ unit.flavor_text }}</li>
-                <li><span style="font-weight: bold;">Family: </span><img src="/{{ unit.small_family_icon }}" style="width: 64px; height: 64px;" /></li>
-                <li><span style="font-weight: bold;">Role: </span><img src="/{{ unit.role_icon }}" style="width: 64px; height: 64px;" /></li>
-                <li><span style="font-weight: bold;">Rank: </span><img src="/{{ unit.unit_rank_icon }}" style="width: 64px; height: 64px;" /></li>
+                <li><span style="font-weight: bold;">Family: </span><img src="/{{ unit.small_family_icon }}" /></li>
+                <li><span style="font-weight: bold;">Role: </span><img src="/{{ unit.role_icon }}" style="width: 32px; height: 32px;" /></li>
+                <li><span style="font-weight: bold;">Rank: </span><img src="/{{ unit.unit_rank_icon }}" style="width: 32px; height: 32px;" /></li>
             </ul>
         </div>
-        <div class="col">
+        <div class="col col-auto">
             <ul class="slimelist">
                 <li><span style="font-weight: bold;">Farmable: </span>{{ unit.is_quest_reward }}</li>
                 <li><span style="font-weight: bold;">Gacha: </span>{{ unit.is_gacha_unit }}</li>
