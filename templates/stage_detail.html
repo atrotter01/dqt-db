@@ -140,7 +140,7 @@
                         {% endif %}
                     </td>
                     <td>{{ loot }}</td>
-                    <td>{{ stage.stage_formatted_loot_groups[loot].average }}</td>
+                    <td>{{ stage.stage_formatted_loot_groups[loot].average|round(2) }}</td>
                 </tr>
                 {% endfor %}
                 {% endfor %}
