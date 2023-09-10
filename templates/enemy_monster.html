@@ -214,7 +214,17 @@
             <tbody>
                 {% for stage in stages %}
                 <tr>
-                    <td><a href='/stage/{{ stage.stage_id }}'>{{ stage.stage_name }}</a></td>
+                    <td>
+                        <a href='/stage/{{ stage.stage_id }}'>
+                            {% if stage.stage_area_group_name != None %}
+                            {{ stage.stage_area_group_name }} - 
+                            {% endif %}
+                            {% if stage.stage_area_name != None %}
+                            {{ stage.stage_area_name }} - 
+                            {% endif %}
+                            {{ stage.stage_name }}
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
