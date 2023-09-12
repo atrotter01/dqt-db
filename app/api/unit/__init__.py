@@ -94,12 +94,13 @@ class Asset(Resource):
         if path is not None:
             profile_map: dict = self.util.get_redis_asset(f'{self.util.get_language_setting()}_profile_unit_map_parsed_asset')
 
-            if profile_map.get(path) is not None:
-                path = profile_map.get(path)
+            if profile_map is not None:
+                if profile_map.get(path) is not None:
+                    path = profile_map.get(path)
 
-            self.units.append(self.unit_parser.get_data(path=path))
+                self.units.append(self.unit_parser.get_data(path=path))
 
-            return self.units
+                return self.units
 
         self.cache_key = f'{self.util.get_language_setting()}_unit_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)

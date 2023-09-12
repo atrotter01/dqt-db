@@ -447,7 +447,7 @@ def lawson_save_route():
 @app.route('/translate')
 def translate_route():
     util: Util = Util(lang=session['lang'])
-    untranslated_asset_list = util.get_redis_asset('user_data_untranslated_strings')
+    untranslated_asset_list = util.get_redis_asset('sys_untranslated_strings')
     untranslated_assets: list = []
     seen_assets: list = []
 

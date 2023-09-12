@@ -80,7 +80,7 @@ class Util:
 
         asset = json.loads(redis_data)
 
-        if path not in self.cache_keys and not str(path).endswith('_cache') and not str(path).endswith('_parsed_asset') and not str(path).startswith('user_data'):
+        if path not in self.cache_keys and not str(path).endswith('_cache') and not str(path).endswith('_parsed_asset') and not str(path).startswith('user_data') and not str(path).startswith('sys_'):
             assert isinstance(asset, dict), type(asset)
 
         if deflate_data is True and self.redis_client.get(f'{path}_data') is not None:
@@ -199,7 +199,7 @@ class Util:
         or force_rebuild is True:
             for path in asset_list:
                 path = str(path)
-                if path in self.cache_keys or path.endswith('_parsed_asset') or path.startswith('user_data'):
+                if path in self.cache_keys or path.endswith('_parsed_asset') or path.startswith('user_data') or path.startswith('sys_'):
                     continue
 
                 asset = self.get_asset_by_path(path=path, deflate_data=False)
@@ -481,8 +481,8 @@ class Util:
                 asset_id: str = data.get('linked_asset_id')
                 translate_key: str = f'{path}_{asset_id}_{key}'
 
-                if self.get_redis_asset('user_data_untranslated_strings') is not None:
-                    untranslated_strings = self.get_redis_asset('user_data_untranslated_strings')
+                if self.get_redis_asset('sys_untranslated_strings') is not None:
+                    untranslated_strings = self.get_redis_asset('sys_untranslated_strings')
 
                 if untranslated_strings.get(translate_key) is None:
                     untranslated_strings[translate_key] = {
@@ -491,7 +491,7 @@ class Util:
                         'asset_id': asset_id
                     }
 
-                    self.save_redis_asset('user_data_untranslated_strings', untranslated_strings)
+                    self.save_redis_asset('sys_untranslated_strings', untranslated_strings)
 
                 return data.get(key).get('ja')
         else:

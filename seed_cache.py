@@ -499,12 +499,36 @@ def cache_unit_profile_map(lang: str):
 
     util.save_redis_asset(f'{lang}_profile_unit_map_parsed_asset', profile_unit_map)
 
+def cache_unit_training_board_map(lang: str):
+    training_board_unit_map: dict = {}
+    training_boards: list = []
+    training_boards.extend(util.get_asset_list('TrainingBoard'))
+    training_boards.extend(util.get_asset_list('SkillPanel'))
+
+    for training_board_path in training_boards:
+        training_board = util.get_asset_by_path(training_board_path, deflate_data=True)
+        training_board_document = training_board.get('processed_document')
+
+        if training_board_document.get('allyMonsterMasterData') is None:
+            continue
+
+        training_board_unit_id = training_board_document.get('allyMonsterMasterData').get('m_PathID')
+
+        if training_board_unit_map.get(training_board_unit_id) is None:
+            training_board_unit_map[training_board_unit_id] = []
+
+        training_board_unit_map[training_board_unit_id].append(training_board_path)
+
+    util.save_redis_asset(f'{lang}_training_board_map_parsed_asset', training_board_unit_map)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--lang')
     args = parser.parse_args()
 
     util: Util = Util(lang=args.lang)
+
+    cache_unit_training_board_map(lang=util.get_language_setting())
 
     area_response = requests.get('http://localhost:5000/api/area/', timeout=3600, params=dict(lang=util.get_language_setting()))
     area_group_response = requests.get('http://localhost:5000/api/area_group', timeout=3600, params=dict(lang=util.get_language_setting()))

@@ -5,7 +5,7 @@ from app.data import DataProcessor
 util: Util = Util()
 data_processor: DataProcessor = DataProcessor(_util=util)
 asset_processor: AssetProcessor = AssetProcessor(_util=util, _data_processor=data_processor)
-untranslated_assets = util.get_redis_asset('user_data_untranslated_strings')
+untranslated_assets = util.get_redis_asset('sys_untranslated_strings')
 final_untranslated_assets: dict = {}
 seen_paths: list = []
 
@@ -71,4 +71,4 @@ for asset_key in untranslated_assets:
         'asset_id': asset_id
     }
 
-util.save_redis_asset('user_data_untranslated_strings', final_untranslated_assets)
+util.save_redis_asset('sys_untranslated_strings', final_untranslated_assets)
