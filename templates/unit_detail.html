@@ -92,6 +92,38 @@
                     <td>{{ skill.skill_mp_cost }}</td>
                 </tr>
                 {% endfor %}
+                {% for panel in unit.character_builder_blossoms %}
+                {% if panel.type == "Active Skill" %}
+                <tr>
+                    <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                    <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
+                    <td>{{ panel.data.skill_description }}</td>
+                    <td>{{ panel.data.skill_rank }}</td>
+                    <td><img src="/{{ panel.data.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ panel.data.skill_reach }}</td>
+                    <td><img src="/{{ panel.data.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ panel.data.skill_surehit }}</td>
+                    <td>{{ panel.data.skill_num_attacks }}</td>
+                    <td>{{ panel.data.skill_mp_cost }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% for panel in unit.blossoms %}
+                {% if panel.type == "Active Skill" %}
+                <tr>
+                    <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                    <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
+                    <td>{{ panel.data.skill_description }}</td>
+                    <td>{{ panel.data.skill_rank }}</td>
+                    <td><img src="/{{ panel.data.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ panel.data.skill_reach }}</td>
+                    <td><img src="/{{ panel.data.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td>{{ panel.data.skill_surehit }}</td>
+                    <td>{{ panel.data.skill_num_attacks }}</td>
+                    <td>{{ panel.data.skill_mp_cost }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -113,6 +145,24 @@
                     <td>{{ skill.level_learned }}</td>
                     <td>{{ skill.skill_description }}</td>
                 </tr>
+                {% endfor %}
+                {% for panel in unit.character_builder_blossoms %}
+                {% if panel.type == "Passive Skill" %}
+                <tr>
+                    <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                    <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
+                    <td>{{ panel.data.skill_description }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% for panel in unit.blossoms %}
+                {% if panel.type == "Passive Skill" and panel.panel_code >= 37 %}
+                <tr>
+                    <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                    <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
+                    <td>{{ panel.data.skill_description }}</td>
+                </tr>
+                {% endif %}
                 {% endfor %}
             </tbody>
         </table>
@@ -160,6 +210,28 @@
                     <td>{{ skill.skill_times_available }}</td>
                     <td>{{ skill.skill_accuracy }}</td>
                 </tr>
+                {% endfor %}
+                {% for panel in unit.character_builder_blossoms %}
+                {% if panel.type == "Reaction Skill" %}
+                <tr>
+                    <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                    <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
+                    <td>{{ panel.data.skill_description }}</td>
+                    <td>{{ panel.data.skill_times_available }}</td>
+                    <td>{{ panel.data.skill_accuracy }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% for panel in unit.blossoms %}
+                {% if panel.type == "Reaction Skill" %}
+                <tr>
+                    <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                    <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
+                    <td>{{ panel.data.skill_description }}</td>
+                    <td>{{ panel.data.skill_times_available }}</td>
+                    <td>{{ panel.data.skill_accuracy }}</td>
+                </tr>
+                {% endif %}
                 {% endfor %}
             </tbody>
         </table>
