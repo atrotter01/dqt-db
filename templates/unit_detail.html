@@ -149,7 +149,7 @@
                 {% for panel in unit.character_builder_blossoms %}
                 {% if panel.type == "Passive Skill" %}
                 <tr>
-                    <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                    <td><a href='/skill/passive_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
                     <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
                     <td>{{ panel.data.skill_description }}</td>
                 </tr>
@@ -158,7 +158,7 @@
                 {% for panel in unit.blossoms %}
                 {% if panel.type == "Passive Skill" and panel.panel_code >= 37 %}
                 <tr>
-                    <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                    <td><a href='/skill/passive_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
                     <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
                     <td>{{ panel.data.skill_description }}</td>
                 </tr>
@@ -214,7 +214,7 @@
                 {% for panel in unit.character_builder_blossoms %}
                 {% if panel.type == "Reaction Skill" %}
                 <tr>
-                    <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                    <td><a href='/skill/reaction_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
                     <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
                     <td>{{ panel.data.skill_description }}</td>
                     <td>{{ panel.data.skill_times_available }}</td>
@@ -225,7 +225,7 @@
                 {% for panel in unit.blossoms %}
                 {% if panel.type == "Reaction Skill" %}
                 <tr>
-                    <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                    <td><a href='/skill/reaction_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
                     <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
                     <td>{{ panel.data.skill_description }}</td>
                     <td>{{ panel.data.skill_times_available }}</td>
