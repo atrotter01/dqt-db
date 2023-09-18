@@ -7,9 +7,26 @@
                 pagingType: 'numbers',
                 pageLength: 25,
                 responsive: true,
+                columnDefs: [
+                    {
+                        target: 2,
+                        visible: false,
+                        searchable: true
+                    },
+                    {
+                        target: 3,
+                        visible: false,
+                        searchable: true
+                    },
+                    {
+                        target: 9,
+                        visible: false,
+                        searchable: true
+                    },
+                ],
                 searchPanes: {
-                    cascadePanes: true,
-                    columns: [0,2],
+                    cascadePanes: false,
+                    columns: [0,2,3,9],
                     controls: true,
                     collapse: true,
                     initCollapsed: true,
@@ -40,13 +57,16 @@
         <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%;">
             <thead>
                 <tr>
-                    <td>Monster</td>
-                    <td>Monster Icon</td>
+                    <td>Unit</td>
+                    <td>Icon</td>
+                    <td>Family</td>
+                    <td>Role</td>
                     <td>Stage Name</td>
                     <td>Stamina</td>
                     <td>Scout Chance</td>
                     <td>Avg Stam</td>
                     <td>Avg Stam (2x Drop)</td>
+                    <td>Best Drop Rate Only</td>
                 </tr>
             </thead>
             <tbody>
@@ -54,6 +74,8 @@
                 <tr>
                     <td><a href='/enemy_monster/{{ farmable.enemy_id }}'>{{ farmable.enemy_display_name }}</a></td>
                     <td><img src="/{{ farmable.enemy_icon }}" style="width: 64px; height: 64px;" /></td>
+                    <td><span style="display: none">{{ farmable.enemy_family }}</span><img src="/{{ farmable.enemy_family_icon }}" alt="{{ farmable.enemy_family }}" style="width: 64px; height: 64px;" /></td>
+                    <td><span style="display: none">{{ farmable.enemy_role }}</span><img src="/{{ farmable.enemy_role_icon }}" alt="{{ farmable.enemy_role }}" style="width: 64px; height: 64px;" /></td>
                     <td>
                         <a href='/stage/{{ farmable.stage_id }}'>
                             {% if farmable.stage_area_group_name != None %}
@@ -69,6 +91,7 @@
                     <td>{{ farmable.scout_probability }}%</td>
                     <td>{{ farmable.stamina_per_drop }}</td>
                     <td>{{ farmable.stamina_per_drop_double_drop_rate }}</td>
+                    <td>{{ farmable.is_best_drop_rate }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
