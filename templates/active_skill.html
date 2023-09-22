@@ -9,7 +9,7 @@
                 responsive: true,
                 searchPanes: {
                     cascadePanes: true,
-                    columns: [2,3,4,5,12],
+                    columns: [2,3,4,5,6],
                     controls: true,
                     collapse: true,
                     initCollapsed: true,
@@ -46,13 +46,13 @@
                     <td>Element</td>
                     <td>Range</td>
                     <td>Reach</td>
+                    <td>Type</td>
                     <td># Hits</td>
                     <td>MP</td>
                     <td>Base</td>
                     <td>Min</td>
                     <td>Max</td>
                     <td>Multi</td>
-                    <td>Type</td>
                 </tr>
             </thead>
             <tbody>
@@ -79,12 +79,6 @@
                         <img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" />
                     </td>
                     <td>{{ skill.skill_reach }}</td>
-                    <td>{{ skill.skill_num_attacks }}</td>
-                    <td>{{ skill.skill_mp_cost }}</td>
-                    <td>{{ skill.skill_base_damage }}</td>
-                    <td>{{ skill.skill_min_damage }}</td>
-                    <td>{{ skill.skill_max_damage }}</td>
-                    <td>{{ skill.skill_multiplier }}</td>
                     <td>
                         {% if skill.skill_type == '1' %}
                             Physical
@@ -98,6 +92,12 @@
                             Other
                         {% endif %}
                     </td>
+                    <td>{{ skill.skill_num_attacks }}</td>
+                    <td>{{ skill.skill_mp_cost }}</td>
+                    <td>{{ skill.skill_base_damage }}</td>
+                    <td>{{ skill.skill_min_damage }}</td>
+                    <td>{{ skill.skill_max_damage }}</td>
+                    <td>{{ skill.skill_multiplier }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
