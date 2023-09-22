@@ -45,8 +45,6 @@ class Unit:
         unit_icon = data.get('profile').get('iconPath')
         transformed_unit_icon = data.get('profile').get('transformedIconPath')
         stats_by_level: list = data.get('levelParameterTable').get('monsterLevelParamList')
-        blossom_board: dict = data.get('trainingBoard')
-        character_builder_board: dict = data.get('skillBoard')
         active_skills: list = []
         passive_skills: list = []
         reaction_passive_skills: list = []
@@ -132,14 +130,6 @@ class Unit:
             skill_id = skill.get('linked_asset_id')
             awakening_reaction_passive_skill = self.skill_parser.parse_awakening_reaction_passive_skill(skill=skill, awakening_level=awakening_level, path=skill_id)
             awakening_reaction_passive_skills.append(awakening_reaction_passive_skill)
-
-        #if blossom_board.get('panels') is not None:
-        #    has_blossom = True
-        #    blossoms = self.blossom_parser.parse_skill_board(blossom_board=blossom_board)
-
-        #if character_builder_board.get('panels') is not None:
-        #    has_character_builder = True
-        #    character_builder_blossoms = self.blossom_parser.parse_skill_board(blossom_board=character_builder_board)
 
         training_board_unit_map: dict = self.util.get_redis_asset(f'{self.util.get_language_setting()}_training_board_map_parsed_asset')
 

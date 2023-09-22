@@ -201,9 +201,12 @@ def package_route():
 def unit_detail_route(unit_id):
     api_response = requests.get(url=f'http://localhost:5000/api/unit/{unit_id}', timeout=300, params=dict(lang=session['lang']))
     farmable_api_response = requests.get(url='http://localhost:5000/api/farmable/', timeout=300, params=dict(lang=session['lang']))
+    area_api_response = requests.get(url='http://localhost:5000/api/area', timeout=300, params=dict(lang=session['lang']))
 
     unit = []
     farmables = []
+    area_data = []
+    battleroads = []
 
     if api_response.status_code == 200:
         unit = api_response.json()
@@ -211,7 +214,17 @@ def unit_detail_route(unit_id):
     if farmable_api_response.status_code == 200:
         farmables = farmable_api_response.json()
 
-    return render_template('unit_detail.html', unit=unit[0], farmables=farmables)
+    if area_api_response.status_code == 200:
+        area_data = area_api_response.json()
+
+    for area in area_data:
+        if area.get('area_category') == 4:
+            for monster in area.get('area_available_monsters'):
+                if monster.get('monster_path') == unit_id:
+                    battleroads.append(area)
+                    break
+
+    return render_template('unit_detail.html', unit=unit[0], farmables=farmables, battleroads=battleroads)
 
 @app.route('/equipment/')
 def equipment_route():

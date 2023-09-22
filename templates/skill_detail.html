@@ -14,6 +14,13 @@
             {% endif %}
             learned_by_table.columns.adjust().responsive.recalc();
             equipment_table.columns.adjust().responsive.recalc();
+            {% if skill.type_of_skill == 'reaction_skill' %}
+            var dt_status_effects = $('#dt_status_effects').DataTable(dt_options);
+            dt_status_effects.on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+            $('[data-toggle="tooltip"]').tooltip();
+            {% endif %}
         } );
     </script>
     {% if skill.type_of_skill == 'active_skill' or skill.type_of_skill == 'enemy_skill' %}
@@ -56,7 +63,20 @@
                 <li><span style="font-weight: bold;">Multiplier: </span>{{ skill.skill_multiplier }}</li>
                 <li><span style="font-weight: bold;">Threshold of Intelligence: </span>{{ skill.skill_threshold_of_intelligence }}</li>
                 <li><span style="font-weight: bold;">Threshold of Attack: </span>{{ skill.skill_threshold_of_attack }}</li>
-                <li><span style="font-weight: bold;">Active Skill Type: </span>{{ skill.skill_type }}</li>
+                <li>
+                    <span style="font-weight: bold;">Active Skill Type: </span>
+                    {% if skill.skill_type == '1' %}
+                        Physical
+                    {% elif skill.skill_type == '3' %}
+                        Martial
+                    {% elif skill.skill_type == '4' %}
+                        Spell
+                    {% elif skill.skill_type == '5' %}
+                        Breath
+                    {% else %}
+                        Other
+                    {% endif %}
+                </li>
                 {% if skill.skill_type == '4' %}
                 {% if skill.skill_multiplier > 0 %}
                 {% set ns_damage_constant = namespace(damage_constant=skill.skill_min_damage - (skill.skill_multiplier / 100) * skill.skill_threshold_of_intelligence) %}
@@ -179,25 +199,22 @@
                 <li><span style="font-weight: bold;">Is Activated By Status Effect: </span>{{ skill.skill_is_activated_by_abnormity }}</li>
                 <li><span style="font-weight: bold;">Is Activated By Death: </span>{{ skill.skill_is_activated_by_death }}</li>
                 <li><span style="font-weight: bold;">Is Re-Reactionable: </span>{{ skill.skill_is_re_reactionable }}</li>
+                {% if skill.skill_applicable_abnormity_types|length > 0 %}
+                <li><span style="font-weight: bold;">Applicable Status Effects: </span>
+                    <hr />
+                    <div class="row align-items-start">
+                        {% for skill_applicable_abnormity_type in skill.skill_applicable_abnormity_types %}
+                        <div class="col col-sm-auto">
+                            <img src='/{{ skill_applicable_abnormity_type.icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ skill_applicable_abnormity_type.name }}" />
+                        </div>
+                        {% endfor %}
+                    </div>
+                </li>
+                {% endif %}
             </ul>
         </div>
     </div>
 
-        {% if skill.skill_applicable_abnormity_types|length > 0 %}
-        <hr />
-        <h4>Applicable Status Effects</h4>
-        <div>
-            <table id="dt_status_effects" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-                <tbody>
-                    {% for skill_applicable_abnormity_type in skill.skill_applicable_abnormity_types %}
-                    <tr>
-                        <td>{{ skill_applicable_abnormity_type }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% endif %}
     {% endif %}
 
     <hr />

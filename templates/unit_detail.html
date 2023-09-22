@@ -13,6 +13,7 @@
             var dt_awakening_reaction_skills = $('#dt_awakening_reaction_skills').DataTable(dt_options);
             var dt_blossom = $('#dt_blossom_board').DataTable(dt_options);
             var dt_character_builder = $('#dt_character_builder').DataTable(dt_options);
+            var dt_battleroad = $('#dt_battleroad').DataTable(dt_options);
             {% if unit.is_quest_reward is true %}
             var dt_farmable = $('#dt_farmable').DataTable(dt_options);
             {% endif %}
@@ -29,9 +30,19 @@
             dt_awakening_reaction_skills.columns.adjust().responsive.recalc().order([1, 'asc']).draw();
             dt_blossom.columns.adjust().responsive.recalc();
             dt_character_builder.columns.adjust().responsive.recalc();
+            dt_battleroad.columns.adjust().responsive.recalc();
             {% if unit.is_quest_reward is true %}
             dt_farmable.columns.adjust().responsive.recalc();
             {% endif %}
+
+            dt_element.on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+            dt_status.on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+            $('[data-toggle="tooltip"]').tooltip();
+
         } );
     </script>
     <div class="row detailsbox">
@@ -306,6 +317,31 @@
     </div>
     {% endif %}
     <hr />
+    <h4>Battle Roads</h4>
+    <table id="dt_battleroad" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+        <thead>
+            <tr>
+                <td>Battle Road</td>
+                <td>Banner</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for battleroad in battleroads %}
+            <tr>
+                <td>
+                    {% if battleroad.area_group_name is defined %}
+                    {{ battleroad.area_group_name }} - 
+                    {% endif %}
+                    {{ battleroad.area_display_name }}
+                </td>
+                <td>
+                    <img class="d-block img-fluid" src="/{{ battleroad.area_banner_path }}" style="width: 512px; height: 120px;" />
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <hr />
     <h4>Elemental Resistance</h4>
     <div>
         <table id="dt_element_resist" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
@@ -318,8 +354,12 @@
             <tbody>
                 {% for element in unit.element_resistances %}
                 <tr>
-                    <td>{{ unit.element_resistances[element].name }}</td>
-                    <td>{{ unit.element_resistances[element].rate }}</td>
+                    <td>
+                        <img style="float: left" src='/{{ unit.element_resistances[element].icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ unit.element_resistances[element].name }}" />
+                    </td>
+                    <td>
+                        <img style="float: left" src='/{{ unit.element_resistances[element].rate_icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ unit.element_resistances[element].rate }}" />
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -338,13 +378,18 @@
             <tbody>
                 {% for abnormity in unit.abnormity_resistances %}
                 <tr>
-                    <td>{{ unit.abnormity_resistances[abnormity].name }}</td>
-                    <td>{{ unit.abnormity_resistances[abnormity].rate }}</td>
+                    <td>
+                        <img style="float: left" src='/{{ unit.abnormity_resistances[abnormity].icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ unit.abnormity_resistances[abnormity].name }}" />
+                    </td>
+                    <td>
+                        <img style="float: left" src='/{{ unit.abnormity_resistances[abnormity].rate_icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ unit.abnormity_resistances[abnormity].rate }}" />
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    <hr />
     <h4>Talent Blossoming</h4>
     <div>
         <table id="dt_blossom_board" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
@@ -408,6 +453,7 @@
             </tbody>
         </table>
     </div>
+    <hr />
     <h4>Character Builder</h4>
     <div>
         <table id="dt_character_builder" class="table table-striped table-hover table-bordered align-middle" style="width:100%">

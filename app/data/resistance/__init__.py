@@ -8,18 +8,45 @@ class Resistance:
 
         return
 
+    def map_rate_to_image(self, rate: int):
+        icon: str = None
+
+        if int(rate) == 100:
+            icon = self.util.get_image_path('Assets/Aiming/Textures/GUI/en/Icon/MonsterIcon/MonsterIconParts/ResistanceLevel_Mukou.png')
+        elif int(rate) == 75:
+            icon = self.util.get_image_path('Assets/Aiming/Textures/GUI/en/Icon/MonsterIcon/MonsterIconParts/ResistanceLevel_Gekigen.png')
+        elif int(rate) == 50:
+            icon = self.util.get_image_path('Assets/Aiming/Textures/GUI/en/Icon/MonsterIcon/MonsterIconParts/ResistanceLevel_Hangen.png')
+        elif int(rate) == 25:
+            icon = self.util.get_image_path('Assets/Aiming/Textures/GUI/en/Icon/MonsterIcon/MonsterIconParts/ResistanceLevel_Keigen.png')
+        elif int(rate) == 0:
+            icon = self.util.get_image_path('Assets/Aiming/Textures/GUI/en/Icon/MonsterIcon/MonsterIconParts/ResistanceLevel_Hutuu.png')
+        elif int(rate) == -25:
+            icon = self.util.get_image_path('Assets/Aiming/Textures/GUI/en/Icon/MonsterIcon/MonsterIconParts/ResistanceLevel_Zyakuten.png')
+        elif int(rate) == -50:
+            icon = self.util.get_image_path('Assets/Aiming/Textures/GUI/en/Icon/MonsterIcon/MonsterIconParts/ResistanceLevel_DaiZyakuten.png')
+        elif int(rate) == -100:
+            icon = self.util.get_image_path('Assets/Aiming/Textures/GUI/en/Icon/MonsterIcon/MonsterIconParts/ResistanceLevel_ChouZyakuten.png')
+
+        return icon
+
     def parse_elemental_resistance_table(self, element_resistance_data: dict):
         elements: dict = self.build_element_table()
         element_resistance_table: dict = {}
 
         for element_resistance in element_resistance_data.get('elementResistances'):
             element_type = element_resistance.get('type')
-            element_name = elements.get(element_type)
+            element_name = elements.get(element_type).get('name')
+            element_icon = elements.get(element_type).get('icon')
             element_resistance_rate = str(math.trunc(element_resistance.get('rate') / 100))
+            element_resistance_rate_icon = self.map_rate_to_image(element_resistance_rate)
+
             element_resistance_table.update({
                 element_type: {
                     'name': element_name,
-                    'rate': element_resistance_rate
+                    'icon': element_icon,
+                    'rate': element_resistance_rate,
+                    'rate_icon': element_resistance_rate_icon
                 }
             })
 
@@ -60,12 +87,21 @@ class Resistance:
 
         for abnormity_resistance in abnormity_resistance_data.get('abnormityResistances'):
             abnormity_resistance_type = abnormity_resistance.get('type')
-            abnormity_resistance_name = abnormity_status_effects.get(abnormity_resistance_type)
+
+            if abnormity_status_effects.get(abnormity_resistance_type) is None:
+                continue
+
+            abnormity_resistance_name = abnormity_status_effects.get(abnormity_resistance_type).get('name')
+            abnormity_resistance_icon = abnormity_status_effects.get(abnormity_resistance_type).get('icon')
             abnormity_resistance_rate = str(math.trunc(abnormity_resistance.get('rate') / 100))
+            abnormity_resistance_rate_icon = self.map_rate_to_image(abnormity_resistance_rate)
+
             abnormity_resistance_table.update({
                 abnormity_resistance_type: {
                     'name': abnormity_resistance_name,
-                    'rate': abnormity_resistance_rate
+                    'icon': abnormity_resistance_icon,
+                    'rate': abnormity_resistance_rate,
+                    'rate_icon': abnormity_resistance_rate_icon
                 }
             })
 
@@ -141,7 +177,12 @@ class Resistance:
             document = asset.get('processed_document')
             code = document.get('code')
             display_name = self.util.get_localized_string(document, key='displayName_translation', path=path)
-            elements.update({code: display_name})
+            icon = self.util.get_image_path(document.get('iconPath'))
+
+            elements.update({code: {
+                'name': display_name,
+                'icon': icon
+            }})
 
         return elements
 
@@ -153,8 +194,12 @@ class Resistance:
             document = asset.get('processed_document')
             code = document.get('targetType')
             display_name = self.util.get_localized_string(document, key='effectStatusName_translation', path=path)
+            icon = self.util.get_image_path(document.get('effectIconPath'))
 
-            abnormity_status.update({code: display_name})
+            abnormity_status.update({code: {
+                'name': display_name,
+                'icon': icon,
+            }})
 
         return abnormity_status
 
@@ -166,10 +211,17 @@ class Resistance:
             document = asset.get('processed_document')
             code = document.get('resistanceAbnormityStatus').get('resistanceType')
             display_name = self.util.get_localized_string(document, key='effectStatusName_translation', path=path)
+            icon = self.util.get_image_path(document.get('effectIconPath'))
 
             if display_name == 'Envenom' or display_name == 'Deep Sleep':
                 continue
 
-            abnormity_status.update({code: display_name})
+            if code is None:
+                continue
+
+            abnormity_status.update({code: {
+                'name': display_name,
+                'icon': icon,
+            }})
 
         return abnormity_status

@@ -282,7 +282,7 @@ class Skill:
             'skill_reaction_target': skill_reaction_target,
             'skill_multiple_activation_to_same_target': skill_multiple_activation_to_same_target,
             'skill_is_re_reactionable': skill_is_re_reactionable,
-            'skill_applicable_abnormity_types': sorted(skill_applicable_abnormity_types),
+            'skill_applicable_abnormity_types': sorted(skill_applicable_abnormity_types, key=lambda d: d['name']),
             'skill_related_active_skill_name': skill_related_active_skill_name,
             'skill_related_active_skill_id': skill_related_active_skill_id,
             'type_of_skill': 'reaction_skill'

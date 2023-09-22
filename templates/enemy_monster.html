@@ -18,6 +18,13 @@
             dt_passive_skills.columns.adjust().responsive.recalc();
             dt_reaction_skills.columns.adjust().responsive.recalc();
             dt_stages.columns.adjust().responsive.recalc();
+            dt_element.on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+            dt_status.on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+            $('[data-toggle="tooltip"]').tooltip();
         } );
     </script>
     <div class="row detailsbox">
@@ -65,8 +72,12 @@
             <tbody>
                 {% for element in enemy_monster.enemy_element_resistance %}
                 <tr>
-                    <td>{{ enemy_monster.enemy_element_resistance[element].name }}</td>
-                    <td>{{ enemy_monster.enemy_element_resistance[element].rate }}</td>
+                    <td>
+                        <img style="float: left" src='/{{ enemy_monster.enemy_element_resistance[element].icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ enemy_monster.enemy_element_resistance[element].name }}" />
+                    </td>
+                    <td>
+                        <img style="float: left" src='/{{ enemy_monster.enemy_element_resistance[element].rate_icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ enemy_monster.enemy_element_resistance[element].rate }}" />
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -85,8 +96,12 @@
             <tbody>
                 {% for abnormity in enemy_monster.enemy_abnormity_resistance %}
                 <tr>
-                    <td>{{ enemy_monster.enemy_abnormity_resistance[abnormity].name }}</td>
-                    <td>{{ enemy_monster.enemy_abnormity_resistance[abnormity].rate }}</td>
+                    <td>
+                        <img style="float: left" src='/{{ enemy_monster.enemy_abnormity_resistance[abnormity].icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ enemy_monster.enemy_abnormity_resistance[abnormity].name }}" />
+                    </td>
+                    <td>
+                        <img style="float: left" src='/{{ enemy_monster.enemy_abnormity_resistance[abnormity].rate_icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ enemy_monster.enemy_abnormity_resistance[abnormity].rate }}" />
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -114,7 +129,7 @@
                 <tr>
                     <td><a href='/skill/active_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
                     <td>{{ skill.skill_description }}</td>
-                    <td>{{ skill.skill_rank }}</td>
+                    <td><img src="/{{ skill.skill_rank_icon }}" style="width: 64px; height: 64px;" /></td>
                     <td><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
                     <td>{{ skill.skill_reach }}</td>
                     <td><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>

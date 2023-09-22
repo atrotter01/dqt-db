@@ -9,7 +9,7 @@
                 responsive: true,
                 searchPanes: {
                     cascadePanes: true,
-                    columns: [2,3,4,5],
+                    columns: [2,3,4,5,12],
                     controls: true,
                     collapse: true,
                     initCollapsed: true,
@@ -52,6 +52,7 @@
                     <td>Min</td>
                     <td>Max</td>
                     <td>Multi</td>
+                    <td>Type</td>
                 </tr>
             </thead>
             <tbody>
@@ -84,6 +85,19 @@
                     <td>{{ skill.skill_min_damage }}</td>
                     <td>{{ skill.skill_max_damage }}</td>
                     <td>{{ skill.skill_multiplier }}</td>
+                    <td>
+                        {% if skill.skill_type == '1' %}
+                            Physical
+                        {% elif skill.skill_type == '3' %}
+                            Martial
+                        {% elif skill.skill_type == '4' %}
+                            Spell
+                        {% elif skill.skill_type == '5' %}
+                            Breath
+                        {% else %}
+                            Other
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
