@@ -227,6 +227,7 @@
                 </tr>
             </thead>
             <tbody>
+                {% if stages is not none %}
                 {% for stage in stages %}
                 <tr>
                     <td>
@@ -242,6 +243,7 @@
                     </td>
                 </tr>
                 {% endfor %}
+                {% endif %}
             </tbody>
         </table>
     </div>

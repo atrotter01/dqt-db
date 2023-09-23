@@ -54,7 +54,6 @@ class Stage:
         stage_missions: list = []
 
         # Todo
-        #randomStageGeneration - TnT Board Enemies
         #consumptionItems - Required Stage Items
         #onlyConsumeItemsWhenClear
         #treasureChests
@@ -175,6 +174,42 @@ class Stage:
                     'pop_percentage': candidate.get('probabilityPercentage'),
                     'monster': monster
                 })
+
+        if data.get('randomStageGeneration').get('enemyGroups') is not None:
+            for enemy_group in data.get('randomStageGeneration').get('enemyGroups'):
+                for candidate in enemy_group.get('candidates'):
+                    enemy_monster: dict = self.enemy_monster_parser.get_data(candidate.get('masterData').get('linked_asset_id'))
+                    monster: dict = {
+                        'id': enemy_monster.get('id'),
+                        'enemy_display_name': enemy_monster.get('enemy_display_name'),
+                        'enemy_level': enemy_monster.get('enemy_level'),
+                        'enemy_hp': enemy_monster.get('enemy_hp'),
+                        'enemy_mp': enemy_monster.get('enemy_mp'),
+                        'enemy_attack': enemy_monster.get('enemy_attack'),
+                        'enemy_defense': enemy_monster.get('enemy_defense'),
+                        'enemy_intelligence': enemy_monster.get('enemy_intelligence'),
+                        'enemy_agility': enemy_monster.get('enemy_agility'),
+                        'enemy_mobility': enemy_monster.get('enemy_mobility'),
+                        'enemy_weight': enemy_monster.get('enemy_weight'),
+                        'enemy_is_unique_monster': enemy_monster.get('enemy_is_unique_monster'),
+                        'enemy_is_strong_enemy': enemy_monster.get('enemy_is_strong_enemy'),
+                        'enemy_scout_probability': enemy_monster.get('enemy_scout_probability'),
+                        'enemy_is_rare_scout': enemy_monster.get('enemy_is_rare_scout'),
+                        'enemy_flavor_text': enemy_monster.get('enemy_flavor_text'),
+                        'enemy_family': enemy_monster.get('enemy_family'),
+                        'enemy_family_icon': enemy_monster.get('enemy_family_icon'),
+                        'enemy_role': enemy_monster.get('enemy_role'),
+                        'enemy_role_icon': enemy_monster.get('enemy_role_icon'),
+                        'enemy_unit_icon': enemy_monster.get('enemy_unit_icon'),
+                        'enemy_transformed_unit_icon': enemy_monster.get('enemy_transformed_unit_icon'),
+                        'enemy_drops': enemy_monster.get('enemy_drops')
+                    }
+
+                    stage_random_enemies.append({
+                        'is_rare_pop': False,
+                        'pop_percentage': candidate.get('weight'),
+                        'monster': monster
+                    })
 
         monster_drop_rates: dict = {}
         monster_counts: dict = {
