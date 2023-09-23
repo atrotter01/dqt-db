@@ -1,9 +1,19 @@
 import argparse
-import json
+import concurrent
 import requests
 from app.util import Util
+from app.data.area import Area
+from app.data.areagroup import AreaGroup
+from app.data.enemymonster import EnemyMonster
+from app.data.equipment import Equipment
+from app.data.skill import Skill
+from app.data.stage import Stage
+from app.data.unit import Unit
 
 def cache_stage_structure(lang: str):
+    if util.get_redis_asset(cache_key=f'{lang}_stage_structure_parsed_asset') is not None:
+        return
+
     event_portal_list = util.get_asset_list('EventPortal')
     event_portals: dict = {}
 
@@ -83,6 +93,9 @@ def cache_stage_structure(lang: str):
     util.save_redis_asset(cache_key=f'{lang}_stage_structure_parsed_asset', data=stage_structure)
 
 def cache_stage_monster_lookup_table(lang: str):
+    if util.get_redis_asset(cache_key=f'{lang}_stage_monster_lookup_parsed_asset') is not None:
+        return
+
     stage_monster_lookup_parsed_asset: dict = {}
 
     for stage in stage_data:
@@ -133,6 +146,9 @@ def cache_stage_monster_lookup_table(lang: str):
     util.save_redis_asset(cache_key=f'{lang}_stage_monster_lookup_parsed_asset', data=stage_monster_lookup_parsed_asset)
 
 def cache_skill_unit_table(lang: str):
+    if util.get_redis_asset(cache_key=f'{lang}_skill_unit_table_parsed_asset') is not None:
+        return
+
     enemy_monster_data = enemy_monster_response.json()
 
     skill_unit_table: dict = {}
@@ -342,6 +358,9 @@ def cache_skill_unit_table(lang: str):
     util.save_redis_asset(cache_key=f'{lang}_skill_unit_table_parsed_asset', data=skill_unit_table)
 
 def cache_equipment_skill_table(lang: str):
+    if util.get_redis_asset(f'{lang}_skill_equipment_parsed_asset') is not None:
+        return
+
     skill_equipment_cache: dict = {}
 
     for equipment in equipment_response.json():
@@ -424,6 +443,9 @@ def cache_equipment_skill_table(lang: str):
     util.save_redis_asset(f'{lang}_skill_equipment_parsed_asset', skill_equipment_cache)
 
 def cache_item_location_table(lang: str):
+    if util.get_redis_asset(f'{lang}_item_location_parsed_asset') is not None:
+        return
+
     item_location_table: dict = {}
 
     for stage in stage_data:
@@ -464,7 +486,6 @@ def cache_item_location_table(lang: str):
     for shop in shop_data:
         location_id = shop.get('id')
         location_name = shop.get('display_name')
-
         seen_items: list = []
 
         for good in shop.get('shop_goods'):
@@ -487,6 +508,9 @@ def cache_item_location_table(lang: str):
     util.save_redis_asset(f'{lang}_item_location_parsed_asset', item_location_table)
 
 def cache_unit_profile_map(lang: str):
+    if util.get_redis_asset(f'{lang}_profile_unit_map_parsed_asset') is not None:
+        return
+
     profile_unit_map: dict = {}
 
     for path in util.get_asset_list('AllyMonster'):
@@ -500,6 +524,9 @@ def cache_unit_profile_map(lang: str):
     util.save_redis_asset(f'{lang}_profile_unit_map_parsed_asset', profile_unit_map)
 
 def cache_unit_training_board_map(lang: str):
+    if util.get_redis_asset(f'{lang}_training_board_map_parsed_asset') is not None:
+        return
+
     training_board_unit_map: dict = {}
     training_boards: list = []
     training_boards.extend(util.get_asset_list('TrainingBoard'))
@@ -521,6 +548,20 @@ def cache_unit_training_board_map(lang: str):
 
     util.save_redis_asset(f'{lang}_training_board_map_parsed_asset', training_board_unit_map)
 
+def cache_shop(path):
+    asset = util.get_asset_by_path(path, deflate_data=True)
+    document = asset.get('processed_document')
+
+    # Bad Fygg Shop Data
+    if 'Megaminokazitu' in asset.get('display_name'):
+        return
+
+    # Dummy Passport Shop
+    if not document.get('displayName_translation'):
+        return
+
+    requests.get(f'http://localhost:5000/api/shop/{path}', timeout=3600, params=dict(lang=util.get_language_setting()))
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--lang')
@@ -528,26 +569,89 @@ if __name__ == '__main__':
 
     util: Util = Util(lang=args.lang)
 
+    area_instance: Area = Area(util=util)
+    area_group_instance: AreaGroup = AreaGroup(util=util)
+    enemy_monster_instance: EnemyMonster = EnemyMonster(util=util)
+    equipment_instance: Equipment = Equipment(util=util)
+    skill_instance: Skill = Skill(util=util)
+    stage_instance: Stage = Stage(util=util)
+    unit_instance: Unit = Unit(util=util)
+
     cache_unit_training_board_map(lang=util.get_language_setting())
 
+    print('Caching Area')
+    area_instance.seed_cache()
+
+    print('Caching Area Group')
+    area_group_instance.seed_cache()
+
+    print('Caching Enemy Monster')
+    enemy_monster_instance.seed_cache()
+
+    print('Caching Equipment')
+    equipment_instance.seed_cache()
+
+    print('Caching Skill')
+    skill_instance.seed_cache()
+
+    print('Caching Stage')
+    stage_instance.seed_cache()
+
+    print('Caching Unit')
+    unit_instance.seed_cache()
+
+    print('Caching Shops')
+    executor = concurrent.futures.ProcessPoolExecutor(16)
+    futures = [executor.submit(cache_shop, path) for path in util.get_asset_list('ExchangeShop')]
+    concurrent.futures.wait(futures)
+
+    print('Fetching Area')
     area_response = requests.get('http://localhost:5000/api/area/', timeout=3600, params=dict(lang=util.get_language_setting()))
+
+    print('Fetching Area Group')
     area_group_response = requests.get('http://localhost:5000/api/area_group', timeout=3600, params=dict(lang=util.get_language_setting()))
 
+    print('Fetching Unit')
     unit_response = requests.get('http://localhost:5000/api/unit', timeout=3600, params=dict(lang=util.get_language_setting()))
+
+    print('Fetching Active Skill')
     active_skill_response = requests.get('http://localhost:5000/api/skill/active_skill', timeout=3600, params=dict(lang=util.get_language_setting()))
+
+    print('Fetching Passive Skill')
     passive_skill_response = requests.get('http://localhost:5000/api/skill/passive_skill', timeout=3600, params=dict(lang=util.get_language_setting()))
+
+    print('Fetching Reaction Skill')
     reaction_skill_response = requests.get('http://localhost:5000/api/skill/reaction_skill', timeout=3600, params=dict(lang=util.get_language_setting()))
+
+    print('Fetching Enemy Skill')
     enemy_skill_response = requests.get('http://localhost:5000/api/skill/enemy_skill', timeout=3600, params=dict(lang=util.get_language_setting()))
+
+    print('Fetching Accolade')
     accolade_response = requests.get('http://localhost:5000/api/accolade', timeout=3600, params=dict(lang=util.get_language_setting()))
+
+    print('Fetching Equipment')
     equipment_response = requests.get('http://localhost:5000/api/equipment', timeout=3600, params=dict(lang=util.get_language_setting()))
+
+    print('Fetching Enemy Monster')
     enemy_monster_response = requests.get('http://localhost:5000/api/enemy_monster', timeout=3600, params=dict(lang=util.get_language_setting()))
 
+    print('Fetching Consumable Item')
     consumable_item_response = requests.get('http://localhost:5000/api/item/consumableitem', timeout=3600, params=dict(lang=util.get_language_setting()))
+
+    print('Fetching Profile Icon')
     profile_icon_response = requests.get('http://localhost:5000/api/item/profileicon', timeout=3600, params=dict(lang=util.get_language_setting()))
+
+    print('Fetching Package')
     package_response = requests.get('http://localhost:5000/api/item/package', timeout=3600, params=dict(lang=util.get_language_setting()))
 
+    print('Fetching Stage')
     stage_response = requests.get('http://localhost:5000/api/stage', timeout=3600, params=dict(lang=util.get_language_setting()))
+
+    print('Fetching Shop')
     shop_response = requests.get('http://localhost:5000/api/shop', timeout=3600, params=dict(lang=util.get_language_setting()))
+
+    print('Fetching Farmable')
+    farmable_response = requests.get('http://localhost:5000/api/farmable', timeout=3600, params=dict(lang=util.get_language_setting()))
 
     area_data = area_response.json()
     area_group_data = area_group_response.json()

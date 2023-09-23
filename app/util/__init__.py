@@ -6,6 +6,8 @@ from typing import Union
 import redis
 import brotli
 from flask import current_app as app
+from app.data import DataProcessor
+from app.data.assetprocessor import AssetProcessor
 
 class Util:
     asset_list: list = []
@@ -18,6 +20,7 @@ class Util:
     lookup_cache: dict = {}
     possible_circular_references: list = []
     lang: str
+    data_processor: DataProcessor = None
 
     def __init__(self, force_rebuild: bool = False, lang: str = 'en'):
         self.redis_client = redis.Redis(host='localhost', port=6379, decode_responses=False)
@@ -25,6 +28,7 @@ class Util:
 
         self.asset_list = self.build_asset_list(force_rebuild=force_rebuild)
         self.lookup_cache = self.cache_lookup_table(force_rebuild=force_rebuild)
+        self.data_processor = DataProcessor(_util=self)
 
         if lang is None:
             lang = 'en'
@@ -62,14 +66,11 @@ class Util:
         else:
             return self.lookup_cache.get(asset_type)
 
-    def get_asset_by_path(self, path: str, deflate_data: bool = True):
+    def get_asset_by_path(self, path: str, deflate_data: bool = True, build_processed_asset: bool = True):
         asset: dict = None
 
-        #if path in self.cache_keys:
-        #    asset = self.inflate_asset(self.redis_client.get(path))
-        #else:
         redis_data = None
-        
+
         if str(path).startswith('user_data'):
             redis_data = self.user_redis_client.get(path)
         else:
@@ -86,8 +87,14 @@ class Util:
         if deflate_data is True and self.redis_client.get(f'{path}_data') is not None:
             asset.update({'document': self.inflate_asset(self.redis_client.get(f'{path}_data'))})
 
-        if deflate_data is True and self.redis_client.get(f'{path}_processed_data') is not None:
-            asset.update({'processed_document': self.inflate_asset(self.redis_client.get(f'{path}_processed_data'))})
+        if deflate_data is True and build_processed_asset is True:# and self.redis_client.get(f'{path}_processed_data') is not None:
+            #asset.update({'processed_document': self.inflate_asset(self.redis_client.get(f'{path}_processed_data'))})
+            asset.update(
+                {
+                    'processed': True,
+                    'processed_document': self.data_processor.parse_asset(path=path)
+                }
+            )
 
         return asset
 
@@ -98,7 +105,7 @@ class Util:
         return brotli.compress(json.dumps(asset).encode())
 
     def save_processed_document(self, path: str, processed_document: dict, display_name: str, set_processed_flag: bool = True):
-        asset: dict = self.get_asset_by_path(path=path, deflate_data=False)
+        asset: dict = self.get_redis_asset(cache_key=path)
 
         if set_processed_flag is True:
             asset.update({'processed': True})
@@ -127,12 +134,12 @@ class Util:
             return False
 
     def get_unprocessed_assets(self):
-        return self.get_asset_by_path('unprocessed_asset_counts', deflate_data=False)
+        return self.get_redis_asset('unprocessed_asset_counts')
 
     def get_assets_by_container(self, processed_filter: bool = None):
         containers: dict = {}
 
-        for asset in self.get_asset_by_path(path='metadata_cache', deflate_data=False):
+        for asset in self.get_redis_asset(cache_key='metadata_cache'):
             path = asset.get('path')
             container = asset.get('container')
             display_name = asset.get('display_name')
@@ -159,7 +166,7 @@ class Util:
         containers: dict = {}
 
         for path in self.get_asset_list():
-            asset = self.get_asset_by_path(path=path, deflate_data=False)
+            asset = self.get_redis_asset(cache_key=path)
             path = asset.get('path')
             container = asset.get('container')
             display_name = asset.get('display_name')
@@ -202,7 +209,7 @@ class Util:
                 if path in self.cache_keys or path.endswith('_parsed_asset') or path.startswith('user_data') or path.startswith('sys_'):
                     continue
 
-                asset = self.get_asset_by_path(path=path, deflate_data=False)
+                asset = self.get_redis_asset(cache_key=path)
                 filepath = asset.get('filepath')
                 container = asset.get('container')
                 filetype = asset.get('filetype')
@@ -287,10 +294,10 @@ class Util:
         elif force_rebuild is True:
             self.cache_metadata(force_rebuild=force_rebuild)
 
-        return self.get_asset_by_path(path='lookup_cache', deflate_data=False)
+        return self.get_redis_asset(cache_key='lookup_cache')
 
     def map_asset_file_to_path(self, asset_file):
-        asset_cache: dict = self.get_asset_by_path(path='metadata_cache', deflate_data=False)
+        asset_cache: dict = self.get_redis_asset(cache_key='metadata_cache')
 
         for asset in asset_cache:
             if asset.get('display_name') == asset_file:
@@ -308,7 +315,7 @@ class Util:
         processed_assets: int = 0
 
         for path in asset_list:
-            asset = self.get_asset_by_path(path=path, deflate_data=False)
+            asset = self.get_redis_asset(cache_key=path)
             path: str = asset.get('path')
             processed_assets = processed_assets + 1
 
@@ -324,7 +331,7 @@ class Util:
             print(f'Reset {path} ({processed_assets} of {total_assets})')
 
     def reset_asset(self, path: str):
-        asset = self.get_asset_by_path(path=path, deflate_data=False)
+        asset = self.get_redis_asset(cache_key=path)
 
         if asset.get('processed') is False:
             return
@@ -426,7 +433,10 @@ class Util:
         if cached_data is None:
             return None
 
-        return self.inflate_asset(cached_data)
+        try:
+            return self.inflate_asset(cached_data)
+        except brotli.error:
+            return json.loads(cached_data.decode())
 
     def get_codelist_path_map(self):
         codelist: dict = {}
@@ -440,7 +450,7 @@ class Util:
                 codelist[asset_type] = {}
 
                 for path in assets:
-                    asset: dict = self.get_asset_by_path(path)
+                    asset: dict = self.get_asset_by_path(path=path, deflate_data=True, build_processed_asset=False)
                     document: dict = asset.get('document')
 
                     for key in document.keys():
@@ -466,7 +476,7 @@ class Util:
 
         self.save_redis_asset(cache_key='codelist_cache', data=codelist)
 
-        return codelist
+        return self.get_redis_asset(cache_key='codelist_cache')
 
     def get_localized_string(self, data: dict, key: str, path: str, lang: str = None):
         untranslated_strings: dict = {}
@@ -488,7 +498,9 @@ class Util:
                     untranslated_strings[translate_key] = {
                         'key': key,
                         'path': path,
-                        'asset_id': asset_id
+                        'asset_id': asset_id,
+                        'string': data.get(key).get('ja'),
+                        'filetype': self.get_asset_by_path(path=path, deflate_data=False, build_processed_asset=False).get('filetype')
                     }
 
                     self.save_redis_asset('sys_untranslated_strings', untranslated_strings)

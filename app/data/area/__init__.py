@@ -1,5 +1,8 @@
+import concurrent
 from app.util import Util
 from app.data.unit import Unit
+
+data_class_instance = None
 
 class Area:
 
@@ -9,6 +12,7 @@ class Area:
     def __init__(self, util):
         self.util = util
         self.unit_parser = Unit(util=util)
+        globals()['data_class_instance'] = self
 
         return
 
@@ -109,3 +113,11 @@ class Area:
         self.util.save_redis_asset(cache_key=cache_key, data=asset)
 
         return asset
+
+    def seed_cache(self):
+        executor = concurrent.futures.ProcessPoolExecutor(16)
+        futures = [executor.submit(process_and_save_asset, path) for path in self.util.get_asset_list('Area')]
+        concurrent.futures.wait(futures)
+
+def process_and_save_asset(path):
+    data_class_instance.get_data(path=path)

@@ -1,8 +1,11 @@
+import concurrent
 import requests
 from app.util import Util
 from app.data.resistance import Resistance
 from app.data.skill import Skill
 from app.data.blossom import Blossom
+
+data_class_instance = None
 
 class Unit:
 
@@ -16,6 +19,7 @@ class Unit:
         self.skill_parser = Skill(util=util)
         self.resistance_parser = Resistance(util=util)
         self.blossom_parser = Blossom(util=util)
+        globals()['data_class_instance'] = self
 
         return
 
@@ -214,3 +218,11 @@ class Unit:
             self.util.save_redis_asset(cache_key=cache_key, data=asset)
 
         return asset
+
+    def seed_cache(self):
+        executor = concurrent.futures.ProcessPoolExecutor(16)
+        futures = [executor.submit(process_and_save_asset, path) for path in self.util.get_asset_list('AllyMonster')]
+        concurrent.futures.wait(futures)
+
+def process_and_save_asset(path):
+    data_class_instance.get_data(path=path)

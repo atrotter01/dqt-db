@@ -468,15 +468,13 @@ def translate_route():
         key: str = untranslated_asset_list.get(asset_key).get('key')
         path: str = untranslated_asset_list.get(asset_key).get('path')
         asset_id: str = untranslated_asset_list.get(asset_key).get('asset_id')
+        filetype: str = untranslated_asset_list.get(asset_key).get('filetype')
+        string: str = untranslated_asset_list.get(asset_key).get('string')
 
         if asset_id in seen_assets:
             continue
 
         seen_assets.append(asset_id)
-        asset: dict = util.get_asset_by_path(asset_id, deflate_data=True)
-        data: dict = asset.get('processed_document')
-        filetype: str = asset.get('filetype')
-        string = data.get(key).get('ja')
 
         untranslated_assets.append({
             'key': key,

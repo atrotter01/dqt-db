@@ -1,4 +1,7 @@
+import concurrent
 from app.util import Util
+
+data_class_instance = None
 
 class LootGroup:
 
@@ -6,6 +9,7 @@ class LootGroup:
 
     def __init__(self, util):
         self.util = util
+        globals()['data_class_instance'] = self
 
         return
 
@@ -117,3 +121,11 @@ class LootGroup:
         self.util.save_redis_asset(cache_key=cache_key, data=asset)
 
         return asset
+
+    def seed_cache(self):
+        executor = concurrent.futures.ProcessPoolExecutor(16)
+        futures = [executor.submit(process_and_save_asset, path) for path in self.util.get_asset_list('LootItemGroup')]
+        concurrent.futures.wait(futures)
+
+def process_and_save_asset(path):
+    data_class_instance.get_data(path=path)

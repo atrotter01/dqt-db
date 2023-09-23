@@ -1,6 +1,6 @@
 from pathlib import Path
 from copy import deepcopy
-from app.util import Util
+#from app.util import Util
 
 class DataProcessor:
 
@@ -8,9 +8,9 @@ class DataProcessor:
     translation_noun_ja: dict
     translation_gbl: dict
     translation_noun_gbl: dict
-    util: Util
+    util: object
 
-    def __init__(self, _util: Util):
+    def __init__(self, _util: object):
         self.util = _util
         self.translation_ja = self.build_translation('Translation')
         self.translation_noun_ja = self.build_translation_noun('TranslationNoun')
@@ -20,7 +20,7 @@ class DataProcessor:
     def build_translation(self, key):
         translation_data: dict = {}
 
-        asset: dict = self.util.get_asset_by_path(path=self.util.get_asset_list(key)[0], deflate_data=True)
+        asset: dict = self.util.get_asset_by_path(path=self.util.get_asset_list(key)[0], deflate_data=True, build_processed_asset=False)
         document: dict = asset.get('document')
         assert isinstance(document, dict), document
 
@@ -37,7 +37,7 @@ class DataProcessor:
     def build_translation_noun(self, key):
         translation_noun_data: dict = {}
 
-        asset: dict = self.util.get_asset_by_path(self.util.get_asset_list(key)[0], deflate_data=True)
+        asset: dict = self.util.get_asset_by_path(self.util.get_asset_list(key)[0], deflate_data=True, build_processed_asset=False)
         document: dict = asset.get('document')
         assert isinstance(document, dict), document
 
@@ -203,7 +203,7 @@ class DataProcessor:
 
     def get_document(self, path: str, parent_path: str = None, key_stack: str = None, path_stack: list = [], force_rebuild: bool = False):
         try:
-            asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True)
+            asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True, build_processed_asset=False)
 
             if asset is None:
                 return {
@@ -223,9 +223,9 @@ class DataProcessor:
             processed_dict.update({'linked_asset_id': str(path)})
             assert isinstance(processed_dict, dict), f'Processed Dict Error: {path}'
 
-            if parent_path is not None:
-                print(f'Saving processed document for {path}.')
-                self.util.save_processed_document(path=path, processed_document=processed_dict, display_name=None, set_processed_flag=True)
+            #if parent_path is not None:
+            #    print(f'Saving processed document for {path}.')
+            #    self.util.save_processed_document(path=path, processed_document=processed_dict, display_name=None, set_processed_flag=True)
 
             return processed_dict
         except TypeError as ex:

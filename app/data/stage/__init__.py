@@ -1,6 +1,9 @@
+import concurrent
 from app.util import Util
 from app.data.enemymonster import EnemyMonster
 from app.data.lootgroup import LootGroup
+
+data_class_instance = None
 
 class Stage:
 
@@ -12,6 +15,7 @@ class Stage:
         self.util = util
         self.enemy_monster_parser = EnemyMonster(util=util)
         self.loot_group_parser = LootGroup(util=util)
+        globals()['data_class_instance'] = self
 
         return
 
@@ -480,3 +484,11 @@ class Stage:
         self.util.save_redis_asset(cache_key=cache_key, data=asset)
 
         return asset
+
+    def seed_cache(self):
+        executor = concurrent.futures.ProcessPoolExecutor(16)
+        futures = [executor.submit(process_and_save_asset, path) for path in self.util.get_asset_list('Stage')]
+        concurrent.futures.wait(futures)
+
+def process_and_save_asset(path):
+    data_class_instance.get_data(path=path)

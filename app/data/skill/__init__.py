@@ -1,6 +1,9 @@
+import concurrent
 import math
 from app.util import Util
 from app.data.resistance import Resistance
+
+data_class_instance = None
 
 class Skill:
 
@@ -10,6 +13,7 @@ class Skill:
     def __init__(self, util):
         self.util = util
         self.resistance_parser = Resistance(util=util)
+        globals()['data_class_instance'] = self
 
         return
 
@@ -553,3 +557,64 @@ class Skill:
         self.util.save_redis_asset(cache_key=cache_key, data=skill)
 
         return skill
+
+    def seed_cache(self):
+        asset_list: list = []
+        asset_list.extend(self.util.get_asset_list('ActiveSkill'))
+        asset_list.extend(self.util.get_asset_list('EnemySkill'))
+        asset_list.extend(self.util.get_asset_list('GuestSkill'))
+        asset_list.extend(self.util.get_asset_list('NotUseSkill'))
+
+        executor = concurrent.futures.ProcessPoolExecutor(16)
+        futures = [executor.submit(process_and_save_active_skill, path) for path in asset_list]
+        concurrent.futures.wait(futures)
+
+        asset_list.clear()
+
+        asset_list.extend(self.util.get_asset_list('ActiveSkill'))
+        asset_list.extend(self.util.get_asset_list('GuestSkill'))
+        asset_list.extend(self.util.get_asset_list('NotUseSkill'))
+
+        asset_list.extend(self.util.get_asset_list('LeaderPassive'))
+        asset_list.extend(self.util.get_asset_list('ReactionPassive'))
+        asset_list.extend(self.util.get_asset_list('NotUsePassiveSkill'))
+        asset_list.extend(self.util.get_asset_list('PassiveSkill'))
+
+        for path in self.util.get_asset_list('PS'):
+            asset = self.util.get_asset_by_path(path)
+
+            if asset.get('processed_document').get('passiveSkillName') is not None:
+                asset_list.append(path)
+
+        for path in self.util.get_asset_list('EquipmentPassive'):
+            asset = self.util.get_asset_by_path(path)
+
+            if asset.get('processed_document').get('passiveSkillName') is not None:
+                asset_list.append(path)
+
+        for path in self.util.get_asset_list('MS'):
+            asset = self.util.get_asset_by_path(path)
+
+            if asset.get('processed_document').get('passiveSkillName') is not None:
+                asset_list.append(path)
+
+        executor = concurrent.futures.ProcessPoolExecutor(16)
+        futures = [executor.submit(process_and_save_passive_skill, path) for path in asset_list]
+        concurrent.futures.wait(futures)
+
+        asset_list.clear()
+
+        asset_list.extend(self.util.get_asset_list('ReactionPassiveSkill'))
+
+        executor = concurrent.futures.ProcessPoolExecutor(16)
+        futures = [executor.submit(process_and_save_reaction_skill, path) for path in asset_list]
+        concurrent.futures.wait(futures)
+
+def process_and_save_active_skill(path):
+    data_class_instance.get_active_skill(path=path)
+
+def process_and_save_passive_skill(path):
+    data_class_instance.get_passive_skill(path=path)
+
+def process_and_save_reaction_skill(path):
+    data_class_instance.get_reaction_skill(path=path)

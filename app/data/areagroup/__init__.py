@@ -1,4 +1,7 @@
+import concurrent
 from app.util import Util
+
+data_class_instance = None
 
 class AreaGroup:
 
@@ -6,6 +9,7 @@ class AreaGroup:
 
     def __init__(self, util):
         self.util = util
+        globals()['data_class_instance'] = self
 
         return
 
@@ -59,3 +63,16 @@ class AreaGroup:
         self.util.save_redis_asset(cache_key=cache_key, data=asset)
 
         return asset
+
+    def seed_cache(self):
+        asset_list: list = []
+        asset_list.extend(self.util.get_asset_list('AreaGroup'))
+        asset_list.extend(self.util.get_asset_list('MemoryAreaGroup'))
+        asset_list.extend(self.util.get_asset_list('MemoryAreaGroupCategory'))
+
+        executor = concurrent.futures.ProcessPoolExecutor(16)
+        futures = [executor.submit(process_and_save_asset, path) for path in asset_list]
+        concurrent.futures.wait(futures)
+
+def process_and_save_asset(path):
+    data_class_instance.get_data(path=path)

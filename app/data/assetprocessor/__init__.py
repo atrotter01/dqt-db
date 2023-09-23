@@ -1,12 +1,12 @@
-from app.util import Util
+#from app.util import Util
 from app.data import DataProcessor
 
 class AssetProcessor:
 
-    util: Util
+    util: object
     data_processor: DataProcessor
 
-    def __init__(self, _util: Util, _data_processor: DataProcessor):
+    def __init__(self, _util: object, _data_processor: DataProcessor):
         self.util = _util
         self.data_processor = _data_processor
 
