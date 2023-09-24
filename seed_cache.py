@@ -8,6 +8,7 @@ from app.data.enemymonster import EnemyMonster
 from app.data.equipment import Equipment
 from app.data.skill import Skill
 from app.data.stage import Stage
+from app.data.tnt import TnT
 from app.data.unit import Unit
 
 def cache_stage_structure(lang: str):
@@ -575,6 +576,7 @@ if __name__ == '__main__':
     equipment_instance: Equipment = Equipment(util=util)
     skill_instance: Skill = Skill(util=util)
     stage_instance: Stage = Stage(util=util)
+    tnt_instance: TnT = TnT(util=util)
     unit_instance: Unit = Unit(util=util)
 
     cache_unit_training_board_map(lang=util.get_language_setting())
@@ -596,6 +598,9 @@ if __name__ == '__main__':
 
     print('Caching Stage')
     stage_instance.seed_cache()
+
+    print('Caching TnT')
+    tnt_instance.seed_cache()
 
     print('Caching Unit')
     unit_instance.seed_cache()
@@ -652,6 +657,9 @@ if __name__ == '__main__':
 
     print('Fetching Farmable')
     farmable_response = requests.get('http://localhost:5000/api/farmable', timeout=3600, params=dict(lang=util.get_language_setting()))
+
+    print('Fetching TnT Boards')
+    tnt_response = requests.get('http://localhost:5000/api/tnt', timeout=3600, params=dict(lang=util.get_language_setting()))
 
     area_data = area_response.json()
     area_group_data = area_group_response.json()

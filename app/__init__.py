@@ -20,6 +20,7 @@ from app.api.item import api as item_api
 from app.api.shop import api as shop_api
 from app.api.skill import api as skill_api
 from app.api.stage import api as stage_api
+from app.api.tnt import api as tnt_api
 from app.api.unit import api as unit_api
 from app.util import Util
 
@@ -50,6 +51,7 @@ api.add_namespace(item_api)
 api.add_namespace(shop_api)
 api.add_namespace(skill_api)
 api.add_namespace(stage_api)
+api.add_namespace(tnt_api)
 api.add_namespace(unit_api)
 
 app.register_blueprint(blueprint=blueprint)
@@ -338,6 +340,26 @@ def shop_goods_route(shop_id):
         shop_goods = api_response.json()
 
     return render_template('shop_goods.html', shop_goods=shop_goods)
+
+@app.route('/tnt/')
+def tnt_route():
+    api_response = requests.get(url='http://localhost:5000/api/tnt', timeout=300, params=dict(lang=session['lang']))
+    tnt_boards = []
+
+    if api_response.status_code == 200:
+        tnt_boards = api_response.json()
+
+    return render_template('tnt_board_list.html', tnt_boards=tnt_boards)
+
+@app.route('/tnt/<tnt_board_id>')
+def tnt_board_route(tnt_board_id):
+    api_response = requests.get(url=f'http://localhost:5000/api/tnt/{tnt_board_id}', timeout=300, params=dict(lang=session['lang']))
+    tnt_board = []
+
+    if api_response.status_code == 200:
+        tnt_board = api_response.json()
+
+    return render_template('tnt_board.html', tnt_board=tnt_board[0])
 
 @app.route('/imagebrowser/')
 @app.route('/imagebrowser/<path:path>')
