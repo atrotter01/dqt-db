@@ -14,9 +14,8 @@
             var dt_blossom = $('#dt_blossom_board').DataTable(dt_options);
             var dt_character_builder = $('#dt_character_builder').DataTable(dt_options);
             var dt_battleroad = $('#dt_battleroad').DataTable(dt_options);
-            {% if unit.is_quest_reward is true %}
             var dt_farmable = $('#dt_farmable').DataTable(dt_options);
-            {% endif %}
+
             $('#loading_spinner').hide();
             $('#content-container').show();
             dt_stats.columns.adjust().responsive.recalc();
@@ -43,7 +42,24 @@
             });
             $('[data-toggle="tooltip"]').tooltip();
 
-        } );
+            datatables.push(dt_stats);
+            datatables.push(dt_rankup);
+            datatables.push(dt_element);
+            datatables.push(dt_status);
+            datatables.push(dt_active_skills);
+            datatables.push(dt_passive_skills);
+            datatables.push(dt_awakening_passive_skills);
+            datatables.push(dt_reaction_skills);
+            datatables.push(dt_awakening_reaction_skills);
+            datatables.push(dt_blossom);
+            datatables.push(dt_character_builder);
+            datatables.push(dt_battleroad);
+            datatables.push(dt_farmable);
+
+            $("div[id^='collapse']").on('shown.bs.collapse', function() {
+               resizeTables();
+            });
+        });
     </script>
     <div class="row detailsbox">
         <div class="row text-center"><h4>Unit Details</h4></div>
@@ -465,7 +481,7 @@
             </div>
         </div>
 
-        <div class="accordion-item">
+        <div class="accordion-item w-100">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen" area-expanded="false" aria-controls="collapseTen">
                     <h5>Talent Blossoming</h5>

@@ -15,6 +15,7 @@
         <script src="https://cdn.datatables.net/v/bs5/dt-1.13.6/fh-3.4.0/b-2.4.2/r-2.5.0/sb-1.5.0/sp-2.2.0/sl-1.7.0/rg-1.4.0/datatables.min.js"></script>
 
         <script>
+            var datatables = [];
             var dt_options = {
                 autoWidth: false,
                 pagingType: 'numbers',
@@ -31,6 +32,13 @@
                     location.href = window.location.href.split('?')[0].replace('#', '') + '?lang=' + el.options[el.selectedIndex].value;
                 }
             }
+
+            function resizeTables() {
+                datatables.forEach((dt) => {
+                    dt.columns.adjust().responsive.recalc();
+                })
+            }
+
         </script>
 
         <style type="text/css">
