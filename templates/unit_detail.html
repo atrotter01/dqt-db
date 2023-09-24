@@ -71,511 +71,620 @@
         </div>
     </div>
     <hr />
-    <h4>Active Skills</h4>
-    <div>
-        <table id="dt_active_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-            <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Level</td>
-                    <td>Description</td>
-                    <td>Rank</td>
-                    <td>Range</td>
-                    <td>Reach</td>
-                    <td>Element</td>
-                    <td>Surehit</td>
-                    <td># Hits</td>
-                    <td>MP</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for skill in unit.active_skills %}
-                <tr>
-                    <td><a href='/skill/active_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
-                    <td>{{ skill.level_learned }}</td>
-                    <td>{{ skill.skill_description }}</td>
-                    <td>{{ skill.skill_rank }}</td>
-                    <td><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
-                    <td>{{ skill.skill_reach }}</td>
-                    <td><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
-                    <td>{{ skill.skill_surehit }}</td>
-                    <td>{{ skill.skill_num_attacks }}</td>
-                    <td>{{ skill.skill_mp_cost }}</td>
-                </tr>
-                {% endfor %}
-                {% for panel in unit.character_builder_blossoms %}
-                {% if panel.type == "Active Skill" %}
-                <tr>
-                    <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
-                    <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
-                    <td>{{ panel.data.skill_description }}</td>
-                    <td>{{ panel.data.skill_rank }}</td>
-                    <td><img src="/{{ panel.data.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
-                    <td>{{ panel.data.skill_reach }}</td>
-                    <td><img src="/{{ panel.data.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
-                    <td>{{ panel.data.skill_surehit }}</td>
-                    <td>{{ panel.data.skill_num_attacks }}</td>
-                    <td>{{ panel.data.skill_mp_cost }}</td>
-                </tr>
-                {% endif %}
-                {% endfor %}
-                {% for panel in unit.blossoms %}
-                {% if panel.type == "Active Skill" %}
-                <tr>
-                    <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
-                    <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
-                    <td>{{ panel.data.skill_description }}</td>
-                    <td>{{ panel.data.skill_rank }}</td>
-                    <td><img src="/{{ panel.data.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
-                    <td>{{ panel.data.skill_reach }}</td>
-                    <td><img src="/{{ panel.data.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
-                    <td>{{ panel.data.skill_surehit }}</td>
-                    <td>{{ panel.data.skill_num_attacks }}</td>
-                    <td>{{ panel.data.skill_mp_cost }}</td>
-                </tr>
-                {% endif %}
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <hr />
-    <h4>Passive Skills</h4>
-    <div>
-        <table id="dt_passive_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-            <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Level</td>
-                    <td>Description</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for skill in unit.passive_skills %}
-                <tr>
-                    <td><a href='/skill/passive_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
-                    <td>{{ skill.level_learned }}</td>
-                    <td>{{ skill.skill_description }}</td>
-                </tr>
-                {% endfor %}
-                {% for panel in unit.character_builder_blossoms %}
-                {% if panel.type == "Passive Skill" %}
-                <tr>
-                    <td><a href='/skill/passive_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
-                    <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
-                    <td>{{ panel.data.skill_description }}</td>
-                </tr>
-                {% endif %}
-                {% endfor %}
-                {% for panel in unit.blossoms %}
-                {% if panel.type == "Passive Skill" and panel.panel_code >= 37 %}
-                <tr>
-                    <td><a href='/skill/passive_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
-                    <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
-                    <td>{{ panel.data.skill_description }}</td>
-                </tr>
-                {% endif %}
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <h4>Awakening Passive Skills</h4>
-    <div>
-        <table id="dt_awakening_passive_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-            <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Awakening</td>
-                    <td>Description</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for skill in unit.awakening_passive_skills %}
-                <tr>
-                    <td><a href='/skill/passive_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
-                    <td>{{ skill.awakening_level }}</td>
-                    <td>{{ skill.skill_description }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <hr />
-    <h4>Reaction Skills</h4>
-    <div>
-        <table id="dt_reaction_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-            <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Level</td>
-                    <td>Description</td>
-                    <td>Times Available</td>
-                    <td>Accuracy</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for skill in unit.reaction_passive_skills %}
-                <tr>
-                    <td><a href='/skill/reaction_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
-                    <td>{{ skill.level_learned }}</td>
-                    <td>{{ skill.skill_description }}</td>
-                    <td>{{ skill.skill_times_available }}</td>
-                    <td>{{ skill.skill_accuracy }}</td>
-                </tr>
-                {% endfor %}
-                {% for panel in unit.character_builder_blossoms %}
-                {% if panel.type == "Reaction Skill" %}
-                <tr>
-                    <td><a href='/skill/reaction_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
-                    <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
-                    <td>{{ panel.data.skill_description }}</td>
-                    <td>{{ panel.data.skill_times_available }}</td>
-                    <td>{{ panel.data.skill_accuracy }}</td>
-                </tr>
-                {% endif %}
-                {% endfor %}
-                {% for panel in unit.blossoms %}
-                {% if panel.type == "Reaction Skill" %}
-                <tr>
-                    <td><a href='/skill/reaction_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
-                    <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
-                    <td>{{ panel.data.skill_description }}</td>
-                    <td>{{ panel.data.skill_times_available }}</td>
-                    <td>{{ panel.data.skill_accuracy }}</td>
-                </tr>
-                {% endif %}
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <h4>Awakening Reaction Skills</h4>
-    <div>
-        <table id="dt_awakening_reaction_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-            <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Awakening</td>
-                    <td>Description</td>
-                    <td>Times Available</td>
-                    <td>Accuracy</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for skill in unit.awakening_reaction_passive_skills %}
-                <tr>
-                    <td><a href='/skill/reaction_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
-                    <td>{{ skill.awakening_level }}</td>
-                    <td>{{ skill.skill_description }}</td>
-                    <td>{{ skill.skill_times_available }}</td>
-                    <td>{{ skill.skill_accuracy }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% if unit.is_quest_reward is true %}
-    <hr />
-    <h4>Farmable Stages</h4>
-    <div>
-        <table id="dt_farmable" class="table table-striped table-hover table-bordered align-middle" style="width:100%;">
-            <thead>
-                <tr>
-                    <td>Monster</td>
-                    <td>Monster Icon</td>
-                    <td>Stage Name</td>
-                    <td>Stamina</td>
-                    <td>Scout Chance</td>
-                    <td>Avg Stam</td>
-                    <td>Avg Stam (2x Drop)</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for farmable in farmables %}
-                {% if farmable.enemy_display_name == unit.display_name %}
-                <tr>
-                    <td><a href='/enemy_monster/{{ farmable.enemy_id }}'>{{ farmable.enemy_display_name }}</a></td>
-                    <td><img src="/{{ farmable.enemy_icon }}" style="width: 64px; height: 64px;" /></td>
-                    <td>
-                        <a href='/stage/{{ farmable.stage_id }}'>
-                            {% if farmable.stage_area_group_name != None %}
-                            {{ farmable.stage_area_group_name }} - 
+    <div class="accordion" id="accordian">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" area-expanded="false" aria-controls="collapseOne">
+                    <h5>Active Skills</h5>
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                    <table id="dt_active_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+                        <thead>
+                            <tr>
+                                <td>Name</td>
+                                <td>Level</td>
+                                <td>Description</td>
+                                <td>Rank</td>
+                                <td>Range</td>
+                                <td>Reach</td>
+                                <td>Element</td>
+                                <td>Surehit</td>
+                                <td># Hits</td>
+                                <td>MP</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for skill in unit.active_skills %}
+                            <tr>
+                                <td><a href='/skill/active_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
+                                <td>{{ skill.level_learned }}</td>
+                                <td>{{ skill.skill_description }}</td>
+                                <td>{{ skill.skill_rank }}</td>
+                                <td><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
+                                <td>{{ skill.skill_reach }}</td>
+                                <td><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
+                                <td>{{ skill.skill_surehit }}</td>
+                                <td>{{ skill.skill_num_attacks }}</td>
+                                <td>{{ skill.skill_mp_cost }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% for panel in unit.character_builder_blossoms %}
+                            {% if panel.type == "Active Skill" %}
+                            <tr>
+                                <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                                <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
+                                <td>{{ panel.data.skill_description }}</td>
+                                <td>{{ panel.data.skill_rank }}</td>
+                                <td><img src="/{{ panel.data.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
+                                <td>{{ panel.data.skill_reach }}</td>
+                                <td><img src="/{{ panel.data.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
+                                <td>{{ panel.data.skill_surehit }}</td>
+                                <td>{{ panel.data.skill_num_attacks }}</td>
+                                <td>{{ panel.data.skill_mp_cost }}</td>
+                            </tr>
                             {% endif %}
-                            {% if farmable.stage_area_name != None %}
-                            {{ farmable.stage_area_name }} - 
+                            {% endfor %}
+                            {% for panel in unit.blossoms %}
+                            {% if panel.type == "Active Skill" %}
+                            <tr>
+                                <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                                <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
+                                <td>{{ panel.data.skill_description }}</td>
+                                <td>{{ panel.data.skill_rank }}</td>
+                                <td><img src="/{{ panel.data.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
+                                <td>{{ panel.data.skill_reach }}</td>
+                                <td><img src="/{{ panel.data.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
+                                <td>{{ panel.data.skill_surehit }}</td>
+                                <td>{{ panel.data.skill_num_attacks }}</td>
+                                <td>{{ panel.data.skill_mp_cost }}</td>
+                            </tr>
                             {% endif %}
-                            {{ farmable.stage_display_name }}
-                        </a>
-                        </td>
-                    <td>{{ farmable.stage_stamina_cost }}</td>
-                    <td>{{ farmable.scout_probability }}%</td>
-                    <td>{{ farmable.stamina_per_drop }}</td>
-                    <td>{{ farmable.stamina_per_drop_double_drop_rate }}</td>
-                </tr>
-                {% endif %}
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endif %}
-    <hr />
-    <h4>Battle Roads</h4>
-    <table id="dt_battleroad" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-        <thead>
-            <tr>
-                <td>Battle Road</td>
-                <td>Banner</td>
-            </tr>
-        </thead>
-        <tbody>
-            {% for battleroad in battleroads %}
-            <tr>
-                <td>
-                    {% if battleroad.area_group_name is defined %}
-                    {{ battleroad.area_group_name }} - 
-                    {% endif %}
-                    {{ battleroad.area_display_name }}
-                </td>
-                <td>
-                    <img class="d-block img-fluid" src="/{{ battleroad.area_banner_path }}" style="width: 512px; height: 120px;" />
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <hr />
-    <h4>Elemental Resistance</h4>
-    <div>
-        <table id="dt_element_resist" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-            <thead>
-                <tr>
-                    <td>Element</td>
-                    <td>Resistance</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for element in unit.element_resistances %}
-                <tr>
-                    <td>
-                        <img style="float: left" src='/{{ unit.element_resistances[element].icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ unit.element_resistances[element].name }}" />
-                    </td>
-                    <td>
-                        <img style="float: left" src='/{{ unit.element_resistances[element].rate_icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ unit.element_resistances[element].rate }}" />
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <hr />
-    <h4>Status Resistance</h4>
-    <div>
-        <table id="dt_status_resist" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-            <thead>
-                <tr>
-                    <td>Status</td>
-                    <td>Resistance</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for abnormity in unit.abnormity_resistances %}
-                <tr>
-                    <td>
-                        <img style="float: left" src='/{{ unit.abnormity_resistances[abnormity].icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ unit.abnormity_resistances[abnormity].name }}" />
-                    </td>
-                    <td>
-                        <img style="float: left" src='/{{ unit.abnormity_resistances[abnormity].rate_icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ unit.abnormity_resistances[abnormity].rate }}" />
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <hr />
-    <h4>Talent Blossoming</h4>
-    <div>
-        <table id="dt_blossom_board" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-            <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Type</td>
-                    <td>Description</td>
-                    <td>Unlock Icon 1</td>
-                    <td>Unlock Item 1</td>
-                    <td>Unlock Quantity 1</td>
-                    <td>Unlock Icon 2</td>
-                    <td>Unlock Item 2</td>
-                    <td>Unlock Quantity 2</td>
-                    <td>Unlock Icon 3</td>
-                    <td>Unlock Item 3</td>
-                    <td>Unlock Quantity 3</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for panel in unit.blossoms %}
-                <tr>
-                    <td>
-                        {% if panel.type == "Passive Skill" %}
-                        <a href='/skill/passive_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
-                        {% elif panel.type == "Active Skill" %}
-                        <a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
-                        {% elif panel.type == "Reaction Skill" %}
-                        <a href='/skill/reaction_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
-                        {% else %}
-                        {{ panel.panel_display_name }}
-                        {% endif %}
-                    </td>
-                    <td>{{ panel.type }}</td>
-                    <td>
-                        {% if panel.type == "Passive Skill" or panel.type == "Active Skill" or panel.type == "Reaction Skill" %}
-                        {{ panel.data.skill_description }}
-                        {% else %}
-                        {{ panel.panel_description }}
-                        {% endif %}
-                    </td>
-                    {% for unlock_item in panel.unlock_costs %}
-                    <td><img src="/{{ unlock_item.consumption_item_icon_path }}" style="width: 64px; height: 64px;" /></td>
-                    <td>{{ unlock_item.consumption_item_display_name }}</td>
-                    <td>{{ unlock_item.consumption_item_quantity }}</td>
-                    {% endfor %}
-                    {% if panel.unlock_costs|length == 2 %}
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    {% elif panel.unlock_costs|length == 1 %}
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <hr />
-    <h4>Character Builder</h4>
-    <div>
-        <table id="dt_character_builder" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-            <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Type</td>
-                    <td>Description</td>
-                    <td>Unlock Icon 1</td>
-                    <td>Unlock Item 1</td>
-                    <td>Unlock Quantity 1</td>
-                    <td>Unlock Icon 2</td>
-                    <td>Unlock Item 2</td>
-                    <td>Unlock Quantity 2</td>
-                    <td>Unlock Icon 3</td>
-                    <td>Unlock Item 3</td>
-                    <td>Unlock Quantity 3</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for panel in unit.character_builder_blossoms %}
-                <tr>
-                    <td>
-                        {% if panel.type == "Passive Skill" %}
-                        <a href='/skill/passive_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
-                        {% elif panel.type == "Active Skill" %}
-                        <a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
-                        {% elif panel.type == "Reaction Skill" %}
-                        <a href='/skill/reaction_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
-                        {% else %}
-                        {{ panel.panel_display_name }}
-                        {% endif %}
-                    </td>
-                    <td>{{ panel.type }}</td>
-                    <td>
-                        {% if panel.type == "Passive Skill" or panel.type == "Active Skill" or panel.type == "Reaction Skill" %} 
-                        {{ panel.data.skill_description }} 
-                        {% else %} 
-                        {{ panel.panel_description }} 
-                        {% endif %}
-                    </td>
-                    {% for unlock_item in panel.unlock_costs %}
-                    <td><img src="/{{ unlock_item.consumption_item_icon_path }}" style="width: 64px; height: 64px;" /></td>
-                    <td>{{ unlock_item.consumption_item_display_name }}</td>
-                    <td>{{ unlock_item.consumption_item_quantity }}</td>
-                    {% endfor %}
-                    {% if panel.unlock_costs|length == 2 %}
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    {% elif panel.unlock_costs|length == 1 %}
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <hr />
-    <h4>Stats By Level</h4>
-    <div>
-        <table id="dt_stats" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-            <thead>
-                <tr>
-                    <td>LVL</td>
-                    <td>HP</td>
-                    <td>MP</td>
-                    <td>ATK</td>
-                    <td>DEF</td>
-                    <td>AGI</td>
-                    <td>INT</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for level in unit.stats_by_level %}
-                <tr>
-                    <td>{{ level.level }}</td>
-                    <td>{{ level.hp }}</td>
-                    <td>{{ level.mp }}</td>
-                    <td>{{ level.attack }}</td>
-                    <td>{{ level.defense }}</td>
-                    <td>{{ level.agility }}</td>
-                    <td>{{ level.intelligence }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <hr />
-    <h4>Rank Up Table</h4>
-    <div>
-        <table id="dt_rankup" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
-            <thead>
-                <tr>
-                    <td>Rank</td>
-                    <td>Level Cap</td>
-                    <td>Gold Cost</td>
-                    <td>Item Name</td>
-                    <td>Item Icon</td>
-                    <td>Quantity</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for rank in unit.rank_up_table %}
-                {% for item in rank.rank_up_items %}
-                <tr>
-                    <td>{{ rank.rank_number }}</td>
-                    <td>{{ rank.rank_level_cap }}</td>
-                    <td>{{ rank.rank_gold_cost }}</td>
-                    <td>{{ item.item_name }}</td>
-                    <td><img src="/{{ item.item_icon }}" style="width: 64px; height: 64px;" /></td>
-                    <td>{{ item.quantity }}</td>
-                </tr>
-                {% endfor %}
-                {% endfor %}
-            </tbody>
-        </table>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" area-expanded="false" aria-controls="collapseTwo">
+                    <h5>Passive Skills</h5>
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                    <table id="dt_passive_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+                        <thead>
+                            <tr>
+                                <td>Name</td>
+                                <td>Level</td>
+                                <td>Description</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for skill in unit.passive_skills %}
+                            <tr>
+                                <td><a href='/skill/passive_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
+                                <td>{{ skill.level_learned }}</td>
+                                <td>{{ skill.skill_description }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% for panel in unit.character_builder_blossoms %}
+                            {% if panel.type == "Passive Skill" %}
+                            <tr>
+                                <td><a href='/skill/passive_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                                <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
+                                <td>{{ panel.data.skill_description }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                            {% for panel in unit.blossoms %}
+                            {% if panel.type == "Passive Skill" and panel.panel_code >= 37 %}
+                            <tr>
+                                <td><a href='/skill/passive_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                                <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
+                                <td>{{ panel.data.skill_description }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" area-expanded="false" aria-controls="collapseThree">
+                    <h5>Awakening Passive Skills</h5>
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                    <table id="dt_awakening_passive_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+                        <thead>
+                            <tr>
+                                <td>Name</td>
+                                <td>Awakening</td>
+                                <td>Description</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for skill in unit.awakening_passive_skills %}
+                            <tr>
+                                <td><a href='/skill/passive_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
+                                <td>{{ skill.awakening_level }}</td>
+                                <td>{{ skill.skill_description }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" area-expanded="false" aria-controls="collapseFour">
+                    <h5>Reaction Skills</h5>
+                </button>
+            </h2>
+            <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                    <table id="dt_reaction_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+                        <thead>
+                            <tr>
+                                <td>Name</td>
+                                <td>Level</td>
+                                <td>Description</td>
+                                <td>Times Available</td>
+                                <td>Accuracy</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for skill in unit.reaction_passive_skills %}
+                            <tr>
+                                <td><a href='/skill/reaction_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
+                                <td>{{ skill.level_learned }}</td>
+                                <td>{{ skill.skill_description }}</td>
+                                <td>{{ skill.skill_times_available }}</td>
+                                <td>{{ skill.skill_accuracy }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% for panel in unit.character_builder_blossoms %}
+                            {% if panel.type == "Reaction Skill" %}
+                            <tr>
+                                <td><a href='/skill/reaction_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                                <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
+                                <td>{{ panel.data.skill_description }}</td>
+                                <td>{{ panel.data.skill_times_available }}</td>
+                                <td>{{ panel.data.skill_accuracy }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                            {% for panel in unit.blossoms %}
+                            {% if panel.type == "Reaction Skill" %}
+                            <tr>
+                                <td><a href='/skill/reaction_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
+                                <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
+                                <td>{{ panel.data.skill_description }}</td>
+                                <td>{{ panel.data.skill_times_available }}</td>
+                                <td>{{ panel.data.skill_accuracy }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" area-expanded="false" aria-controls="collapseFive">
+                    <h5>Awakening Reaction Skills</h5>
+                </button>
+            </h2>
+            <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                    <table id="dt_awakening_reaction_skills" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+                        <thead>
+                            <tr>
+                                <td>Name</td>
+                                <td>Awakening</td>
+                                <td>Description</td>
+                                <td>Times Available</td>
+                                <td>Accuracy</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for skill in unit.awakening_reaction_passive_skills %}
+                            <tr>
+                                <td><a href='/skill/reaction_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
+                                <td>{{ skill.awakening_level }}</td>
+                                <td>{{ skill.skill_description }}</td>
+                                <td>{{ skill.skill_times_available }}</td>
+                                <td>{{ skill.skill_accuracy }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" area-expanded="false" aria-controls="collapseSix">
+                    <h5>Farmable Stages</h5>
+                </button>
+            </h2>
+            <div id="collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                    <table id="dt_farmable" class="table table-striped table-hover table-bordered align-middle" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <td>Monster</td>
+                                <td>Monster Icon</td>
+                                <td>Stage Name</td>
+                                <td>Stamina</td>
+                                <td>Scout Chance</td>
+                                <td>Avg Stam</td>
+                                <td>Avg Stam (2x Drop)</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for farmable in farmables %}
+                            {% if farmable.enemy_display_name == unit.display_name %}
+                            <tr>
+                                <td><a href='/enemy_monster/{{ farmable.enemy_id }}'>{{ farmable.enemy_display_name }}</a></td>
+                                <td><img src="/{{ farmable.enemy_icon }}" style="width: 64px; height: 64px;" /></td>
+                                <td>
+                                    <a href='/stage/{{ farmable.stage_id }}'>
+                                        {% if farmable.stage_area_group_name != None %}
+                                        {{ farmable.stage_area_group_name }} - 
+                                        {% endif %}
+                                        {% if farmable.stage_area_name != None %}
+                                        {{ farmable.stage_area_name }} - 
+                                        {% endif %}
+                                        {{ farmable.stage_display_name }}
+                                    </a>
+                                    </td>
+                                <td>{{ farmable.stage_stamina_cost }}</td>
+                                <td>{{ farmable.scout_probability }}%</td>
+                                <td>{{ farmable.stamina_per_drop }}</td>
+                                <td>{{ farmable.stamina_per_drop_double_drop_rate }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" area-expanded="false" aria-controls="collapseSeven">
+                    <h5>Battle Roads</h5>
+                </button>
+            </h2>
+            <div id="collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                    <table id="dt_battleroad" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+                        <thead>
+                            <tr>
+                                <td>Battle Road</td>
+                                <td>Banner</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for battleroad in battleroads %}
+                            <tr>
+                                <td>
+                                    {% if battleroad.area_group_name is defined %}
+                                    {{ battleroad.area_group_name }} - 
+                                    {% endif %}
+                                    {{ battleroad.area_display_name }}
+                                </td>
+                                <td>
+                                    <img class="d-block img-fluid" src="/{{ battleroad.area_banner_path }}" style="width: 512px; height: 120px;" />
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" area-expanded="false" aria-controls="collapseEight">
+                    <h5>Elemental Resistance</h5>
+                </button>
+            </h2>
+            <div id="collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                    <table id="dt_element_resist" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+                        <thead>
+                            <tr>
+                                <td>Element</td>
+                                <td>Resistance</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for element in unit.element_resistances %}
+                            <tr>
+                                <td>
+                                    <img style="float: left" src='/{{ unit.element_resistances[element].icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ unit.element_resistances[element].name }}" />
+                                </td>
+                                <td>
+                                    <img style="float: left" src='/{{ unit.element_resistances[element].rate_icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ unit.element_resistances[element].rate }}" />
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" area-expanded="false" aria-controls="collapseNine">
+                    <h5>Status Resistance</h5>
+                </button>
+            </h2>
+            <div id="collapseNine" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                    <table id="dt_status_resist" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+                        <thead>
+                            <tr>
+                                <td>Status</td>
+                                <td>Resistance</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for abnormity in unit.abnormity_resistances %}
+                            <tr>
+                                <td>
+                                    <img style="float: left" src='/{{ unit.abnormity_resistances[abnormity].icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ unit.abnormity_resistances[abnormity].name }}" />
+                                </td>
+                                <td>
+                                    <img style="float: left" src='/{{ unit.abnormity_resistances[abnormity].rate_icon }}' data-toggle="tooltip" data-placement="bottom" title="{{ unit.abnormity_resistances[abnormity].rate }}" />
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen" area-expanded="false" aria-controls="collapseTen">
+                    <h5>Talent Blossoming</h5>
+                </button>
+            </h2>
+            <div id="collapseTen" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                    <table id="dt_blossom_board" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+                        <thead>
+                            <tr>
+                                <td>Name</td>
+                                <td>Type</td>
+                                <td>Description</td>
+                                <td>Unlock Icon 1</td>
+                                <td>Unlock Item 1</td>
+                                <td>Unlock Quantity 1</td>
+                                <td>Unlock Icon 2</td>
+                                <td>Unlock Item 2</td>
+                                <td>Unlock Quantity 2</td>
+                                <td>Unlock Icon 3</td>
+                                <td>Unlock Item 3</td>
+                                <td>Unlock Quantity 3</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for panel in unit.blossoms %}
+                            <tr>
+                                <td>
+                                    {% if panel.type == "Passive Skill" %}
+                                    <a href='/skill/passive_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
+                                    {% elif panel.type == "Active Skill" %}
+                                    <a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
+                                    {% elif panel.type == "Reaction Skill" %}
+                                    <a href='/skill/reaction_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
+                                    {% else %}
+                                    {{ panel.panel_display_name }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ panel.type }}</td>
+                                <td>
+                                    {% if panel.type == "Passive Skill" or panel.type == "Active Skill" or panel.type == "Reaction Skill" %}
+                                    {{ panel.data.skill_description }}
+                                    {% else %}
+                                    {{ panel.panel_description }}
+                                    {% endif %}
+                                </td>
+                                {% for unlock_item in panel.unlock_costs %}
+                                <td><img src="/{{ unlock_item.consumption_item_icon_path }}" style="width: 64px; height: 64px;" /></td>
+                                <td>{{ unlock_item.consumption_item_display_name }}</td>
+                                <td>{{ unlock_item.consumption_item_quantity }}</td>
+                                {% endfor %}
+                                {% if panel.unlock_costs|length == 2 %}
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                {% elif panel.unlock_costs|length == 1 %}
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEleven" area-expanded="false" aria-controls="collapseEleven">
+                    <h5>Character Builder</h5>
+                </button>
+            </h2>
+            <div id="collapseEleven" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                    <table id="dt_character_builder" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+                        <thead>
+                            <tr>
+                                <td>Name</td>
+                                <td>Type</td>
+                                <td>Description</td>
+                                <td>Unlock Icon 1</td>
+                                <td>Unlock Item 1</td>
+                                <td>Unlock Quantity 1</td>
+                                <td>Unlock Icon 2</td>
+                                <td>Unlock Item 2</td>
+                                <td>Unlock Quantity 2</td>
+                                <td>Unlock Icon 3</td>
+                                <td>Unlock Item 3</td>
+                                <td>Unlock Quantity 3</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for panel in unit.character_builder_blossoms %}
+                            <tr>
+                                <td>
+                                    {% if panel.type == "Passive Skill" %}
+                                    <a href='/skill/passive_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
+                                    {% elif panel.type == "Active Skill" %}
+                                    <a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
+                                    {% elif panel.type == "Reaction Skill" %}
+                                    <a href='/skill/reaction_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a>
+                                    {% else %}
+                                    {{ panel.panel_display_name }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ panel.type }}</td>
+                                <td>
+                                    {% if panel.type == "Passive Skill" or panel.type == "Active Skill" or panel.type == "Reaction Skill" %} 
+                                    {{ panel.data.skill_description }} 
+                                    {% else %} 
+                                    {{ panel.panel_description }} 
+                                    {% endif %}
+                                </td>
+                                {% for unlock_item in panel.unlock_costs %}
+                                <td><img src="/{{ unlock_item.consumption_item_icon_path }}" style="width: 64px; height: 64px;" /></td>
+                                <td>{{ unlock_item.consumption_item_display_name }}</td>
+                                <td>{{ unlock_item.consumption_item_quantity }}</td>
+                                {% endfor %}
+                                {% if panel.unlock_costs|length == 2 %}
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                {% elif panel.unlock_costs|length == 1 %}
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwelve" area-expanded="false" aria-controls="collapseTwelve">
+                    <h5>Stats By Level</h5>
+                </button>
+            </h2>
+            <div id="collapseTwelve" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                    <table id="dt_stats" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+                        <thead>
+                            <tr>
+                                <td>LVL</td>
+                                <td>HP</td>
+                                <td>MP</td>
+                                <td>ATK</td>
+                                <td>DEF</td>
+                                <td>AGI</td>
+                                <td>INT</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for level in unit.stats_by_level %}
+                            <tr>
+                                <td>{{ level.level }}</td>
+                                <td>{{ level.hp }}</td>
+                                <td>{{ level.mp }}</td>
+                                <td>{{ level.attack }}</td>
+                                <td>{{ level.defense }}</td>
+                                <td>{{ level.agility }}</td>
+                                <td>{{ level.intelligence }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThirteen" area-expanded="false" aria-controls="collapseThirteen">
+                    <h5>Rank Up Table</h5>
+                </button>
+            </h2>
+            <div id="collapseThirteen" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                    <table id="dt_rankup" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+                        <thead>
+                            <tr>
+                                <td>Rank</td>
+                                <td>Level Cap</td>
+                                <td>Gold Cost</td>
+                                <td>Item Name</td>
+                                <td>Item Icon</td>
+                                <td>Quantity</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rank in unit.rank_up_table %}
+                            {% for item in rank.rank_up_items %}
+                            <tr>
+                                <td>{{ rank.rank_number }}</td>
+                                <td>{{ rank.rank_level_cap }}</td>
+                                <td>{{ rank.rank_gold_cost }}</td>
+                                <td>{{ item.item_name }}</td>
+                                <td><img src="/{{ item.item_icon }}" style="width: 64px; height: 64px;" /></td>
+                                <td>{{ item.quantity }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 {% include 'footer.html' %}

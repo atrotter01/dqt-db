@@ -19,7 +19,7 @@ def cache_stage_structure(lang: str):
     event_portals: dict = {}
 
     for event_portal_path in event_portal_list:
-        event_portal = util.get_asset_by_path(event_portal_path).get('processed_document')
+        event_portal = util.get_asset_by_path(path=event_portal_path, deflate_data=True, build_processed_asset=False).get('document')
         event_portal_id = event_portal.get('linked_asset_id')
         event_portal_name = event_portal.get('m_Name')
 
