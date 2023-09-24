@@ -1,0 +1,338 @@
+{% include 'header.html' %}
+
+    <script>
+        $(document).ready( function () {
+            var collapsedGroups = {};
+            var dt_zone_loot = {
+                autoWidth: false,
+                paging: true,
+                responsive: true,
+                searchPanes: {
+                    cascadePanes: true,
+                    columns: [0,1,5],
+                    controls: true,
+                    collapse: true,
+                    initCollapsed: true,
+                    layout: 'auto',
+                    orderable: false
+                },
+                buttons: [
+                    {
+                        text: 'Toggle Filters',
+                        className: 'spToggle showPanes',
+                        action: hideSearchPanes,
+                    },
+                ],
+                dom: 'BPflrtip'
+            };
+
+            var dt_zone_options = {
+                autoWidth: true,
+                paging: true,
+                responsive: true,
+            }
+            var dt_rewards = $('#dt_rewards').DataTable(dt_options);
+            var dt_board_squares = $('#dt_board_squares').DataTable(dt_zone_options)
+            var dt_roulette_loot = $('#dt_roulette_loot').DataTable(dt_zone_loot);
+            var dt_zone_loot = $('#dt_zone_loot').DataTable(dt_zone_loot);
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+
+            dt_rewards.columns.adjust().responsive.recalc();
+            dt_board_squares.columns.adjust().responsive.recalc();
+            dt_zone_loot.columns.adjust().responsive.recalc();
+
+            dt_zone_loot.searchPanes.container().prependTo(dt_zone_loot.table().container());
+            dt_zone_loot.searchPanes.resizePanes();
+            hideSearchPanes(null, dt_zone_loot, null, null);
+
+            dt_board_squares.order([0, 'asc']).draw();
+            dt_zone_loot.order([0, 'asc']).draw();
+        } );
+    </script>
+    <div class="row detailsbox">
+        <div class="row text-center"><h4>TNT Board Details</h4></div>
+        <hr />
+        <div class="col col-auto">
+            <ul class="slimelist">
+                <li><span style="font-weight: bold;">Name: </span>{{ tnt_board.tnt_display_name }}</li>
+                <li><span style="font-weight: bold;">Recommended CP: </span>{{ tnt_board.tnt_recommended_cp }}</li>
+                <li><span style="font-weight: bold;">Initial Dice Quantity: </span>{{ tnt_board.tnt_initial_dice_quantity }}</li>
+                <li><span style="font-weight: bold;">Obtainable Zone Dice Limit: </span>{{ tnt_board.tnt_obtainable_normal_zone_dice_limit }}</li>
+                <li><span style="font-weight: bold;">Obtainable Bonus Zone DIce Limit: </span>{{ tnt_board.tnt_obtainable_bonus_zone_dice_limit }}</li>
+            </ul>
+        </div>
+    </div>
+    <hr />
+    <h4>Rewards</h4>
+    <div>
+        <table id="dt_rewards" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Type</td>
+                    <td>Icon</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reward in tnt_board.tnt_rewards %}
+                <tr>
+                    <td>
+                        {% if reward.reward_type == 'consumable_item' %}
+                        <a href="/item/{{ reward.reward_id }}">
+                        {% elif reward.reward_type == 'equipment' %}
+                        <a href="/equipment/{{ reward.reward_id }}">
+                        {% endif %}
+                        {{ reward.reward_name }}
+                        </a>
+                    </td>
+                    <td>{{ reward.reward_description }}</td>
+                    <td>
+                        {% if reward.reward_type == 'consumable_item' %}
+                        Consumable Item
+                        {% elif reward.reward_type == 'equipment' %}
+                        Equipment
+                        {% endif %}
+                        </a>
+                    </td>
+                    <td>
+                        <img src='/{{ reward.reward_icon }}' style='width: 64px; height: 64px;' />
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Board Squares</h4>
+    <div>
+        <table id="dt_board_squares" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>#</td>
+                    <td>Connects To</td>
+                    <td>Zone Type</td>
+                    <td>Event Types</td>
+                    <td>Has Treasure Chest</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tnt_square in tnt_board.tnt_normal_zone.tnt_zone_squares %}
+                <tr>
+                    <td id="square_number_{{ tnt_square.square_number }}">{{ tnt_square.square_number }}</td>
+                    <td>
+                        {% for connecting_square in tnt_square.square_connections %}
+                        <a href='#square_number_{{ connecting_square }}'>{{ connecting_square }}</a><br />
+                        {% endfor %}
+                    </td>
+                    <td>Normal Zone</td>
+                    <td>
+                        {% for event in tnt_square.square_events %}
+
+                        {% if event.square_event_type == 'Start' %}
+                        Start Square
+
+                        {% elif event.square_event_type == 'Battle' %}
+                            Battle
+                            <a href="/stage/{{ event.square_event.stage_id }}">
+                            {{ event.square_event.stage_area_name }} - {{ event.square_event.stage_display_name }}
+                            </a>
+
+                        {% elif event.square_event_type == 'Dice Quantity Change' %}
+                            Changes Dice Quantity By {{ event.square_event.dice_quantity }}
+
+                        {% elif event.square_event_type == 'Warp' %}
+                            {% if event.square_event.warp_is_selectable %}
+                                Optionally 
+                            {% endif %}
+
+                            Warps To Square
+                            <a href='#square_number_{{ event.square_event.warp_to_square }}'>{{ event.square_event.warp_to_square }}</a><br />
+
+                            {% if event.square_event.warp_dice_quantity_change != 0 %}
+                                Changes Dice Quantity By {{ event.square_event.warp_dice_quantity_change }}
+                            {% endif %}
+
+                        {% else %}
+                            {{ event.square_event_type }}
+
+                        {% endif %}
+
+                        {% if tnt_square.square_events|length > 1 %}
+                            &nbsp; - {{event.square_event_probability|int }}% Chance
+                        {% endif %}
+
+                        <br />
+                        {% endfor %}
+                    </td>
+                    <td>{{ tnt_square.square_has_treasure_chest }}</td>
+                </tr>
+                {% endfor %}
+                {% for bonus_zone in tnt_board.tnt_bonus_zones %}
+                {% for tnt_square in bonus_zone.tnt_zone_squares %}
+                <tr>
+                    <td id="square_number_{{ tnt_square.square_number }}">{{ tnt_square.square_number }}</td>
+                    <td>
+                        {% for connecting_square in tnt_square.square_connections %}
+                        <a href='#square_number_{{ connecting_square }}'>{{ connecting_square }}</a><br />
+                        {% endfor %}
+                    </td>
+                    <td>Bonus Zone</td>
+                    <td>
+                        {% for event in tnt_square.square_events %}
+
+                        {% if event.square_event_type == 'Start' %}
+                        Start Square
+
+                        {% elif event.square_event_type == 'Battle' %}
+                            Battle
+                            <a href="/stage/{{ event.square_event.stage_id }}">
+                            {{ event.square_event.stage_area_name }} - {{ event.square_event.stage_display_name }}
+                            </a>
+
+                        {% elif event.square_event_type == 'Dice Quantity Change' %}
+                            Changes Dice Quantity By {{ event.square_event.dice_quantity }}
+
+                        {% elif event.square_event_type == 'Warp' %}
+                            {% if event.square_event.warp_is_selectable %}
+                                Optionally 
+                            {% endif %}
+
+                            Warps To Square
+                            <a href='#square_number_{{ event.square_event.warp_to_square }}'>{{ event.square_event.warp_to_square }}</a><br />
+
+                            {% if event.square_event.warp_dice_quantity_change != 0 %}
+                                Changes Dice Quantity By {{ event.square_event.warp_dice_quantity_change }}
+                            {% endif %}
+
+                        {% else %}
+                            {{ event.square_event_type }}
+
+                        {% endif %}
+
+                        {% if tnt_square.square_events|length > 1 %}
+                            &nbsp; - {{event.square_event_probability|int }}% Chance
+                        {% endif %}
+
+                        <br />
+                        {% endfor %}
+                    </td>
+                    <td>{{ tnt_square.square_has_treasure_chest }}</td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <h4>Square Loot</h4>
+    <div>
+        <table id="dt_zone_loot" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>#</td>
+                    <td>Display Name</td>
+                    <td>Quantity</td>
+                    <td>Drop %</td>
+                    <td>Icon</td>
+                    <td>Type</td>
+                    <td>Average</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tnt_square in tnt_board.tnt_normal_zone.tnt_zone_squares %}
+                {% for event in tnt_square.square_events %}
+                {% if event.square_event_type == 'Loot' or event.square_event_type == 'Roulette' %}
+
+                {% for loot in event.square_event.loot %}
+                {% for source in event.square_event.loot[loot].sources %}
+                <tr>
+                    <td>{{ tnt_square.square_number }}</td>
+                    <td>
+                        {% if source.loot_type == 'consumable_item' %}
+                        <a href="/item/{{ source.loot_path }}">
+                        {% elif source.loot_type == 'monster' %}
+                        <a href="/unit/{{ source.loot_path }}">
+                        {% elif source.loot_type == 'equipment' %}
+                        <a href="/equipment/{{ source.loot_path }}">
+                        {% elif source.loot_type == 'profile_icon' %}
+                        <a href="/icon/{{ source.loot_path }}">
+                        {% endif %}
+                        {{ loot }}
+                        </a>
+                    </td>
+                    <td>{{ source.loot_quantity }}</td>
+                    <td>{{ source.loot_drop_percent }}</td>
+                    <td>
+                        <img src='/{{ source.loot_icon }}' style='width: 64px; height: 64px;' />
+                    </td>
+                    <td>
+                        {% if source.loot_type == 'consumable_item' %}
+                        Consumable Item
+                        {% elif source.loot_type == 'monster' %}
+                        Unit
+                        {% elif source.loot_type == 'equipment' %}
+                        Equipment
+                        {% elif source.loot_type == 'profile_icon' %}
+                        Profile Icon
+                        {% endif %}
+                    </td>
+                    <td>{{ event.square_event.loot[loot].average|round(2) }}</td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+
+                {% for bonus_zone in tnt_board.tnt_bonus_zones %}
+                {% for tnt_square in bonus_zone.tnt_zone_squares %}
+                {% for event in tnt_square.square_events %}
+                {% if event.square_event_type == 'Loot' or event.square_event_type == 'Roulette' %}
+
+                {% for loot in event.square_event.loot %}
+                {% for source in event.square_event.loot[loot].sources %}
+                <tr>
+                    <td>{{ tnt_square.square_number }}</td>
+                    <td>
+                        {% if source.loot_type == 'consumable_item' %}
+                        <a href="/item/{{ source.loot_path }}">
+                        {% elif source.loot_type == 'monster' %}
+                        <a href="/unit/{{ source.loot_path }}">
+                        {% elif source.loot_type == 'equipment' %}
+                        <a href="/equipment/{{ source.loot_path }}">
+                        {% elif source.loot_type == 'profile_icon' %}
+                        <a href="/icon/{{ source.loot_path }}">
+                        {% endif %}
+                        {{ loot }}
+                        </a>
+                    </td>
+                    <td>{{ source.loot_quantity }}</td>
+                    <td>{{ source.loot_drop_percent }}</td>
+                    <td>
+                        <img src='/{{ source.loot_icon }}' style='width: 64px; height: 64px;' />
+                    </td>
+                    <td>
+                        {% if source.loot_type == 'consumable_item' %}
+                        Consumable Item
+                        {% elif source.loot_type == 'monster' %}
+                        Unit
+                        {% elif source.loot_type == 'equipment' %}
+                        Equipment
+                        {% elif source.loot_type == 'profile_icon' %}
+                        Profile Icon
+                        {% endif %}
+                    </td>
+                    <td>{{ event.square_event.loot[loot].average|round(2) }}</td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% include 'footer.html' %}
