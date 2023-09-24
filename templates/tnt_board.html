@@ -133,6 +133,16 @@
                         {% if event.square_event_type == 'Start' %}
                         Start Square
 
+                        {% elif event.square_event_type == 'Move' %}
+                            Moves
+                            {% if event.square_event.step_count > 0 %}
+                                Forward
+                            {% else %}
+                                Backward
+                            {% endif%}
+                            {{ event.square_event.step_count }}
+                            Squares
+
                         {% elif event.square_event_type == 'Battle' %}
                             Battle
                             <a href="/stage/{{ event.square_event.stage_id }}">
@@ -184,6 +194,16 @@
 
                         {% if event.square_event_type == 'Start' %}
                         Start Square
+
+                        {% elif event.square_event_type == 'Move' %}
+                            Moves
+                            {% if event.square_event.step_count > 0 %}
+                                Forward
+                            {% else %}
+                                Backward
+                            {% endif %}
+                            {{ event.square_event.step_count }}
+                            Squares
 
                         {% elif event.square_event_type == 'Battle' %}
                             Battle
