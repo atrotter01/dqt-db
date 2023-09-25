@@ -4,7 +4,7 @@
 
 
 var ddsitelogo={
-	setting: {orientation:4, visibleduration:0, fadeduration:[1000, 500]}, //orientation=1|2|3|4, duration=millisec or 0, fadedurations=millisecs
+	setting: {orientation:3, visibleduration:0, fadeduration:[1000, 500]}, //orientation=1|2|3|4, duration=millisec or 0, fadedurations=millisecs
 	offsets: {x:10, y:10},//offset of logo relative to window corner
 	logoHTML: '<img src="/static/images/SlimeStackFinal.gif" style="width:50px; height:47px; border:0" />', //HTML for logo, which is auto wrapped in DIV w/ ID="mysitelogo"
 
