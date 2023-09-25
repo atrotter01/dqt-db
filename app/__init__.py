@@ -80,6 +80,16 @@ def unit_route():
 
     return render_template('unit_list.html', units=units)
 
+@app.route('/skill_potency/')
+def skill_potency_route():
+    api_response = requests.get(url='http://localhost:5000/api/unit/', timeout=300, params=dict(lang=session['lang']))
+    units = []
+
+    if api_response.status_code == 200:
+        units = api_response.json()
+
+    return render_template('skill_potency.html', units=units)
+
 @app.route('/skill/active_skill/')
 def active_skill_route():
     active_skill_api_response = requests.get(url='http://localhost:5000/api/skill/active_skill', timeout=300, params=dict(lang=session['lang']))

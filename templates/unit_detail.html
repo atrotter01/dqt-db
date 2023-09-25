@@ -102,6 +102,7 @@
                                 <td>Name</td>
                                 <td>Level</td>
                                 <td>Description</td>
+                                <td>Skill Type</td>
                                 <td>Rank</td>
                                 <td>Range</td>
                                 <td>Reach</td>
@@ -109,6 +110,7 @@
                                 <td>Surehit</td>
                                 <td># Hits</td>
                                 <td>MP</td>
+                                <td>Damage</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -117,13 +119,69 @@
                                 <td><a href='/skill/active_skill/{{ skill.id }}'>{{ skill.skill_name }}</a></td>
                                 <td>{{ skill.level_learned }}</td>
                                 <td>{{ skill.skill_description }}</td>
-                                <td>{{ skill.skill_rank }}</td>
+                                <td>
+                                    {% if skill.skill_type == '1' %}
+                                        Physical
+                                    {% elif skill.skill_type == '3' %}
+                                        Martial
+                                    {% elif skill.skill_type == '4' %}
+                                        Spell
+                                    {% elif skill.skill_type == '5' %}
+                                        Breath
+                                    {% else %}
+                                        Other
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span style="display: none">
+                                        {% if skill.skill_rank == 'S' %}
+                                        1
+                                        {% else %}
+                                        {{ skill.skill_rank }}
+                                        {% endif %}
+                                    </span>
+                                    <img src="/{{ skill.skill_rank_icon }}" alt="{{ skill.skill_rank }}" style="width: 64px; height: 64px;" />
+                                </td>
                                 <td><img src="/{{ skill.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
                                 <td>{{ skill.skill_reach }}</td>
                                 <td><img src="/{{ skill.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
                                 <td>{{ skill.skill_surehit }}</td>
                                 <td>{{ skill.skill_num_attacks }}</td>
                                 <td>{{ skill.skill_mp_cost }}</td>
+                                <td>
+                                    {% if skill.skill_type == '1' %}
+                                        {% if skill.skill_multiplier|float > 0 %}
+                                            {% set ns_multiplier = namespace(multiplier=skill.skill_multiplier|float * (1 + (skill.skill_enhancements[-1:][0].enhancement_damage_increase_multiplier / 100))) %}
+                                            {{ ns_multiplier.multiplier|int }}%
+                                        {% else %}
+                                            0
+                                        {% endif %}
+                                    {% elif skill.skill_type == '3' %}
+                                        {{ ((1 + 0.011 * unit.stats_by_level[-1:][0].level|int) * skill.skill_base_damage|int * (1 + skill.skill_enhancements[-1:][0].enhancement_damage_increase_multiplier / 100) * 1)|int }}
+                                    {% elif skill.skill_type == '4' %}
+                                        {% if skill.skill_multiplier|float > 0 %}
+
+                                        {% set ns_multiplier = namespace(multiplier=skill.skill_multiplier|float * (1 + (skill.skill_enhancements[-1:][0].enhancement_damage_increase_multiplier / 100)) / 100) %}
+
+                                        {% if skill.skill_threshold_of_intelligence > 0 %}
+                                            {% set ns_damage_constant = namespace(damage_constant=skill.skill_min_damage|float - ((skill.skill_multiplier|float / 100) * skill.skill_threshold_of_intelligence|float)) %}
+                                            {% set ns_wisdom_cap = namespace(wisdom_cap=((skill.skill_max_damage|float - skill.skill_min_damage|float) / (skill.skill_multiplier|float / 100)) + skill.skill_threshold_of_intelligence) %}
+                                            {{ (((ns_multiplier.multiplier) * ns_wisdom_cap.wisdom_cap) + ns_damage_constant.damage_constant)|int }}
+                                        {% elif skill.skill_threshold_of_attack > 0 %}
+                                            {% set ns_damage_constant = namespace(damage_constant=skill.skill_min_damage|float - ((skill.skill_multiplier|float / 100) * skill.skill_threshold_of_attack|float)) %}
+                                            {% set ns_attack_cap = namespace(attack_cap=((skill.skill_max_damage|float - skill.skill_min_damage|float) / (skill.skill_multiplier|float / 100)) + skill.skill_threshold_of_attack) %}
+                                            {{ (((ns_multiplier.multiplier) * ns_attack_cap.attack_cap) + ns_damage_constant.damage_constant)|int }}
+                                        {%endif %}
+                        
+                                        {% else %} 
+                                            0
+                                        {% endif %}
+                                    {% elif skill.skill_type == '5' %}
+                                        {{ ((1 + 0.011 * unit.stats_by_level[-1:][0].level|int) * skill.skill_base_damage|int * (1 + skill.skill_enhancements[-1:][0].enhancement_damage_increase_multiplier / 100) * 1)|int }}
+                                    {% else %}
+                                        Other
+                                    {% endif %}
+                                </td>
                             </tr>
                             {% endfor %}
                             {% for panel in unit.character_builder_blossoms %}
@@ -132,13 +190,69 @@
                                 <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
                                 <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
                                 <td>{{ panel.data.skill_description }}</td>
-                                <td>{{ panel.data.skill_rank }}</td>
+                                <td>
+                                    {% if panel.data.skill_type == '1' %}
+                                        Physical
+                                    {% elif panel.data.skill_type == '3' %}
+                                        Martial
+                                    {% elif panel.data.skill_type == '4' %}
+                                        Spell
+                                    {% elif panel.data.skill_type == '5' %}
+                                        Breath
+                                    {% else %}
+                                        Other
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span style="display: none">
+                                        {% if panel.data.skill_rank == 'S' %}
+                                        1
+                                        {% else %}
+                                        {{ panel.data.skill_rank }}
+                                        {% endif %}
+                                    </span>
+                                    <img src="/{{ panel.data.skill_rank_icon }}" alt="{{ panel.data.skill_rank }}" style="width: 64px; height: 64px;" />
+                                </td>
                                 <td><img src="/{{ panel.data.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
                                 <td>{{ panel.data.skill_reach }}</td>
                                 <td><img src="/{{ panel.data.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
                                 <td>{{ panel.data.skill_surehit }}</td>
                                 <td>{{ panel.data.skill_num_attacks }}</td>
                                 <td>{{ panel.data.skill_mp_cost }}</td>
+                                <td>
+                                    {% if panel.data.skill_type == '1' %}
+                                        {% if panel.data.skill_multiplier|float > 0 %}
+                                            {% set ns_multiplier = namespace(multiplier=panel.data.skill_multiplier|float * (1 + (panel.data.skill_enhancements[-1:][0].enhancement_damage_increase_multiplier / 100))) %}
+                                            {{ ns_multiplier.multiplier|int }}%
+                                        {% else %}
+                                            0
+                                        {% endif %}
+                                    {% elif panel.data.skill_type == '3' %}
+                                        {{ ((1 + 0.011 * unit.stats_by_level[-1:][0].level|int) * panel.data.skill_base_damage|int * (1 + panel.data.skill_enhancements[-1:][0].enhancement_damage_increase_multiplier / 100) * 1)|int }}
+                                    {% elif panel.data.skill_type == '4' %}
+                                        {% if panel.data.skill_multiplier|float > 0 %}
+
+                                        {% set ns_multiplier = namespace(multiplier=panel.data.skill_multiplier|float * (1 + (panel.data.skill_enhancements[-1:][0].enhancement_damage_increase_multiplier / 100)) / 100) %}
+
+                                        {% if panel.data.skill_threshold_of_intelligence > 0 %}
+                                            {% set ns_damage_constant = namespace(damage_constant=panel.data.skill_min_damage|float - ((panel.data.skill_multiplier|float / 100) * panel.data.skill_threshold_of_intelligence|float)) %}
+                                            {% set ns_wisdom_cap = namespace(wisdom_cap=((panel.data.skill_max_damage|float - panel.data.skill_min_damage|float) / (panel.data.skill_multiplier|float / 100)) + panel.data.skill_threshold_of_intelligence) %}
+                                            {{ (((ns_multiplier.multiplier) * ns_wisdom_cap.wisdom_cap) + ns_damage_constant.damage_constant)|int }}
+                                        {% elif panel.data.skill_threshold_of_attack > 0 %}
+                                            {% set ns_damage_constant = namespace(damage_constant=panel.data.skill_min_damage|float - ((panel.data.skill_multiplier|float / 100) * panel.data.skill_threshold_of_attack|float)) %}
+                                            {% set ns_attack_cap = namespace(attack_cap=((panel.data.skill_max_damage|float - panel.data.skill_min_damage|float) / (panel.data.skill_multiplier|float / 100)) + panel.data.skill_threshold_of_attack) %}
+                                            {{ (((ns_multiplier.multiplier) * ns_attack_cap.attack_cap) + ns_damage_constant.damage_constant)|int }}
+                                        {%endif %}
+                        
+                                        {% else %} 
+                                            0
+                                        {% endif %}
+                                    {% elif panel.data.skill_type == '5' %}
+                                        {{ ((1 + 0.011 * unit.stats_by_level[-1:][0].level|int) * panel.data.skill_base_damage|int * (1 + panel.data.skill_enhancements[-1:][0].enhancement_damage_increase_multiplier / 100) * 1)|int }}
+                                    {% else %}
+                                        Other
+                                    {% endif %}
+                                </td>
                             </tr>
                             {% endif %}
                             {% endfor %}
@@ -148,13 +262,69 @@
                                 <td><a href='/skill/active_skill/{{ panel.data.id }}'>{{ panel.data.skill_name }}</a></td>
                                 <td><img src='/static/dqt_images/assets/aiming/textures/gui/general/icon/trainingboardicon/other/TrainingPointIcon_Large.png' style='width: 48px; height: 48px;' /><span style='display: none'>9999</span></td>
                                 <td>{{ panel.data.skill_description }}</td>
-                                <td>{{ panel.data.skill_rank }}</td>
+                                <td>
+                                    {% if panel.data.skill_type == '1' %}
+                                        Physical
+                                    {% elif panel.data.skill_type == '3' %}
+                                        Martial
+                                    {% elif panel.data.skill_type == '4' %}
+                                        Spell
+                                    {% elif panel.data.skill_type == '5' %}
+                                        Breath
+                                    {% else %}
+                                        Other
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span style="display: none">
+                                        {% if panel.data.skill_rank == 'S' %}
+                                        1
+                                        {% else %}
+                                        {{ panel.data.skill_rank }}
+                                        {% endif %}
+                                    </span>
+                                    <img src="/{{ panel.data.skill_rank_icon }}" alt="{{ panel.data.skill_rank }}" style="width: 64px; height: 64px;" />
+                                </td>
                                 <td><img src="/{{ panel.data.skill_range_icon }}" style="width: 64px; height: 64px;" /></td>
                                 <td>{{ panel.data.skill_reach }}</td>
                                 <td><img src="/{{ panel.data.skill_element_icon }}" style="width: 64px; height: 64px;" /></td>
                                 <td>{{ panel.data.skill_surehit }}</td>
                                 <td>{{ panel.data.skill_num_attacks }}</td>
                                 <td>{{ panel.data.skill_mp_cost }}</td>
+                                <td>
+                                    {% if panel.data.skill_type == '1' %}
+                                        {% if panel.data.skill_multiplier|float > 0 %}
+                                            {% set ns_multiplier = namespace(multiplier=panel.data.skill_multiplier|float * (1 + (panel.data.skill_enhancements[-1:][0].enhancement_damage_increase_multiplier / 100))) %}
+                                            {{ ns_multiplier.multiplier|int }}%
+                                        {% else %}
+                                            0
+                                        {% endif %}
+                                    {% elif panel.data.skill_type == '3' %}
+                                        {{ ((1 + 0.011 * unit.stats_by_level[-1:][0].level|int) * panel.data.skill_base_damage|int * (1 + panel.data.skill_enhancements[-1:][0].enhancement_damage_increase_multiplier / 100) * 1)|int }}
+                                    {% elif panel.data.skill_type == '4' %}
+                                        {% if panel.data.skill_multiplier|float > 0 %}
+
+                                        {% set ns_multiplier = namespace(multiplier=panel.data.skill_multiplier|float * (1 + (panel.data.skill_enhancements[-1:][0].enhancement_damage_increase_multiplier / 100)) / 100) %}
+
+                                        {% if panel.data.skill_threshold_of_intelligence > 0 %}
+                                            {% set ns_damage_constant = namespace(damage_constant=panel.data.skill_min_damage|float - ((panel.data.skill_multiplier|float / 100) * panel.data.skill_threshold_of_intelligence|float)) %}
+                                            {% set ns_wisdom_cap = namespace(wisdom_cap=((panel.data.skill_max_damage|float - panel.data.skill_min_damage|float) / (panel.data.skill_multiplier|float / 100)) + panel.data.skill_threshold_of_intelligence) %}
+                                            {{ (((ns_multiplier.multiplier) * ns_wisdom_cap.wisdom_cap) + ns_damage_constant.damage_constant)|int }}
+                                        {% elif panel.data.skill_threshold_of_attack > 0 %}
+                                            {% set ns_damage_constant = namespace(damage_constant=panel.data.skill_min_damage|float - ((panel.data.skill_multiplier|float / 100) * panel.data.skill_threshold_of_attack|float)) %}
+                                            {% set ns_attack_cap = namespace(attack_cap=((panel.data.skill_max_damage|float - panel.data.skill_min_damage|float) / (panel.data.skill_multiplier|float / 100)) + panel.data.skill_threshold_of_attack) %}
+                                            {{ (((ns_multiplier.multiplier) * ns_attack_cap.attack_cap) + ns_damage_constant.damage_constant)|int }}
+                                        {%endif %}
+                        
+                                        {% else %} 
+                                            0
+                                        {% endif %}
+                                    {% elif panel.data.skill_type == '5' %}
+                                        {{ ((1 + 0.011 * unit.stats_by_level[-1:][0].level|int) * panel.data.skill_base_damage|int * (1 + panel.data.skill_enhancements[-1:][0].enhancement_damage_increase_multiplier / 100) * 1)|int }}
+                                    {% else %}
+                                        Other
+                                    {% endif %}
+                                </td>
                             </tr>
                             {% endif %}
                             {% endfor %}
