@@ -28,7 +28,7 @@ function rainSlimes() {
 	for(const slime of slimeStack) {
 		slime['yp'] += slime['sty'];
 
-		if(slime['yp'] > window.screen.height - 50) {
+		if(slime['yp'] > window.screen.height - 250) {
 			slime['xp'] = Math.random() * (window.screen.width - slime['am'] - 40);
 			slime['yp'] = 0;
 			slime['stx'] = 0.02 + Math.random() / 10;
