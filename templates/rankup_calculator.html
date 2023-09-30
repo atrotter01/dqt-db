@@ -43,6 +43,14 @@
             table.searchPanes.resizePanes();
             hideSearchPanes(null, table, null, null);
 
+            table.on( 'draw.dt', function () {
+                calculate_materials();
+            } );
+
+            table.on( 'search.dt', function () {
+                calculate_materials();
+            } );
+
             var dt_options = {
                 autoWidth: true,
                 paging: false,
@@ -76,7 +84,7 @@
                 sel.append($("<option>").attr('value',this.rank_number).text(this.rank_number));
             });
 
-            });
+        });
 
         function calculate_materials() {
             var needed_materials = {};
@@ -276,11 +284,11 @@
     </div>
     <div class="row p-1 m-1">
         <div class="col col-sm-auto">Set All Current Ranks To:</div>
-        <div id="currentRankContainer" class="col"></div>
+        <div class="col col-sm-auto" id="currentRankContainer"></div>
     </div>
     <div class="row p-1 m-1">
         <div class="col col-sm-auto">Set All Desired Ranks To:</div>
-        <div id="desiredRankContainer" class="col"></div>
+        <div class="col col-sm-auto" id="desiredRankContainer"></div>
     </div>
     <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
         <thead>
