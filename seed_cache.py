@@ -561,6 +561,7 @@ def cache_shop(path):
     if not document.get('displayName_translation'):
         return
 
+    print(f'Caching shop {path}')
     requests.get(f'http://localhost:5000/api/shop/{path}', timeout=3600, params=dict(lang=util.get_language_setting()))
 
 if __name__ == '__main__':

@@ -1,3 +1,4 @@
+import datetime
 import math
 from pathlib import Path
 import json
@@ -123,12 +124,16 @@ class Util:
             'container': container,
             'filetype': filetype,
             'display_name': display_name,
-            'processed': False
+            'date_imported': str(datetime.date.today())
         }
 
         data_saved: bool = self.redis_client.set(f'{path}_data', self.deflate_asset(document))
 
         if data_saved is True:
+            if path in self.asset_list:
+                return True
+
+            print(f'Saved new asset to key {path}')
             return self.redis_client.set(path, json.dumps(asset))
         else:
             return False

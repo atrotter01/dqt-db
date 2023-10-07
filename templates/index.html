@@ -2,8 +2,12 @@
 
 <script>
     $(document).ready( function () {
+        var table = $('#dt').DataTable(dt_options);
+
         $('#loading_spinner').hide();
         $('#content-container').show();
+
+        table.columns.adjust().responsive.recalc().order([1, 'asc']).draw();
     } );
 </script>
 <p>
@@ -13,8 +17,62 @@
     <a href='https://game8.jp/dqtact'>Game 8</a><br />
     <a href='https://www.reddit.com/r/dragonquesttact'>Reddit</a>
 </p>
+<!--
 <p>
     Peter was too lazy to learn Python, so I did 99% of the coding, but &lt;3 him anyways. -Artea
 </p>
 <img src='/static/images/dracky_spin.gif' />
+-->
+<h5>Updates</h5>
+<table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+    <thead>
+        <tr>
+            <td>Date Added</td>
+            <td>Type</td>
+            <td>Name</td>
+            <td>Icon</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for update_date in update_data %}
+        {% for update in update_data[update_date]['assets'] %}
+        <tr>
+            <td>{{ update_date }}</td>
+            <td>
+                {% if update.filetype == 'AllyMonster' %}
+                Unit
+                {% elif update.filetype == 'Stage' %}
+                Stage
+                {% elif update.filetype == 'Equipment' %}
+                Equipment
+                {% elif update.filetype == 'ConsumableItem' %}
+                Item
+                {% elif update.filetype == 'ExchangeShop' %}
+                Shop
+                {% endif %}
+            </td>
+            <td>
+                {% if update.filetype == 'AllyMonster' %}
+                <a href="/unit/{{ update.path }}">
+                {% elif update.filetype == 'Stage' %}
+                <a href="/stage/{{ update.path }}">
+                {% elif update.filetype == 'Equipment' %}
+                <a href="/equipment/{{ update.path }}">
+                {% elif update.filetype == 'ConsumableItem' %}
+                <a href="/item/{{ update.path }}">
+                {% elif update.filetype == 'ExchangeShop' %}
+                <a href="/shop/{{ update.path }}">
+                {% endif %}
+                {{ update.display_name }}
+                </a>
+            </td>
+            <td>
+                <img src="/{{ update.icon_path }}" />
+            </td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+    </tbody>
+</table>
+
 {% include 'footer.html' %}

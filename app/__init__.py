@@ -68,7 +68,10 @@ def check_session_vars():
 
 @app.route('/')
 def index_route():
-    return render_template('index.html')
+    util: Util = Util(lang=session['lang'])
+    update_data: dict = util.get_redis_asset(cache_key='sys_db_updates')
+
+    return render_template('index.html', update_data=update_data)
 
 @app.route('/unit/')
 def unit_route():

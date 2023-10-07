@@ -59,9 +59,6 @@ def process_and_save_asset(path):
         filepath = asset_importer_instance.map_path_to_file(path=path)
         asset_name = asset_importer_instance.asset_map.get(path).get('Name')
 
-        if path in asset_importer_instance.util.asset_list:
-            return True
-
         if filepath is None:
             filepath = os.path.join(asset_importer_instance.root_path, f'{path}.json')
 
@@ -78,7 +75,7 @@ def process_and_save_asset(path):
                 document = json.load(fh)
 
                 if asset_importer_instance.util.save_asset(path=path, filepath=filepath, container=container, filetype=filetype, document=document, display_name=asset_name):
-                    print(f'Saved {path}')
+                    #print(f'Saved {path}')
                     #os.unlink(filepath)
                     return True
                 else:
