@@ -16,6 +16,11 @@ class LootGroup:
     def parse_loot_group(self, path):
         asset = self.util.get_asset_by_path(path=path, deflate_data=True)
         data: dict = asset.get('processed_document')
+        loot_table = self.build_loot_table(data=data, path=path)
+
+        return loot_table
+
+    def build_loot_table(self, data, path):
         loots: list = []
 
         for loot in data.get('equipmentLoots'):

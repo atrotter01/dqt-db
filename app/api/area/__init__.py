@@ -28,6 +28,7 @@ area_model = api.model('area', {
     'area_number_of_stages_back': fields.Integer,
     'area_available_monster_families': fields.List(fields.Raw),
     'area_available_monsters': fields.List(fields.Raw),
+    'area_guild_rewards': fields.List(fields.Raw),
 })
 
 api.param("path", "Path")

@@ -54,11 +54,13 @@
             var dt_drops = $('#dt_drops').DataTable(dt_drop_options);
             var dt_missions = $('#dt_missions').DataTable(dt_options);
             var dt_enemies = $('#dt_enemies').DataTable(dt_options);
+            var dt_guild_rewards = $('#dt_guild_rewards').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
             dt_drops.columns.adjust().responsive.recalc();
             dt_missions.columns.adjust().responsive.recalc();
             dt_enemies.columns.adjust().responsive.recalc();
+            dt_guild_rewards.columns.adjust().responsive.recalc();
             dt_drops.order([6, 'asc']).draw();
 
             $('#dt_drops tbody').on('click', 'tr.dtrg-start', function () {
@@ -273,6 +275,56 @@
                         <img src='/{{ stage_enemy.monster.enemy_unit_icon }}' style="width: 64px; height: 64px;" />
                     </td>
                 </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <h4>Guild Score Rewards</h4>
+    <div>
+        <table id="dt_guild_rewards" class="table table-striped table-hover table-bordered align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Rank From</td>
+                    <td>Rank To</td>
+                    <td>Name</td>
+                    <td>Quantity</td>
+                    <td>Icon</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for guild_rank in area.area_guild_rewards %}
+                {% for loot in guild_rank.loot_group.loot %}
+                <tr>
+                    <td>{{ guild_rank.rank_from }}</td>
+                    <td>
+                        {% if guild_rank.rank_bottom_unbounded == 0 %}
+                        {{ guild_rank.rank_to }}
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if loot.loot_type == 'consumable_item' %}
+                        <a href="/item/{{ loot.path }}">
+                        {% elif loot.loot_type == 'monster' %}
+                        <a href="/unit/{{ loot.path }}">
+                        {% elif loot.loot_type == 'equipment' %}
+                        <a href="/equipment/{{ loot.path }}">
+                        {% elif loot.loot_type == 'profile_icon' %}
+                        <a href="/icon/{{ loot.path }}">
+                        {% endif %}
+                        {{ loot.display_name }}
+                        </a>
+                    </td>
+                    <td>{{ loot.quantity }}</td>
+                    <td>
+                        {% if loot.icon != None %}
+                        <img src='/{{ loot.icon }}' style='width: 64px; height: 64px;' />
+                        {% endif %}
+                    </td>
+
+                </tr>
+                {% endfor %}
                 {% endfor %}
             </tbody>
         </table>

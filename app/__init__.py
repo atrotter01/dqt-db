@@ -405,23 +405,18 @@ def enemy_monster_route(monster_id):
 def stage_route(stage_id):
     api_response = requests.get(url=f'http://localhost:5000/api/stage/{stage_id}', timeout=300, params=dict(lang=session['lang']))
     stage_data = []
+    area_data = []
 
     if api_response.status_code == 200:
         stage_data = api_response.json()
 
-    return render_template('stage_detail.html', stage=stage_data[0])
+    area_id = stage_data[0].get('stage_area_id')
+    area_api_response = requests.get(url=f'http://localhost:5000/api/area/{area_id}', timeout=300, params=dict(lang=session['lang']))
 
-    # 1: Story
-    # 2: Event
-    # 4: Battle Road
-    # 5: Daily
-    # 6: All Out Battle
-    # 7: Hero Quest
-    # 8: Anniversary Battle
-    # 9: Bloom Door
-    # 10: Large Battle
-    # 11: Guild Co-op Battle
-    # 12: TnT Board
+    if area_api_response.status_code == 200:
+        area_data = area_api_response.json()
+
+    return render_template('stage_detail.html', stage=stage_data[0], area=area_data[0])
 
 @app.route('/stage/category/<stage_category>')
 def stage_category_route(stage_category):

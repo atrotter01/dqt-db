@@ -1,5 +1,6 @@
 import concurrent
 from app.util import Util
+from app.data.lootgroup import LootGroup
 from app.data.unit import Unit
 
 data_class_instance = None
@@ -7,10 +8,12 @@ data_class_instance = None
 class Area:
 
     util: Util
+    loot_group_parser: LootGroup
     unit_parser: Unit
 
     def __init__(self, util):
         self.util = util
+        self.loot_group_parser = LootGroup(util=util)
         self.unit_parser = Unit(util=util)
         globals()['data_class_instance'] = self
 
@@ -46,6 +49,7 @@ class Area:
         area_number_of_stages_back = data.get('numberOfStagesToBack')
         area_available_monster_families: list = []
         area_available_monsters: list = []
+        area_guild_rewards: list = []
 
         if data.get('subDisplayName_translation') is not None:
             area_sub_display_name = self.util.get_localized_string(data=data, key='subDisplayName_translation', path=path)
@@ -71,9 +75,19 @@ class Area:
                 'is_required': monster_is_required,
             })
 
-        # Todo Parse Guild Battle Rewards
-        #if data.get('guildRaidRankingGroup').get('m_PathID') is None:
-        #    raise Exception(path)
+        if data.get('guildRaidRankingGroup').get('m_PathID') is None:
+            for ranking_section in data.get('guildRaidRankingGroup').get('rankingSections'):
+                rank_from = ranking_section.get('rankingFrom')
+                rank_to = ranking_section.get('rankingTo')
+                rank_bottom_unbounded = ranking_section.get('isBottomUnbounded')
+                loot_group = self.loot_group_parser.build_loot_table(data=ranking_section.get('rewardItemGroup'), path=path)
+
+                area_guild_rewards.append({
+                    'rank_from': rank_from,
+                    'rank_to': rank_to,
+                    'rank_bottom_unbounded': rank_bottom_unbounded,
+                    'loot_group': loot_group
+                })
 
         area: dict = {
             'id': path,
@@ -98,6 +112,7 @@ class Area:
             'area_number_of_stages_back': area_number_of_stages_back,
             'area_available_monster_families': area_available_monster_families,
             'area_available_monsters': area_available_monsters,
+            'area_guild_rewards': area_guild_rewards
         }
 
         return area
