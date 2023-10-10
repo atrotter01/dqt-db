@@ -11,12 +11,39 @@
                 theme: 'bootstrap-5',
                 placeholder: 'Select Units',
                 closeOnSelect: false,
+                tags: true,
             });
 
             $('#stage_select').select2({
                 theme: 'bootstrap-5',
                 placeholder: 'Select Stage',
                 closeOnSelect: true,
+            });
+
+            // On select, place the selected item in order
+            $("#unit_select").on("select2:select", function (evt) {
+                var element = evt.params.data.element;
+                var $element = $(element);
+
+                window.setTimeout(function () {  
+                if ($("#unit_select").find(":selected").length > 1) {
+                    var $second = $("#unit_select").find(":selected").eq(-2);
+                    $element.detach();
+                    $second.after($element);
+                } 
+                else {
+                    $element.detach();
+                    $("#unit_select").prepend($element);
+                }
+
+                $("#unit_select").trigger("change");
+                }, 1);
+            });
+
+            // on unselect, put the selected item last
+            $("select").on("select2:unselect", function (evt) {
+                var element = evt.params.data.element;
+                $("select").append(element);
             });
         } );
     </script>
