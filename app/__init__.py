@@ -403,9 +403,11 @@ def enemy_monster_route(monster_id):
 
 @app.route('/stage/<stage_id>')
 def stage_route(stage_id):
+    util: Util = Util(lang=session['lang'])
     api_response = requests.get(url=f'http://localhost:5000/api/stage/{stage_id}', timeout=300, params=dict(lang=session['lang']))
     stage_data = []
     area_data = []
+    guides = util.get_redis_asset('user_data_video_guides')
 
     if api_response.status_code == 200:
         stage_data = api_response.json()
@@ -416,7 +418,7 @@ def stage_route(stage_id):
     if area_api_response.status_code == 200:
         area_data = area_api_response.json()
 
-    return render_template('stage_detail.html', stage=stage_data[0], area=area_data[0])
+    return render_template('stage_detail.html', stage=stage_data[0], area=area_data[0], guides=guides)
 
 @app.route('/stage/category/<stage_category>')
 def stage_category_route(stage_category):

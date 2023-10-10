@@ -2,8 +2,10 @@
 
     <script>
         $(document).ready( function () {
+            var dt = $('#dt').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
+            dt.columns.adjust().responsive.recalc().draw();
 
             $('#unit_select').select2({
                 theme: 'bootstrap-5',

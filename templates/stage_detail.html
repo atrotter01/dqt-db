@@ -55,12 +55,14 @@
             var dt_missions = $('#dt_missions').DataTable(dt_options);
             var dt_enemies = $('#dt_enemies').DataTable(dt_options);
             var dt_guild_rewards = $('#dt_guild_rewards').DataTable(dt_options);
+            var dt_guides = $('#dt_guides').DataTable(dt_options);
             $('#loading_spinner').hide();
             $('#content-container').show();
             dt_drops.columns.adjust().responsive.recalc();
             dt_missions.columns.adjust().responsive.recalc();
             dt_enemies.columns.adjust().responsive.recalc();
             dt_guild_rewards.columns.adjust().responsive.recalc();
+            dt_guides.columns.adjust().responsive.recalc();
             dt_drops.order([6, 'asc']).draw();
 
             $('#dt_drops tbody').on('click', 'tr.dtrg-start', function () {
@@ -279,6 +281,39 @@
             </tbody>
         </table>
     </div>
+    <hr />
+    <h4>Guides</h4>
+    <table id="dt_guides" class="table table-striped table-hover table-bordered align-middle" style="width:100%;">
+        <thead>
+            <tr>
+                <td>Units</td>
+                <td>Video</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for guide in guides %}
+            {% if guide.stage_id == stage.id %}
+            <tr>
+                <td>
+                    <div class="row">
+                        {% for unit in guide.units %}
+                        <div class="col col-sm-auto d-flex align-items-end me-3" style="background-image: url('/{{ unit.unit_rank_background }}'); position: relative; width: 104px; height: 128px;">
+                            {% if unit.awakening_icon != None %}
+                            <span style="position: absolute; z-index: 99999;"><img src='/{{ unit.awakening_icon }}' /></span>
+                            {% endif %}
+                            <img src="/{{ unit.unit_icon }}" style="width: 90px; height: 118px; position: relative; right: 5px; top: -5px;" />
+                        </div>
+                    {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    <iframe width="300" height="150" src="https://www.youtube.com/embed/{{ guide.video_link }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
     <hr />
     <h4>Guild Score Rewards</h4>
     <div>
