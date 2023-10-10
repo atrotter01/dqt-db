@@ -43,7 +43,7 @@
             // on unselect, put the selected item last
             $("select").on("select2:unselect", function (evt) {
                 var element = evt.params.data.element;
-                $("select").append(element);
+                $("#unit_select").append(element);
             });
         } );
     </script>
