@@ -516,5 +516,18 @@ def translate_route():
 
     return render_template('translate.html', untranslated_assets=untranslated_assets)
 
+@app.route('/video_guide')
+def video_guide_route():
+    util: Util = Util(lang=session['lang'])
+    stage_structure = util.get_redis_asset(f'{util.get_language_setting()}_stage_structure_parsed_asset')
+
+    api_response = requests.get(url='http://localhost:5000/api/unit/', timeout=300, params=dict(lang=session['lang']))
+    units = []
+
+    if api_response.status_code == 200:
+        units = api_response.json()
+
+    return render_template('video_guide.html', units=units, stage_structure=stage_structure)
+
 if __name__ == '__main__':
     app.run(debug=True)

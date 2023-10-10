@@ -1,0 +1,63 @@
+{% include 'header.html' %}
+
+    <script>
+        $(document).ready( function () {
+            $('#loading_spinner').hide();
+            $('#content-container').show();
+
+            $('#unit_select').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Select Units',
+                closeOnSelect: false,
+            });
+
+            $('#stage_select').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Select Stage',
+                closeOnSelect: true,
+            });
+        } );
+    </script>
+    <form>
+        <div class="mb-3">
+            <label class="form-label" for="unit_select">Select Stage</label>
+            <select class="form-select" id="stage_select" name="stage_select" style="width: 80%">
+                <option></option>
+                {% for area in stage_structure %}
+                {% for stage in stage_structure[area].stages %}
+                <option value="{{ stage.stage_id }}">
+                    {% if stage_structure[area].area_group_name is defined %}
+                    {{ stage_structure[area].area_group_name }} -
+                    {% endif %}
+                    {{ stage_structure[area].area_name }} - {{ stage.stage_name }}
+                </option>
+                {% endfor %}
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="unit_select">Select Units</label>
+            <select class="form-select" id="unit_select" name="unit_select[]" multiple style="width: 80%">
+                {% for unit in units %}
+                <optgroup label="{{ unit.display_name }}">
+                    <option value="{{ unit.id }}_A0">{{ unit.display_name }}_A0</option>
+                    <option value="{{ unit.id }}_A1">{{ unit.display_name }}_A1</option>
+                    <option value="{{ unit.id }}_A2">{{ unit.display_name }}_A2</option>
+                    <option value="{{ unit.id }}_A3">{{ unit.display_name }}_A3</option>
+                    <option value="{{ unit.id }}_A4">{{ unit.display_name }}_A4</option>
+                    <option value="{{ unit.id }}_A5">{{ unit.display_name }}_A5</option>
+                </optgroup>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="video_link">Video Link</label>
+            <input class="form-control" type="text" placeholder="Video Link" aria-label="Video Link" id="video_link" name="video_link" style="width: 80%">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+{% include 'footer.html' %}
