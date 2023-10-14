@@ -12,6 +12,7 @@
                 placeholder: 'Select Units',
                 closeOnSelect: false,
                 tags: true,
+                allowClear: true,
             });
 
             $('#stage_select').select2({
@@ -46,8 +47,48 @@
                 $("#unit_select").append(element);
             });
         } );
+
+        function submitGuideForm() {
+            $.ajax({
+                type: 'POST',
+                url: '/video_guide/save',
+                data: $('#guide_form').serialize(),
+            }).done(function(data) {
+                console.log(data);
+                const toastElement = document.getElementById('successToast');
+                const toastObject = bootstrap.Toast.getOrCreateInstance(toastElement);
+                $('#video_link').val('');
+                $("#unit_select").empty().trigger('change')
+                toastObject.show();
+            }).fail(function(xhr, status, error) {
+                console.log(xhr.responseText);
+                const toastElement = document.getElementById('failureToast');
+                const toastObject = bootstrap.Toast.getOrCreateInstance(toastElement);
+                toastObject.show();
+            });
+        }
+
+        function deleteGuide(guide_id) {
+            $.ajax({
+                type: 'POST',
+                url: '/video_guide/delete',
+                data: {
+                    'guide_id': guide_id,
+                },
+            }).done(function(data) {
+                console.log(data);
+                const toastElement = document.getElementById('successToast');
+                const toastObject = bootstrap.Toast.getOrCreateInstance(toastElement);
+                toastObject.show();
+            }).fail(function(xhr, status, error) {
+                console.log(xhr.responseText);
+                const toastElement = document.getElementById('failureToast');
+                const toastObject = bootstrap.Toast.getOrCreateInstance(toastElement);
+                toastObject.show();
+            });
+        }
     </script>
-    <form method="post" action="/video_guide/save">
+    <form id="guide_form">
         <div class="mb-3">
             <label class="form-label" for="stage_select">Select Stage</label>
             <select class="form-select" id="stage_select" name="stage_select" style="width: 80%">
@@ -86,7 +127,7 @@
             <input class="form-control" type="text" placeholder="Video Link" aria-label="Video Link" id="video_link" name="video_link" style="width: 80%">
         </div>
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="button" onclick="submitGuideForm()" class="btn btn-primary">Submit</button>
     </form>
 
     <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width:100%;">
@@ -115,10 +156,30 @@
                 </td>
                 <td>
                     <iframe width="300" height="150" src="https://www.youtube.com/embed/{{ guide.video_link }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    <br />
+                    <button type="button" onclick="deleteGuide('{{ guide.guide_id }}')" class="btn btn-primary">Delete Guide</button>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <div id="successToast" class="toast align-items-center text-bg-primary border-0 position-absolute top-0 start-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+        <div class="toast-body">
+            Saved guide.
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+
+    <div id="failureToast" class="toast align-items-center text-bg-danger border-0 position-absolute top-0 start-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+        <div class="toast-body">
+            Failed to save guide.
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
 
 {% include 'footer.html' %}

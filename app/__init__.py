@@ -1,7 +1,8 @@
 import datetime
 import json
 import requests
-from flask import Flask, Blueprint, render_template, request, Response, session
+import uuid
+from flask import Flask, Blueprint, render_template, request, Response, session, make_response, jsonify
 from flask_restx import Api
 from flask_autoindex import AutoIndex
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -537,58 +538,82 @@ def video_guide_route():
 
 @app.route('/video_guide/save', methods=['POST'])
 def video_guide_save_route():
-    util: Util = Util(lang=session['lang'])
+    try:
+        util: Util = Util(lang=session['lang'])
 
-    stage_id = request.form.get('stage_select')
-    stage_api_response = requests.get(url=f'http://localhost:5000/api/stage/{stage_id}', timeout=300, params=dict(lang=session['lang']))
-    stage_data = stage_api_response.json()[0]
-    stage_name = stage_data.get('stage_display_name')
+        stage_id = request.form.get('stage_select')
+        stage_api_response = requests.get(url=f'http://localhost:5000/api/stage/{stage_id}', timeout=300, params=dict(lang=session['lang']))
+        stage_data = stage_api_response.json()[0]
+        stage_name = stage_data.get('stage_display_name')
 
-    video_link = request.form.get('video_link')
-    selected_units = request.form.getlist('unit_select')
-    selected_unit_list: list = []
+        video_link = request.form.get('video_link')
+        selected_units = request.form.getlist('unit_select')
+        selected_unit_list: list = []
 
-    for unit in selected_units:
-        unit_id = unit.split('_')[0]
-        awakening = int(unit.split('_')[1].replace('A',''))
-        unit_api_response = requests.get(url=f'http://localhost:5000/api/unit/{unit_id}', timeout=300, params=dict(lang=session['lang']))
-        unit_data = unit_api_response.json()[0]
-        unit_icon = unit_data.get('unit_icon')
-        unit_rank = unit_data.get('unit_rank')
-        unit_name = unit_data.get('display_name')
-        unit_rank_background = f'static/dqt_images/assets/aiming/textures/gui/general/icon/monstericon/monstericonparts/MonsterIconBackGround_{unit_rank}.png'
-        awakening_icon = None
+        for unit in selected_units:
+            unit_id = unit.split('_')[0]
+            awakening = int(unit.split('_')[1].replace('A',''))
+            unit_api_response = requests.get(url=f'http://localhost:5000/api/unit/{unit_id}', timeout=300, params=dict(lang=session['lang']))
+            unit_data = unit_api_response.json()[0]
+            unit_icon = unit_data.get('unit_icon')
+            unit_rank = unit_data.get('unit_rank')
+            unit_name = unit_data.get('display_name')
+            unit_rank_background = f'static/dqt_images/assets/aiming/textures/gui/general/icon/monstericon/monstericonparts/MonsterIconBackGround_{unit_rank}.png'
+            awakening_icon = None
 
-        if awakening > 0:
-            awakening_icon = f'static/dqt_images/assets/aiming/textures/gui/general/icon/monstericon/monstericonparts/awakening/Awakening_{unit_rank}{awakening}.png'
+            if awakening > 0:
+                awakening_icon = f'static/dqt_images/assets/aiming/textures/gui/general/icon/monstericon/monstericonparts/awakening/Awakening_{unit_rank}{awakening}.png'
 
-        selected_unit_list.append({
-            'unit_id': unit_id,
-            'awakening_icon': awakening_icon,
-            'unit_icon': unit_icon,
-            'unit_name': unit_name,
-            'unit_rank_background': unit_rank_background
+            selected_unit_list.append({
+                'unit_id': unit_id,
+                'awakening_icon': awakening_icon,
+                'unit_icon': unit_icon,
+                'unit_name': unit_name,
+                'unit_rank_background': unit_rank_background
+            })
+
+        guides = util.get_redis_asset('user_data_video_guides')
+
+        if guides is None:
+            guides = []
+
+        guides.append({
+            'guide_id': str(uuid.uuid4()),
+            'stage_id': stage_id,
+            'stage_name': stage_name,
+            'video_link': video_link,
+            'units': selected_unit_list,
         })
 
-    guides = util.get_redis_asset('user_data_video_guides')
+        util.save_redis_asset(cache_key='user_data_video_guides', data=guides)
 
-    if guides is None:
-        guides = []
+        return make_response(jsonify({'success': True}), 201)
 
-    guides.append({
-        'stage_id': stage_id,
-        'stage_name': stage_name,
-        'video_link': video_link,
-        'units': selected_unit_list,
-    })
+    except Exception as ex:
+        return make_response(jsonify({'success': False, 'err': str(ex)}), 500)
 
-    util.save_redis_asset(cache_key='user_data_video_guides', data=guides)
+@app.route('/video_guide/delete', methods=['POST'])
+def video_guide_delete_route():
+    try:
+        util: Util = Util(lang=session['lang'])
+        guides = util.get_redis_asset('user_data_video_guides')
+        guide_id_to_delete = request.form.get('guide_id')
+        new_guides = []
 
-    stage_structure = util.get_redis_asset(f'{util.get_language_setting()}_stage_structure_parsed_asset')
-    api_response = requests.get(url='http://localhost:5000/api/unit/', timeout=300, params=dict(lang=session['lang']))
-    units = api_response.json()
+        for guide in guides:
+            guide_id = guide.get('guide_id')
 
-    return render_template('video_guide.html', guides=guides, stage_structure=stage_structure, units=units)
+            if guide_id_to_delete == guide_id:
+                continue
+
+            new_guides.append(guide)
+
+        util.save_redis_asset(cache_key='user_data_video_guides', data=new_guides)
+
+        return make_response(jsonify({'success': True}), 201)
+
+    except Exception as ex:
+        return make_response(jsonify({'success': False, 'err': str(ex)}), 500)
 
 if __name__ == '__main__':
     app.run(debug=True)
