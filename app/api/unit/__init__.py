@@ -42,6 +42,23 @@ unit_model = api.model('unit', {
     'character_builder_blossoms': fields.List(fields.Raw)
 })
 
+majellan_bot_model = api.model('unit', {
+    'id': fields.String,
+    'display_name': fields.String,
+    'weight': fields.String,
+    'unit_rank': fields.String,
+    'unit_rank_icon': fields.String,
+    'family': fields.String,
+    'family_icon': fields.String,
+    'small_family_icon': fields.String,
+    'role': fields.String,
+    'role_icon': fields.String,
+    'unit_icon': fields.String,
+    'has_battleroad': fields.Boolean,
+    'has_blossom': fields.Boolean,
+    'has_character_builder': fields.Boolean,
+})
+
 rank_up_calculator_model = api.model('rank_up_calculator', {
     'id': fields.String,
     'display_name': fields.String,
@@ -101,6 +118,37 @@ class Asset(Resource):
                 self.units.append(self.unit_parser.get_data(path=path))
 
                 return self.units
+
+        self.cache_key = f'{self.util.get_language_setting()}_unit_parsed_asset'
+        cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
+
+        if cached_asset is not None:
+            return cached_asset
+
+        asset_list: list = self.util.get_asset_list('AllyMonster')
+
+        for path in asset_list:
+            unit = self.unit_parser.get_data(path=path)
+            self.units.append(unit)
+
+        self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.units, key=lambda d: d['almanac_number']))
+
+        return sorted(self.units, key=lambda d: d['almanac_number'])
+
+@api.route("/majellan_bot")
+class Majellan(Resource):
+
+    util: Util
+    unit_parser: Unit
+    units: list
+    cache_key: str
+
+    @api.marshal_list_with(majellan_bot_model)
+    def get(self, path = None):
+        '''Fetch a given Unit'''
+        self.util = Util(lang=request.args.get('lang'))
+        self.unit_parser = Unit(util=self.util)
+        self.units = []
 
         self.cache_key = f'{self.util.get_language_setting()}_unit_parsed_asset'
         cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
