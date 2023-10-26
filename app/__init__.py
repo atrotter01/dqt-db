@@ -21,6 +21,7 @@ from app.api.item import api as item_api
 from app.api.shop import api as shop_api
 from app.api.skill import api as skill_api
 from app.api.stage import api as stage_api
+#from app.api.statuseffect import api as statuseffect_api
 from app.api.tnt import api as tnt_api
 from app.api.unit import api as unit_api
 from app.util import Util
@@ -52,6 +53,7 @@ api.add_namespace(item_api)
 api.add_namespace(shop_api)
 api.add_namespace(skill_api)
 api.add_namespace(stage_api)
+#api.add_namespace(statuseffect_api)
 api.add_namespace(tnt_api)
 api.add_namespace(unit_api)
 
@@ -614,6 +616,23 @@ def video_guide_delete_route():
 
     except Exception as ex:
         return make_response(jsonify({'success': False, 'err': str(ex)}), 500)
+
+@app.route('/guide_list')
+def guide_list_route():
+    util: Util = Util(lang=session['lang'])
+    stage_structure = util.get_redis_asset(f'{util.get_language_setting()}_stage_structure_parsed_asset')
+
+    api_response = requests.get(url='http://localhost:5000/api/unit/', timeout=300, params=dict(lang=session['lang']))
+    units = []
+    guides = util.get_redis_asset('user_data_video_guides')
+
+    if guides is None:
+        guides = []
+
+    if api_response.status_code == 200:
+        units = api_response.json()
+
+    return render_template('guide_list.html', units=units, stage_structure=stage_structure, guides=guides)
 
 if __name__ == '__main__':
     app.run(debug=True)

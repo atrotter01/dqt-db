@@ -136,7 +136,9 @@
                 <br />
                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Home</button>
+                        <a href="/">
+                            <button class="nav-link" type="button" aria-selected="true">Home</button>
+                        </a>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="pills-monsters-tab" data-bs-toggle="pill" data-bs-target="#pills-monsters" type="button" role="tab" aria-controls="pills-monsters" aria-selected="false">Monsters</button>
@@ -156,11 +158,13 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="pills-data-tab" data-bs-toggle="pill" data-bs-target="#pills-data" type="button" role="tab" aria-controls="pills-data" aria-selected="false">Data</button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="/guide_list">
+                            <button class="nav-link" type="button">Video Guides</button>
+                        </a>
+                    </li>
                 </ul>
                 <div class="tab-content" id="pills-tabContent">
-                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                        <a href="/"><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Home</div></a>
-                    </div>
                     <div class="tab-pane fade" id="pills-monsters" role="tabpanel" aria-labelledby="pills-monsters-tab">
                         <a href="/unit/"><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Units</div></a>
                         <a href='/battleroad/'><div class="navbar_image" style="background-image:url('/static/images/button2_2.png');">&nbsp;Battle Roads</div></a>
@@ -200,8 +204,8 @@
                         <a href='/shop/'><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Shops</div></a>
                     </div>
                     <div class="tab-pane fade" id="pills-data" role="tabpanel" aria-labelledby="pills-data-tab">
-                        <a href="/asset_container/"><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Raw Data</div></a>
-                        <a href="/imagebrowser/"><div class="navbar_image" style="background-image:url('/static/images/button2_2.png');">&nbsp;Images</div></a>
+                        <a href="#"><div class="navbar_image" style="background-image:url('/static/images/button1_2.png');">&nbsp;Raw Data</div></a>
+                        <a href="#"><div class="navbar_image" style="background-image:url('/static/images/button2_2.png');">&nbsp;Images</div></a>
                     </div>
                 </div>
             </div>

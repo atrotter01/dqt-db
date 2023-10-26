@@ -571,10 +571,6 @@ class Skill:
 
         asset_list.clear()
 
-        asset_list.extend(self.util.get_asset_list('ActiveSkill'))
-        asset_list.extend(self.util.get_asset_list('GuestSkill'))
-        asset_list.extend(self.util.get_asset_list('NotUseSkill'))
-
         asset_list.extend(self.util.get_asset_list('LeaderPassive'))
         asset_list.extend(self.util.get_asset_list('ReactionPassive'))
         asset_list.extend(self.util.get_asset_list('NotUsePassiveSkill'))

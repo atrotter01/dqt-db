@@ -58,7 +58,7 @@
                 const toastElement = document.getElementById('successToast');
                 const toastObject = bootstrap.Toast.getOrCreateInstance(toastElement);
                 $('#video_link').val('');
-                $("#unit_select").empty().trigger('change')
+                $("#unit_select").val(null).trigger('change');
                 toastObject.show();
             }).fail(function(xhr, status, error) {
                 console.log(xhr.responseText);

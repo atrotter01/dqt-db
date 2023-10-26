@@ -181,14 +181,6 @@ class Farmable:
         return farmables
 
     def get_data(self):
-        cache_key = f'{self.util.get_language_setting()}_farmable_parsed_asset'
-        cached_asset = self.util.get_redis_asset(cache_key=cache_key)
-
-        if cached_asset is not None:
-            return cached_asset
-
         farmables = self.build_farmable_list()
-
-        self.util.save_redis_asset(cache_key=cache_key, data=sorted(farmables, key=lambda d: d['enemy_display_name']))
 
         return farmables
