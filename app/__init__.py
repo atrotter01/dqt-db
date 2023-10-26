@@ -631,6 +631,23 @@ def guide_list_route():
     if guides is None:
         guides = []
 
+    for guide in guides:
+        for area in stage_structure:
+            area_name = stage_structure[area]['area_name']
+            area_group_name = None
+            
+            if stage_structure[area].get('area_group_name') is not None:
+                area_group_name = stage_structure[area]['area_group_name']
+
+            for stage in stage_structure[area]['stages']:
+                if stage.get('stage_id') == guide.get('stage_id'):
+                    stage_name = stage.get('stage_name')
+
+                    if area_group_name is not None:
+                        guide.update({ 'stage_name': f'{area_group_name} - {area_name} - {stage_name}' })
+                    else:
+                        guide.update({ 'stage_name': f'{area_name} - {stage_name}' })
+
     if api_response.status_code == 200:
         units = api_response.json()
 
