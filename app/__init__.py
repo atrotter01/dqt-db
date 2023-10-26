@@ -549,6 +549,7 @@ def video_guide_save_route():
         stage_name = stage_data.get('stage_display_name')
 
         video_link = request.form.get('video_link')
+        notes = request.form.get('notes')
         selected_units = request.form.getlist('unit_select')
         selected_unit_list: list = []
 
@@ -585,6 +586,7 @@ def video_guide_save_route():
             'stage_name': stage_name,
             'video_link': video_link,
             'units': selected_unit_list,
+            'notes': notes,
         })
 
         util.save_redis_asset(cache_key='user_data_video_guides', data=guides)

@@ -14,6 +14,7 @@
             <tr>
                 <td>Stage</td>
                 <td>Units</td>
+                <td>Notes</td>
                 <td>Video</td>
             </tr>
         </thead>
@@ -36,6 +37,9 @@
                     </div>
                     {% endfor %}
                     </div>
+                </td>
+                <td>
+                    {{ guide.notes }}
                 </td>
                 <td>
                     <iframe width="300" height="150" src="https://www.youtube.com/embed/{{ guide.video_link }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
