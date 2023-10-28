@@ -89,14 +89,15 @@ class Blossom:
 
             elif panel_type == 3:
                 status_add_effect: dict = panel_effects[len(panel_effects)-1].get('statusAddEffect')
-                status_add_dffect_data: dict = self.resistance_parser.parse_status_increase_data(status_increase_data=status_add_effect, display_name=panel_display_name, description=panel_description)
-                panel_display_name = status_add_dffect_data.get('display_name')
-                panel_description = status_add_dffect_data.get('description')
+                status_add_effect_data: dict = self.resistance_parser.parse_status_increase_data(status_increase_data=status_add_effect, display_name=panel_display_name, description=panel_description)
+                panel_display_name = status_add_effect_data.get('display_name')
+                panel_description = status_add_effect_data.get('description')
 
                 blossoms.append({
                     'panel_code': panel_code,
                     'panel_display_name': panel_display_name,
                     'panel_description': panel_description,
+                    'panel_stat_additives': status_add_effect.get('statusIncrease'),
                     'type': 'Stats Increase',
                     'unlock_costs': panel_unlock_items
                 })

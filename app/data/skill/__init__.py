@@ -194,6 +194,24 @@ class Skill:
         skill_text: dict = self.parse_skill_variables(skill=skill, skill_name=skill_name, skill_description=skill_description)
         skill_name = skill_text.get('skill_name')
         skill_description = skill_text.get('skill_description')
+        skill_stat_additives: dict = None
+        skill_stat_multipliers: dict = None
+
+        if skill.get('passiveSkillStatusAddEffectMasterData') is not None:
+            skill_increase_path = skill.get('passiveSkillStatusAddEffectMasterData').get('m_PathID')
+
+            if skill_increase_path != 0:
+                status_add_asset = self.util.get_asset_by_path(path=skill.get('passiveSkillStatusAddEffectMasterData').get('m_PathID'), deflate_data=True)
+                status_add_document = status_add_asset.get('processed_document')
+                skill_stat_additives = status_add_document.get('statusIncrease')
+
+        if skill.get('passiveSkillStatusMulEffectMasterData') is not None:
+            skill_increase_path = skill.get('passiveSkillStatusMulEffectMasterData').get('m_PathID')
+
+            if skill_increase_path != 0:
+                status_multiplier_asset = self.util.get_asset_by_path(path=skill.get('passiveSkillStatusMulEffectMasterData').get('m_PathID'), deflate_data=True)
+                status_multiplier_document = status_multiplier_asset.get('processed_document')
+                skill_stat_multipliers = status_multiplier_document.get('statusIncrease')
 
         passive_skill: dict = {
             'id': skill_id,
@@ -205,7 +223,9 @@ class Skill:
             'skill_icon': skill_icon,
             'ally_skill_icon': ally_skill_icon,
             'enemy_skill_icon': enemy_skill_icon,
-            'type_of_skill': 'passive_skill'
+            'type_of_skill': 'passive_skill',
+            'skill_stat_additives': skill_stat_additives,
+            'skill_stat_multipliers': skill_stat_multipliers
         }
 
         return passive_skill
@@ -295,18 +315,12 @@ class Skill:
         return reaction_passive_skill
 
     def parse_awakening_passive_skill(self, skill: dict, awakening_level: str, path: str = None):
-        if awakening_level > 0:
-            awakening_level = self.util.float_to_str(awakening_level / 10)
-
         awakening_passive_skill = self.parse_passive_skill(skill=skill, level_learned='0', path=path)
         awakening_passive_skill.update({'awakening_level': awakening_level})
 
         return awakening_passive_skill
 
     def parse_awakening_reaction_passive_skill(self, skill: dict, awakening_level: str, path: str = None):
-        if awakening_level > 0:
-            awakening_level = self.util.float_to_str(awakening_level / 10)
-
         awakening_reaction_passive_skill = self.parse_reaction_passive_skill(skill=skill, level_learned='0', path=path)
         awakening_reaction_passive_skill.update({'awakening_level': awakening_level})
 

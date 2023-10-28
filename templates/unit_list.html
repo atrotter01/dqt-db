@@ -288,6 +288,38 @@
             hideSearchPanes(null, table, null, null);
         } );
     </script>
+    <form method="get" action="/unit">
+        <div class="row pb-2">
+            <div class="col col-sm-auto pt-2 align-text-center">
+                <label for="master_rank" class="form-label">Master Rank</label>
+            </div>
+            <div class="col col-sm-auto">
+                <select class="form-select" name="master_rank" id="master_rank">
+                    {% set ns = namespace(rank=1) %}
+                    {% for item in stat_increase_table %}
+                    <option value="{{ ns.rank }}"  {% if master_rank|int == ns.rank %}selected="selected" {%endif %}>Master Rank {{ ns.rank }}</option>
+                    {% set ns.rank = ns.rank + 1 %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col col-sm-auto pt-2 align-text-center">
+                <label for="awakening" class="form-label">Awakening</label>
+            </div>
+            <div class="col col-sm-auto">
+                <select class="form-select" type="text" name="awakening" id="awakening">
+                    <option value="0" {% if awakening|int == 0 %}selected="selected" {%endif %}>Awakening 0</option>
+                    <option value="1" {% if awakening|int == 1 %}selected="selected" {%endif %}>Awakening 1</option>
+                    <option value="2" {% if awakening|int == 2 %}selected="selected" {%endif %}>Awakening 2</option>
+                    <option value="3" {% if awakening|int == 3 %}selected="selected" {%endif %}>Awakening 3</option>
+                    <option value="4" {% if awakening|int == 4 %}selected="selected" {%endif %}>Awakening 4</option>
+                    <option value="5" {% if awakening|int == 5 %}selected="selected" {%endif %}>Awakening 5</option>
+                </select>
+            </div>
+            <div class="col col-sm-auto">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form>
     <table id="dt" class="table table-striped table-hover table-bordered align-middle" style="width: 100%">
         <thead>
             <tr>
@@ -339,44 +371,26 @@
                 <td>{{ unit.stats_by_level[-1:][0].level }}</td>
                 <td>
                     {% set ns = namespace(hp=unit.stats_by_level[-1:][0].hp) %}
-                    {% for rank in unit.rank_up_table %}
-                    {% set ns.hp = ns.hp + rank.stats_increase.hp %}
-                    {% endfor %}
                     {{ ns.hp }}
                 </td>
                 <td>
                     {% set ns = namespace(mp=unit.stats_by_level[-1:][0].mp) %}
-                    {% for rank in unit.rank_up_table %}
-                    {% set ns.mp = ns.mp + rank.stats_increase.mp %}
-                    {% endfor %}
                     {{ ns.mp }}
                 </td>
                 <td>
                     {% set ns = namespace(attack=unit.stats_by_level[-1:][0].attack) %}
-                    {% for rank in unit.rank_up_table %}
-                    {% set ns.attack = ns.attack + rank.stats_increase.attack %}
-                    {% endfor %}
                     {{ ns.attack }}
                 </td>
                 <td>
                     {% set ns = namespace(defense=unit.stats_by_level[-1:][0].defense) %}
-                    {% for rank in unit.rank_up_table %}
-                    {% set ns.defense = ns.defense + rank.stats_increase.defense %}
-                    {% endfor %}
                     {{ ns.defense }}
                 </td>
                 <td>
                     {% set ns = namespace(agility=unit.stats_by_level[-1:][0].agility) %}
-                    {% for rank in unit.rank_up_table %}
-                    {% set ns.agility = ns.agility + rank.stats_increase.agility %}
-                    {% endfor %}
                     {{ ns.agility }}
                 </td>
                 <td>
                     {% set ns = namespace(intelligence=unit.stats_by_level[-1:][0].intelligence) %}
-                    {% for rank in unit.rank_up_table %}
-                    {% set ns.intelligence = ns.intelligence + rank.stats_increase.intelligence %}
-                    {% endfor %}
                     {{ ns.intelligence }}
                 </td>
                 <td>{{ unit.move }}</td>

@@ -108,7 +108,20 @@ class Unit:
             active_skills.append(active_skill)
 
         for skill_learning in data.get('awakeningPassiveSkillLearnings'):
-            awakening_level = skill_learning.get('point')
+            awakening_level = int(skill_learning.get('point'))
+
+            if bool(is_gacha_unit) is False:
+                awakening_level = int(awakening_level / 10)
+                
+                if awakening_level == 4:
+                    awakening_level = 2
+                elif awakening_level == 10:
+                    awakening_level = 3
+                elif awakening_level == 20:
+                    awakening_level = 4
+                elif awakening_level == 40:
+                    awakening_level = 5
+
             skill = skill_learning.get('passiveSkill')
             skill_id = skill.get('linked_asset_id')
             awakening_passive_skill = self.skill_parser.parse_awakening_passive_skill(skill=skill, awakening_level=awakening_level, path=skill_id)
@@ -130,6 +143,19 @@ class Unit:
 
         for skill_learning in data.get('awakeningReactionPassiveSkillLearnings'):
             awakening_level = skill_learning.get('point')
+
+            if bool(is_gacha_unit) is False:
+                awakening_level = int(awakening_level / 10)
+
+                if awakening_level == 4:
+                    awakening_level = 2
+                elif awakening_level == 10:
+                    awakening_level = 3
+                elif awakening_level == 20:
+                    awakening_level = 4
+                elif awakening_level == 40:
+                    awakening_level = 5
+
             skill = skill_learning.get('reactionPassiveSkill')
             skill_id = skill.get('linked_asset_id')
             awakening_reaction_passive_skill = self.skill_parser.parse_awakening_reaction_passive_skill(skill=skill, awakening_level=awakening_level, path=skill_id)

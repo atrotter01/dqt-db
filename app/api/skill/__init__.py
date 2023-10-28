@@ -54,7 +54,9 @@ passive_skill_model = api.model('passive_skill', {
     'skill_is_pve_only': fields.Boolean,
     'ally_skill_icon': fields.String,
     'enemy_skill_icon': fields.String,
-    'type_of_skill': fields.String
+    'type_of_skill': fields.String,
+    'skill_stat_additives': fields.Raw,
+    'skill_stat_multipliers': fields.Raw,
 })
 
 reaction_skill_model = api.model('reaction_skill', {

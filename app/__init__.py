@@ -78,13 +78,19 @@ def index_route():
 
 @app.route('/unit/')
 def unit_route():
-    api_response = requests.get(url='http://localhost:5000/api/unit/', timeout=300, params=dict(lang=session['lang']))
+    util: Util = Util(lang=session['lang'])
+    awakening: str = request.args.get('awakening') or '0'
+    master_rank: str = request.args.get('master_rank') or '0'
+    stat_increase_table = util.get_asset_by_path(path='-5945447399125289372', deflate_data=True, build_processed_asset=True)
+    stat_increase_table_document = stat_increase_table.get('processed_document')
+
+    api_response = requests.get(url=f'http://localhost:5000/api/unit/?awakening={awakening}&master_rank={master_rank}', timeout=300, params=dict(lang=session['lang']))
     units = []
 
     if api_response.status_code == 200:
         units = api_response.json()
 
-    return render_template('unit_list.html', units=units)
+    return render_template('unit_list.html', units=units, stat_increase_table=stat_increase_table_document.get('items'), awakening=awakening, master_rank=master_rank)
 
 @app.route('/skill_potency/')
 def skill_potency_route():
@@ -217,7 +223,10 @@ def package_route():
 
 @app.route('/unit/<unit_id>')
 def unit_detail_route(unit_id):
-    api_response = requests.get(url=f'http://localhost:5000/api/unit/{unit_id}', timeout=300, params=dict(lang=session['lang']))
+    awakening: str = request.args.get('awakening') or '0'
+    master_rank: str = request.args.get('master_rank') or '0'
+
+    api_response = requests.get(url=f'http://localhost:5000/api/unit/{unit_id}?awakening={awakening}&master_rank={master_rank}', timeout=300, params=dict(lang=session['lang']))
     farmable_api_response = requests.get(url='http://localhost:5000/api/farmable/', timeout=300, params=dict(lang=session['lang']))
     area_api_response = requests.get(url='http://localhost:5000/api/area', timeout=300, params=dict(lang=session['lang']))
 

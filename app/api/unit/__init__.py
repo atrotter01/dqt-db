@@ -100,6 +100,9 @@ class Asset(Resource):
     unit_parser: Unit
     units: list
     cache_key: str
+    master_rank: int = 1
+    awakening: int = 0
+    single_unit: bool = False
 
     @api.marshal_list_with(unit_model)
     def get(self, path = None):
@@ -108,30 +111,127 @@ class Asset(Resource):
         self.unit_parser = Unit(util=self.util)
         self.units = []
 
+        if request.args.get('master_rank') is not None:
+            self.master_rank = int(request.args.get('master_rank'))
+
+        if request.args.get('awakening') is not None:
+            self.awakening = int(request.args.get('awakening'))
+
         if path is not None:
             profile_map: dict = self.util.get_redis_asset(f'{self.util.get_language_setting()}_profile_unit_map_parsed_asset')
+            self.single_unit = True
 
             if profile_map is not None:
                 if profile_map.get(path) is not None:
                     path = profile_map.get(path)
 
-                self.units.append(self.unit_parser.get_data(path=path))
+            self.units.append(self.unit_parser.get_data(path=path))
 
-                return self.units
+        else:
+            self.cache_key = f'{self.util.get_language_setting()}_unit_parsed_asset'
+            cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
 
-        self.cache_key = f'{self.util.get_language_setting()}_unit_parsed_asset'
-        cached_asset = self.util.get_redis_asset(cache_key=self.cache_key)
+            if cached_asset is not None:
+                self.units = cached_asset
+            else:
+                asset_list: list = self.util.get_asset_list('AllyMonster')
 
-        if cached_asset is not None:
-            return cached_asset
+                for path in asset_list:
+                    unit = self.unit_parser.get_data(path=path)
+                    self.units.append(unit)
 
-        asset_list: list = self.util.get_asset_list('AllyMonster')
+                self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.units, key=lambda d: d['almanac_number']))
 
-        for path in asset_list:
-            unit = self.unit_parser.get_data(path=path)
-            self.units.append(unit)
+        stat_increase_table = self.util.get_asset_by_path(path='-5945447399125289372', deflate_data=True, build_processed_asset=True)
+        stat_increase_table_document = stat_increase_table.get('processed_document')
+        master_rank: int = 1
+        global_stat_multipliers: list = []
+        global_stat_additives: list = []
 
-        self.util.save_redis_asset(cache_key=self.cache_key, data=sorted(self.units, key=lambda d: d['almanac_number']))
+        for item in stat_increase_table_document.get('items'):
+            if master_rank == self.master_rank:
+                passive_skill = item.get('passiveSkill')
+                stat_increase_path = passive_skill.get('passiveSkillStatusMulEffectMasterData').get('m_PathID')
+                stat_increase_asset = self.util.get_asset_by_path(path=stat_increase_path, deflate_data=True, build_processed_asset=True)
+                stat_increase_document = stat_increase_asset.get('processed_document')
+                stat_increase = stat_increase_document.get('statusIncrease')
+                global_stat_multipliers.append(stat_increase)
+
+                break
+            else:
+                master_rank = master_rank + 1
+                continue
+
+        for unit in self.units:
+            start_index: int = -1
+
+            if self.single_unit is True:
+                start_index = 0
+
+            for level in unit.get('stats_by_level')[start_index:]:
+                level_number = level.get('level')
+
+                for key in level.keys():
+                    if key == 'level':
+                        continue
+
+                    multiplier: int = 1
+                    stat_key = key
+
+                    if key == 'defense':
+                        stat_key = 'defence'
+
+                    for rank in unit.get('rank_up_table'):
+                        if level_number > rank.get('rank_level_cap'):
+                            level.update({ key: level.get(key) + rank.get('stats_increase').get(key) })
+
+                    for panel in unit.get('blossoms'):
+                        if panel.get('panel_stat_additives') is not None:
+                            level.update({ key: level.get(key) + panel.get('panel_stat_additives').get(stat_key) })
+
+                        if panel.get('type') == 'Passive Skill':
+                            if panel.get('data').get('skill_stat_additives') is not None:
+                                level.update({ key: level.get(key) + panel.get('data').get('skill_stat_additives').get(stat_key) })
+
+                    for panel in unit.get('character_builder_blossoms'):
+                        if panel.get('panel_stat_additives') is not None:
+                            level.update({ key: level.get(key) + panel.get('panel_stat_additives').get(stat_key) })
+
+                        if panel.get('type') == 'Passive Skill':
+                            if panel.get('data').get('skill_stat_additives') is not None:
+                                level.update({ key: level.get(key) + panel.get('data').get('skill_stat_additives').get(stat_key) })
+
+                    for passive_skill in unit.get('passive_skills'):
+                        if passive_skill.get('skill_stat_additives') is not None:
+                            if passive_skill.get('skill_stat_additives').get(stat_key) is not None:
+                                level.update({ key: level.get(key) + passive_skill.get('skill_stat_additives').get(stat_key) })
+
+                    for passive_skill in unit.get('awakening_passive_skills'):
+                        if int(passive_skill.get('awakening_level'))  > self.awakening:
+                            continue
+
+                        if passive_skill.get('skill_stat_additives') is not None:
+                            if passive_skill.get('skill_stat_additives').get(stat_key) is not None:
+                                level.update({ key: level.get(key) + passive_skill.get('skill_stat_additives').get(stat_key) })
+
+                    for passive_skill in unit.get('awakening_passive_skills'):
+                        if int(passive_skill.get('awakening_level'))  > self.awakening:
+                            continue
+
+                        if passive_skill.get('skill_stat_multipliers') is not None:
+                            if passive_skill.get('skill_stat_multipliers').get(stat_key) is not None:
+                                multiplier = multiplier + (passive_skill.get('skill_stat_multipliers').get(stat_key) / 100)
+
+                    for passive_skill in unit.get('passive_skills'):
+                        if passive_skill.get('skill_stat_multipliers') is not None:
+                            if passive_skill.get('skill_stat_multipliers').get(stat_key) is not None:
+                                multiplier = multiplier + (passive_skill.get('skill_stat_multipliers').get(stat_key) / 100)
+
+                    for stat_increase in global_stat_multipliers:
+                        multiplier = multiplier + (stat_increase.get(stat_key) / 100)
+
+                    level.update({ key: level.get(key) * multiplier })
+                    level.update({ key: int(level.get(key)) })
 
         return sorted(self.units, key=lambda d: d['almanac_number'])
 
