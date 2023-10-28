@@ -55,6 +55,38 @@
             });
         });
     </script>
+    <form method="get" action="/unit/{{ unit_id }}">
+        <div class="row pb-2">
+            <div class="col col-sm-auto pt-2 align-text-center">
+                <label for="master_rank" class="form-label">Master Rank</label>
+            </div>
+            <div class="col col-sm-auto">
+                <select class="form-select" name="master_rank" id="master_rank">
+                    {% set ns = namespace(rank=1) %}
+                    {% for item in stat_increase_table %}
+                    <option value="{{ ns.rank }}"  {% if master_rank|int == ns.rank %}selected="selected" {%endif %}>Master Rank {{ ns.rank }}</option>
+                    {% set ns.rank = ns.rank + 1 %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col col-sm-auto pt-2 align-text-center">
+                <label for="awakening" class="form-label">Awakening</label>
+            </div>
+            <div class="col col-sm-auto">
+                <select class="form-select" type="text" name="awakening" id="awakening">
+                    <option value="0" {% if awakening|int == 0 %}selected="selected" {%endif %}>Awakening 0</option>
+                    <option value="1" {% if awakening|int == 1 %}selected="selected" {%endif %}>Awakening 1</option>
+                    <option value="2" {% if awakening|int == 2 %}selected="selected" {%endif %}>Awakening 2</option>
+                    <option value="3" {% if awakening|int == 3 %}selected="selected" {%endif %}>Awakening 3</option>
+                    <option value="4" {% if awakening|int == 4 %}selected="selected" {%endif %}>Awakening 4</option>
+                    <option value="5" {% if awakening|int == 5 %}selected="selected" {%endif %}>Awakening 5</option>
+                </select>
+            </div>
+            <div class="col col-sm-auto">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form>
     <div class="row detailsbox">
         <div class="row text-center"><h4>Unit Details</h4></div>
         <hr />
