@@ -109,10 +109,9 @@ class Unit:
 
         for skill_learning in data.get('awakeningPassiveSkillLearnings'):
             awakening_level = int(skill_learning.get('point'))
+            awakening_level = int(awakening_level / 10)
 
             if bool(is_gacha_unit) is False:
-                awakening_level = int(awakening_level / 10)
-                
                 if awakening_level == 4:
                     awakening_level = 2
                 elif awakening_level == 10:
@@ -143,10 +142,9 @@ class Unit:
 
         for skill_learning in data.get('awakeningReactionPassiveSkillLearnings'):
             awakening_level = skill_learning.get('point')
+            awakening_level = int(awakening_level / 10)
 
             if bool(is_gacha_unit) is False:
-                awakening_level = int(awakening_level / 10)
-
                 if awakening_level == 4:
                     awakening_level = 2
                 elif awakening_level == 10:
