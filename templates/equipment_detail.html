@@ -119,10 +119,17 @@
                     <td>{{ equipment.equipment_alchemy_slots.slot_2[x].roll_probability }}%</td>
                     <td><img src="/{{ equipment.equipment_alchemy_slots.slot_2[x].passive_skill.skill_icon }}" style="width: 64px; height: 64px;" /></td>
                     {% if equipment.equipment_alchemy_slots.slot_3 is defined %}
+                    {% if equipment.equipment_alchemy_slots.slot_3[x] is defined %}
                     <td><a href='/skill/passive_skill/{{ equipment.equipment_alchemy_slots.slot_3[x].passive_skill.id }}'>{{ equipment.equipment_alchemy_slots.slot_3[x].passive_skill.skill_name }}</a></td>
                     <td>{{ equipment.equipment_alchemy_slots.slot_3[x].passive_skill.skill_description }}</td>
                     <td>{{ equipment.equipment_alchemy_slots.slot_3[x].roll_probability }}%</td>
                     <td><img src="/{{ equipment.equipment_alchemy_slots.slot_3[x].passive_skill.skill_icon }}" style="width: 64px; height: 64px;" /></td>
+                    {% else %}
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    {% endif %}
                     {% else %}
                     <td></td>
                     <td></td>
