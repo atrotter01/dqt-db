@@ -21,7 +21,7 @@ class Equipment:
         data: dict = asset.get('processed_document')
 
         equipment_display_name = self.util.get_localized_string(data=data.get('profile'), key='displayName_translation', path=path)
-        equipment_description = self.util.get_localized_string(data=data.get('profile'), key='description_translation', path=path)
+        equipment_description = self.util.clean_text_string(str_to_clean=self.util.get_localized_string(data=data.get('profile'), key='description_translation', path=path), unit='%')
         equipment_icon = self.util.get_image_path(data.get('profile').get('iconPath'))
         equipment_rank_icon = self.util.get_image_path(data.get('rank').get('rankIconPath'))
         equipment_rank = self.util.get_localized_string(data=data.get('rank'), key='displayName_translation', path=path)

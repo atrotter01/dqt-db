@@ -26,7 +26,29 @@ class EnemyMonster:
         asset = self.util.get_asset_by_path(path=path, deflate_data=True)
         data: dict = asset.get('processed_document')
 
-        enemy_display_name: str = self.util.get_localized_string(data.get('profile'), key='displayName_translation', path=path)
+        enemy_display_name: str = ''
+        enemy_family: str = None
+        enemy_family_icon: str = None
+        enemy_role: str = None
+        enemy_role_icon: str = None
+        enemy_unit_icon: str = None
+        enemy_transformed_unit_icon: str = None
+        enemy_flavor_text: str = None
+        enemy_is_unique_monster: str = None
+
+        if data.get('profile') is not None:
+            enemy_display_name = self.util.get_localized_string(data.get('profile'), key='displayName_translation', path=path)
+            enemy_family = self.util.get_localized_string(data.get('profile').get('family'), key='abbrevDisplayName_translation', path=path)
+            enemy_family_icon = self.util.get_image_path(data.get('profile').get('family').get('largeIconPath'))
+            enemy_role = self.util.get_localized_string(data.get('profile').get('role'), key='abbrevDisplayName_translation', path=path)
+            enemy_role_icon = self.util.get_image_path(data.get('profile').get('role').get('iconPath'))
+            enemy_unit_icon = self.util.get_image_path(data.get('profile').get('iconPath'))
+            enemy_transformed_unit_icon = self.util.get_image_path(data.get('profile').get('transformedIconPath'))
+            enemy_is_unique_monster = data.get('profile').get('uniqueType')
+
+            if data.get('profile').get('flavorText_translation') is not None:
+                enemy_flavor_text = self.util.get_localized_string(data.get('profile'), key='flavorText_translation', path=path)
+
         enemy_level = data.get('level')
         enemy_hp = data.get('hp')
         enemy_mp = data.get('mp')
@@ -36,55 +58,56 @@ class EnemyMonster:
         enemy_agility = data.get('agility')
         enemy_mobility = data.get('mobility')
         enemy_weight = data.get('weight')
-        enemy_is_unique_monster = data.get('profile').get('uniqueType')
         enemy_is_strong_enemy = data.get('isStrongEnemy')
         enemy_scout_probability = data.get('scoutProbabilityPermyriad')
         enemy_is_rare_scout = data.get('isRareScout')
-        enemy_flavor_text: str = None
-        enemy_family = self.util.get_localized_string(data.get('profile').get('family'), key='abbrevDisplayName_translation', path=path)
-        enemy_family_icon = self.util.get_image_path(data.get('profile').get('family').get('largeIconPath'))
-        enemy_role = self.util.get_localized_string(data.get('profile').get('role'), key='abbrevDisplayName_translation', path=path)
-        enemy_role_icon = self.util.get_image_path(data.get('profile').get('role').get('iconPath'))
-        enemy_unit_icon = self.util.get_image_path(data.get('profile').get('iconPath'))
-        enemy_transformed_unit_icon = self.util.get_image_path(data.get('profile').get('transformedIconPath'))
-
-        if data.get('profile').get('flavorText_translation') is not None:
-            enemy_flavor_text = self.util.get_localized_string(data.get('profile'), key='flavorText_translation', path=path)
 
         enemy_active_skills: list = []
         enemy_passive_skills: list = []
         enemy_reaction_skills: list = []
         enemy_drops: list = []
 
-        enemy_element_resistance = self.resistance_parser.parse_elemental_resistance_table(data.get('elementResistance'))
-        enemy_abnormity_resistance = self.resistance_parser.parse_abnormity_resistance_table(data.get('abnormityResistance'))
+        enemy_element_resistance = None
+        
+        if data.get('elementResistance') is not None:
+            enemy_element_resistance = self.resistance_parser.parse_elemental_resistance_table(data.get('elementResistance'))
 
-        for skill in data.get('activeSkills'):
-            enemy_active_skills.append(self.skill_parser.parse_active_skill(skill, path=skill.get('linked_asset_id')))
+        enemy_abnormity_resistance = None
+        
+        if data.get('abnormityResistance') is not None:
+            enemy_abnormity_resistance = self.resistance_parser.parse_abnormity_resistance_table(data.get('abnormityResistance'))
 
-        for skill in data.get('passiveSkills'):
-            enemy_passive_skills.append(self.skill_parser.parse_passive_skill(skill, path=skill.get('linked_asset_id')))
+        if data.get('activeSkills') is not None:
+            for skill in data.get('activeSkills'):
+                enemy_active_skills.append(self.skill_parser.parse_active_skill(skill, path=skill.get('linked_asset_id')))
 
-        for skill in data.get('reactionPassiveSkills'):
-            enemy_reaction_skills.append(self.skill_parser.parse_reaction_passive_skill(skill, path=skill.get('linked_asset_id')))
+        if data.get('passiveSkills') is not None:
+            for skill in data.get('passiveSkills'):
+                enemy_passive_skills.append(self.skill_parser.parse_passive_skill(skill, path=skill.get('linked_asset_id')))
 
-        for drop_candidate in data.get('fixedReward').get('dropCandidates'):
-            drop_percent: int = drop_candidate.get('weight')
-            loot_group: dict = self.loot_group_parser.get_data(drop_candidate.get('lootGroup').get('linked_asset_id'))
+        if data.get('reactionPassiveSkills') is not None:
+            for skill in data.get('reactionPassiveSkills'):
+                enemy_reaction_skills.append(self.skill_parser.parse_reaction_passive_skill(skill, path=skill.get('linked_asset_id')))
 
-            enemy_drops.append({
-                'loot_group': loot_group,
-                'drop_percent': drop_percent
-            })
+        if data.get('fixedReward') is not None:
+            for drop_candidate in data.get('fixedReward').get('dropCandidates'):
+                drop_percent: int = drop_candidate.get('weight')
+                loot_group: dict = self.loot_group_parser.get_data(drop_candidate.get('lootGroup').get('linked_asset_id'))
 
-        for drop_candidate in data.get('randomReward').get('dropCandidates'):
-            drop_percent: int = drop_candidate.get('weight')
-            loot_group: dict = self.loot_group_parser.get_data(drop_candidate.get('lootGroup').get('linked_asset_id'))
+                enemy_drops.append({
+                    'loot_group': loot_group,
+                    'drop_percent': drop_percent
+                })
 
-            enemy_drops.append({
-                'loot_group': loot_group,
-                'drop_percent': drop_percent
-            })
+        if data.get('randomReward') is not None:
+            for drop_candidate in data.get('randomReward').get('dropCandidates'):
+                drop_percent: int = drop_candidate.get('weight')
+                loot_group: dict = self.loot_group_parser.get_data(drop_candidate.get('lootGroup').get('linked_asset_id'))
+
+                enemy_drops.append({
+                    'loot_group': loot_group,
+                    'drop_percent': drop_percent
+                })
 
         enemy_monster: dict = {
             'id': path,

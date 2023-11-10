@@ -484,7 +484,7 @@ class Util:
         return self.get_redis_asset(cache_key='codelist_cache')
 
     def get_localized_string(self, data: dict, key: str, path: str, lang: str = None):
-        untranslated_strings: dict = {}
+        #untranslated_strings: dict = {}
 
         if lang is None:
             lang = self.get_language_setting()
@@ -493,22 +493,22 @@ class Util:
             if data.get(key).get('gbl') is not None:
                 return data.get(key).get('gbl')
             else:
-                asset_id: str = data.get('linked_asset_id')
-                translate_key: str = f'{path}_{asset_id}_{key}'
+                #asset_id: str = data.get('linked_asset_id')
+                #translate_key: str = f'{path}_{asset_id}_{key}'
 
-                if self.get_redis_asset('sys_untranslated_strings') is not None:
-                    untranslated_strings = self.get_redis_asset('sys_untranslated_strings')
+                #if self.get_redis_asset('sys_untranslated_strings') is not None:
+                #    untranslated_strings = self.get_redis_asset('sys_untranslated_strings')
 
-                if untranslated_strings.get(translate_key) is None:
-                    untranslated_strings[translate_key] = {
-                        'key': key,
-                        'path': path,
-                        'asset_id': asset_id,
-                        'string': data.get(key).get('ja'),
-                        'filetype': self.get_asset_by_path(path=path, deflate_data=False, build_processed_asset=False).get('filetype')
-                    }
+                #if untranslated_strings.get(translate_key) is None:
+                #    untranslated_strings[translate_key] = {
+                #        'key': key,
+                #        'path': path,
+                #        'asset_id': asset_id,
+                #        'string': data.get(key).get('ja'),
+                #        'filetype': self.get_asset_by_path(path=path, deflate_data=False, build_processed_asset=False).get('filetype')
+                #    }
 
-                    self.save_redis_asset('sys_untranslated_strings', untranslated_strings)
+                #    self.save_redis_asset('sys_untranslated_strings', untranslated_strings)
 
                 return data.get(key).get('ja')
         else:
