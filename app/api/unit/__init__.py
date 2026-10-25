@@ -146,7 +146,6 @@ class Asset(Resource):
         stat_increase_table_document = stat_increase_table.get('processed_document')
         master_rank: int = 1
         global_stat_multipliers: list = []
-        global_stat_additives: list = []
 
         for item in stat_increase_table_document.get('items'):
             if master_rank == self.master_rank:

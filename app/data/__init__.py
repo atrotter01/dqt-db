@@ -201,7 +201,10 @@ class DataProcessor:
 
         return dictionary_copy
 
-    def get_document(self, path: str, parent_path: str = None, key_stack: str = None, path_stack: list = [], force_rebuild: bool = False):
+    def get_document(self, path: str, parent_path: str = None, key_stack: str = None, path_stack: list = None, force_rebuild: bool = False):
+        if path_stack is None:
+            path_stack = []
+
         try:
             asset: dict = self.util.get_asset_by_path(path=path, deflate_data=True, build_processed_asset=False)
 

@@ -27,7 +27,7 @@ class Stage:
         stage_area_id = data.get('area').get('linked_asset_id')
         stage_area_name = self.util.get_localized_string(data=data.get('area'), key='displayName_translation', path=path)
         stage_area_group_name = None
-        
+
         if data.get('area').get('areaGroup').get('m_PathID') is None:
             stage_area_group_name = self.util.get_localized_string(data=data.get('area').get('areaGroup'), key='displayName_translation', path=path)
 

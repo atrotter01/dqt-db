@@ -176,7 +176,7 @@ class Unit:
                     character_builder_blossoms = self.blossom_parser.parse_skill_board(blossom_board=training_board_document)
 
         if skip_area_enumeration is False:
-            area_api_response = requests.get(url='http://localhost:5000/api/area', params=dict(lang=self.util.get_language_setting()))
+            area_api_response = requests.get(url='http://localhost:5000/api/area', params=dict(lang=self.util.get_language_setting()), timeout=60)
             area_data = []
 
             if area_api_response.status_code == 200:
@@ -221,7 +221,7 @@ class Unit:
             'blossoms': blossoms,
             'character_builder_blossoms': character_builder_blossoms
         }
-        
+
         unit.update({'abnormity_resistances': abnormity_resistance_table})
         unit.update({'element_resistances': element_resistance_table})
         unit.update({'rank_up_table': rank_up_table_list})

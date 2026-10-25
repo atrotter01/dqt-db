@@ -15,18 +15,22 @@ for asset in untranslated_assets:
 
     if not asset_id in seen_paths:
         seen_paths.append(asset_id)
-        [util.redis_client.delete(key) for key in util.asset_list if key.startswith(f'en_{asset_id}')]
+        for key in util.asset_list:
+            if key.startswith(f'en_{asset_id}'):
+                util.redis_client.delete(key)
 
     if not path in seen_paths:
         seen_paths.append(path)
-        [util.redis_client.delete(key) for key in util.asset_list if key.startswith(f'en_{path}')]
+        for key in util.asset_list:
+            if key.startswith(f'en_{path}'):
+                util.redis_client.delete(key)
 
 seen_paths.clear()
 
 for asset in untranslated_assets:
     asset_id = untranslated_assets.get(asset).get('asset_id')
     path = untranslated_assets.get(asset).get('path')
-    
+
     if not asset_id in seen_paths:
         seen_paths.append(asset_id)
         asset_processor.process_asset(path=asset_id, force_rebuild=True)

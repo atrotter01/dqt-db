@@ -1,0 +1,21 @@
+# Pylint settings for CI (.github/workflows/pylint.yml). Errors and warnings are enforced; the
+# refactor/design checks (complexity, duplicate code, dict() vs {}) and naming conventions are off for
+# this older codebase, rather than reshaping working parsers just for the linter.
+[MAIN]
+jobs=0
+
+[MESSAGES CONTROL]
+disable=
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    R,
+    invalid-name,
+    broad-exception-caught,
+    broad-exception-raised,
+    fixme,
+    consider-using-dict-items,
+    consider-iterating-dictionary,
+
+[FORMAT]
+max-line-length=240

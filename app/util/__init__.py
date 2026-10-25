@@ -13,7 +13,7 @@ from app.data.assetprocessor import AssetProcessor
 class Util:
     asset_list: list = []
     cache_keys: list = [
-        'asset_path_map', 'asset_types', 'lookup_cache', 'metadata_cache', 'unprocessed_asset_counts', 
+        'asset_path_map', 'asset_types', 'lookup_cache', 'metadata_cache', 'unprocessed_asset_counts',
         'asset_list', 'event_portal_cache', 'codelist_cache'
     ]
     redis_client: redis
@@ -483,7 +483,7 @@ class Util:
 
         return self.get_redis_asset(cache_key='codelist_cache')
 
-    def get_localized_string(self, data: dict, key: str, path: str, lang: str = None):
+    def get_localized_string(self, data: dict, key: str, path: str, lang: str = None):  # pylint: disable=unused-argument
         #untranslated_strings: dict = {}
 
         if lang is None:

@@ -46,7 +46,7 @@ class Asset(Resource):
             return cached_asset
 
         asset_list: list = self.util.get_asset_list('SugorokuStage')
-        
+
         for path in asset_list:
             tnt_board: dict = self.tnt_parser.get_data(path)
 

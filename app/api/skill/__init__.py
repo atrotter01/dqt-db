@@ -37,7 +37,7 @@ active_skill_model = api.model('active_skill', {
     'skill_max_damage': fields.Integer,
     'skill_multiplier': fields.Float,
     'skill_action_type': fields.Integer,
-    'skill_type': fields.String, 
+    'skill_type': fields.String,
     'skill_target_type': fields.Integer,
     'skill_status_effect_parameter_name': fields.String,
     'skill_damage_calculation_type': fields.Integer,

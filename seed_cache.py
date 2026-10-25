@@ -1,3 +1,5 @@
+# util and the *_data / *_response globals are set in the __main__ block before these functions run
+# pylint: disable=possibly-used-before-assignment
 import argparse
 import concurrent
 import requests

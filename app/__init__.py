@@ -1,7 +1,7 @@
 import datetime
 import json
-import requests
 import uuid
+import requests
 from flask import Flask, Blueprint, render_template, request, Response, session, make_response, jsonify
 from flask_restx import Api
 from flask_autoindex import AutoIndex
@@ -647,7 +647,7 @@ def guide_list_route():
         for area in stage_structure:
             area_name = stage_structure[area]['area_name']
             area_group_name = None
-            
+
             if stage_structure[area].get('area_group_name') is not None:
                 area_group_name = stage_structure[area]['area_group_name']
 

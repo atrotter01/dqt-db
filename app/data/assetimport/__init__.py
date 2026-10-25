@@ -23,7 +23,7 @@ class AssetImport:
         path = os.path.join(self.root_path, 'assets.xml')
         asset_map: dict = {}
 
-        with open(path) as fh:
+        with open(path, encoding='utf-8') as fh:
             xml = fh.read()
             xmldict = xmltodict.parse(xml, process_namespaces=True)
             assets = xmldict.get('Assets').get('Asset')
@@ -71,7 +71,7 @@ def process_and_save_asset(path):
         container = str(Path(filepath).parent).replace(asset_importer_instance.root_path + '/', '')
 
         if os.path.exists(filepath):
-            with open(filepath) as fh:
+            with open(filepath, encoding='utf-8') as fh:
                 document = json.load(fh)
 
                 if asset_importer_instance.util.save_asset(path=path, filepath=filepath, container=container, filetype=filetype, document=document, display_name=asset_name):

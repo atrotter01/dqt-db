@@ -68,12 +68,12 @@ class EnemyMonster:
         enemy_drops: list = []
 
         enemy_element_resistance = None
-        
+
         if data.get('elementResistance') is not None:
             enemy_element_resistance = self.resistance_parser.parse_elemental_resistance_table(data.get('elementResistance'))
 
         enemy_abnormity_resistance = None
-        
+
         if data.get('abnormityResistance') is not None:
             enemy_abnormity_resistance = self.resistance_parser.parse_abnormity_resistance_table(data.get('abnormityResistance'))
 

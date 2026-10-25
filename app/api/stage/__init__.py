@@ -69,7 +69,7 @@ class Asset(Resource):
         for path in asset_list:
             try:
                 stage = self.stage_parser.get_data(path)
-            except Exception as ex:
+            except Exception:
                 print(f'Failed to process {path}.')
                 failure = True
                 #raise ex

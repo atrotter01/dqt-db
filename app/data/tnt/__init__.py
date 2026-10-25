@@ -33,7 +33,7 @@ class TnT:
 
             for event in square.get('squareEventSetting').get('squareEvents'):
                 event_type: int = event.get('eventType')
-                
+
                 square_event_type: str = None
                 square_event: dict = {}
                 square_event_probability: int = event.get('probabilityPerMil') / 10
@@ -171,7 +171,7 @@ class TnT:
                 else:
                     print(zone_data)
                     raise NotImplementedError(event_type)
-                
+
                 square_events.append({
                     'square_event_type': square_event_type,
                     'square_event_probability': square_event_probability,
