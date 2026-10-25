@@ -1,0 +1,26 @@
+# Dependabot version updates: weekly, minor and patch updates grouped into one PR per ecosystem.
+# Security updates are on separately (repo settings). Added by homesync, 2026-10-25.
+version: 2
+updates:
+  - package-ecosystem: pip
+    directories:
+      - "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+  - package-ecosystem: github-actions
+    directories:
+      - "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
