@@ -39,4 +39,4 @@ urllib3==2.8.0
 Werkzeug==3.1.9
 xmltodict==0.15.1
 zope.event==6.2
-zope.interface==6.4.post2
+zope.interface==8.7
