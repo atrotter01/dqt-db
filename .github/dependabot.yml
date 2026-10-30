@@ -8,6 +8,11 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      # networkx 3.7+ requires Python >= 3.12; the app and CI run on 3.11.
+      # Drop this when moving to Python 3.12.
+      - dependency-name: networkx
+        versions: [">=3.7"]
     groups:
       minor-and-patch:
         update-types:
